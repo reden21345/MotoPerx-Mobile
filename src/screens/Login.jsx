@@ -1,27 +1,28 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { AuthContext } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../redux/actions/authAction';
 
 const Login = ({ navigation }) => {
-    const { login } = useContext(AuthContext);
+    const dispatch = useDispatch();
+    const { loading, error } = useSelector((state) => state.auth);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
-        setLoading(true);
-        try {
-            await login(email, password);
+        const result = await dispatch(loginUser({ email, password }));
+
+        if (loginUser.fulfilled.match(result)) {
             navigation.replace('Home'); 
-        } catch (error) {
-            Alert.alert('Login Failed', error);
+        } else {
+            Alert.alert('Login Failed', result.payload);
         }
-        setLoading(false);
     };
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>Login</Text>
+            {error && <Text style={{ color: 'red', textAlign: 'center' }}>{error}</Text>}
             <TextInput
                 placeholder="Email"
                 value={email}

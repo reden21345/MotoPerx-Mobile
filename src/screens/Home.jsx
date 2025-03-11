@@ -1,23 +1,25 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { AuthContext } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from '../redux/actions/authAction';
 
 const Home = ({ navigation }) => {
-    const { user, logout } = useContext(AuthContext);
-    console.log("User: ", user)
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
 
     const handleLogout = async () => {
-        await logout();
-        navigation.replace('Login');
+        await dispatch(logoutUser());
+        navigation.replace('Login'); 
     };
 
     return (
         <View style={styles.container}>
             <Image 
+                source={{ uri: user?.avatar || 'https://via.placeholder.com/150' }}
                 style={styles.profileImage} 
             />
-            <Text style={styles.userName}>{user?.profile.name}</Text>
-            <Text style={styles.userEmail}>{user?.profile.email}</Text>
+            <Text style={styles.userName}>{user?.name}</Text>
+            <Text style={styles.userEmail}>{user?.email}</Text>
             
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Deals')}>
                 <Text style={styles.buttonText}>View Deals</Text>

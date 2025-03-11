@@ -1,28 +1,29 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { AuthContext } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../redux/actions/authAction';
 
-const Register = ({ navigation }) => {
-    const { register } = useContext(AuthContext);
+const RegisterScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const { loading, error } = useSelector((state) => state.auth);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const handleRegister = async () => {
-        setLoading(true);
-        try {
-            await register(name, email, password);
-            navigation.navigate('Home');
-        } catch (error) {
-            Alert.alert('Registration Failed', error);
+        const result = await dispatch(registerUser({ name, email, password }));
+        if (registerUser.fulfilled.match(result)) {
+            navigation.replace('Home'); 
+        } else {
+            Alert.alert('Registration Failed', result.payload || 'Something went wrong');
         }
-        setLoading(false);
     };
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>Register</Text>
+
+            {error && <Text style={{ color: 'red', textAlign: 'center' }}>{String(error)}</Text>}
 
             <TextInput placeholder="Name" value={name} onChangeText={setName} style={{ borderBottomWidth: 1, marginVertical: 10, padding: 10 }} />
 
@@ -37,4 +38,4 @@ const Register = ({ navigation }) => {
     );
 };
 
-export default Register;
+export default RegisterScreen;
