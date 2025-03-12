@@ -41,7 +41,8 @@ export const registerUser = createAsyncThunk('auth/registerUser', async ({ name,
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, thunkAPI) => {
     try {
         await AsyncStorage.removeItem('token');
-        return {}; // Reset state on logout
+        await axios.post(`${API_BASE_URL}/logout`);
+        return {};
     } catch (error) {
         return thunkAPI.rejectWithValue('Failed to logout');
     }
