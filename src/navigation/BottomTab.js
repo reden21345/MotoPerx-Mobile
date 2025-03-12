@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import Home from '../screens/Home';
 import Deals from '../screens/Deals';
 import QRScanner from '../screens/partner/QRScanner';
@@ -10,6 +10,8 @@ import { Ionicons } from '@expo/vector-icons';
 const Tab = createBottomTabNavigator();
 
 const BottomTab = () => {
+    const { user } = useSelector((state) => state.auth);
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -33,7 +35,9 @@ const BottomTab = () => {
         >
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Deals" component={Deals} />
-            <Tab.Screen name="QR Scanner" component={QRScanner} />
+            {user?.role === "partner" && (
+                <Tab.Screen name="QR Scanner" component={QRScanner} />
+            )}
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
     );
