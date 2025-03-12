@@ -3,14 +3,17 @@ import { View, Text, TouchableOpacity, ActivityIndicator, Alert, Image, StyleShe
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../redux/actions/authAction';
 import { getUserPoints } from '../redux/actions/pointsAction';
+import { getQRCode } from '../redux/actions/qrcodeAction';
 
-const ProfileScreen = ({ navigation }) => {
+const Profile = ({ navigation }) => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
+    const { qrCode } = useSelector((state) => state.qrCode);
     const { points, loading, error } = useSelector((state) => state.points);
 
     useEffect(() => {
         dispatch(getUserPoints());
+        dispatch(getQRCode());
     }, [dispatch]);
 
     const handleLogout = async () => {
@@ -37,6 +40,14 @@ const ProfileScreen = ({ navigation }) => {
             <Text style={styles.userEmail}>{user?.email}</Text>
             <Text style={styles.userRole}>Role: {user?.role}</Text>
             <Text style={styles.userPoints}>Points: {points || 0}</Text>
+            
+            {user?._id === qrCode.user && (
+                // <Image 
+                //     source={{ uri: user.qrCode }}
+                //     style={styles.qrCodeImage} 
+                // />
+                <Text style={styles.userName}>{qrCode.code}</Text>
+            )}
             
             <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
                 <Text style={styles.buttonText}>Logout</Text>
@@ -88,6 +99,11 @@ const styles = StyleSheet.create({
         color: '#007bff',
         marginBottom: 20,
     },
+    qrCodeImage: {
+        width: 150,
+        height: 150,
+        marginVertical: 10,
+    },
     button: {
         backgroundColor: '#007bff',
         paddingVertical: 12,
@@ -112,4 +128,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfileScreen;
+export default Profile;

@@ -20,21 +20,29 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
     }
 });
 
-
-  
+// Register User and Generate QR Code
 export const registerUser = createAsyncThunk('auth/registerUser', async ({ name, email, password }, thunkAPI) => {
-    
     try {
         const response = await axios.post(`${API_BASE_URL}/register`, { name, email, password });
+        const token = response.data.token;
+        await AsyncStorage.setItem('token', token);
 
-        await AsyncStorage.setItem('token', response.data.token);
+        // Generate QR Code for the registered user
+        const qrResponse = await axios.post(`${API_BASE_URL}/qr/generate`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
 
-        return response.data;
+        return { ...response.data, qrCode: qrResponse.data.qrCode };
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.message || 'Registration failed');
     }
 });
-  
-export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
-    await AsyncStorage.removeItem('token');
-});
+
+export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, thunkAPI) => {
+    try {
+        await AsyncStorage.removeItem('token');
+        return {}; // Reset state on logout
+    } catch (error) {
+        return thunkAPI.rejectWithValue('Failed to logout');
+    }
+}); 
