@@ -5,56 +5,67 @@ import { logoutUser } from '../redux/actions/authAction';
 import { getUserPoints } from '../redux/actions/pointsAction';
 import { getQRCode } from '../redux/actions/qrcodeAction';
 import QRCode from 'react-native-qrcode-svg';
+// import QRCodeGenerator from 'react-native-qrcode-generator';
 
 const Profile = ({ navigation }) => {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
     const { qrCode } = useSelector((state) => state.qrCode);
+    console.log(qrCode)
+    // const { qrCode = {} } = useSelector((state) => state.qrCode);
     const { points, loading, error } = useSelector((state) => state.points);
 
+    // ✅ Hooks should not be inside a conditional
     useEffect(() => {
         dispatch(getUserPoints());
         dispatch(getQRCode());
     }, [dispatch]);
+    
 
     const handleLogout = async () => {
         await dispatch(logoutUser());
         navigation.replace('Login');
     };
 
-    if (loading) {
-        return <ActivityIndicator size="large" color="#007bff" style={{ flex: 1, justifyContent: 'center' }} />;
-    }
-
-    if (error) {
-        Alert.alert('Error', error);
-    }
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Error', error);
+        }
+    }, [error]); // ✅ Move alert inside useEffect
 
     return (
         <View style={styles.container}>
-            <Text style={styles.screenTitle}>Profile Screen</Text>
-            <Image 
-                source={{ uri: user?.avatar || 'https://via.placeholder.com/150' }}
-                style={styles.profileImage} 
-            />
-            <Text style={styles.userName}>{user?.name}</Text>
-            <Text style={styles.userEmail}>{user?.email}</Text>
-            <Text style={styles.userRole}>Role: {user?.role}</Text>
-            <Text style={styles.userPoints}>Points: {points || 0}</Text>
-            
-            {user?._id === qrCode.user && qrCode.code && (
-                <QRCode
-                    value={qrCode.code}
-                    size={150}
-                />
+            {loading ? (
+                <ActivityIndicator size="large" color="#007bff" style={{ flex: 1, justifyContent: 'center' }} />
+            ) : (
+                <>
+                    <Text style={styles.screenTitle}>Profile Screen</Text>
+                    <Image 
+                        source={{ uri: user?.avatar || 'https://via.placeholder.com/150' }}
+                        style={styles.profileImage} 
+                    />
+                    <Text style={styles.userName}>{user?.name}</Text>
+                    <Text style={styles.userEmail}>{user?.email}</Text>
+                    <Text style={styles.userRole}>Role: {user?.role}</Text>
+                    <Text style={styles.userPoints}>Points: {points || 0}</Text>
+
+                    {/* {qrCode?.code && user?._id === qrCode?.user ? (
+                        <QRCode key={qrCode.code} value={qrCode.code.toString()} size={150} />
+                        // <QRCodeGenerator value={qrCode.code.toString()} size={150} />
+                    ) : (
+                        <Text>No QR Code available</Text>
+                    )} */}
+
+
+                    <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
+                        <Text style={styles.buttonText}>Logout</Text>
+                    </TouchableOpacity>
+                </>
             )}
-            
-            <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
-                <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

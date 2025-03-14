@@ -6,6 +6,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import BottomTab from './src/navigation/BottomTab';
+import 'react-native-gesture-handler';
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 import { registerCallableModule } from 'react-native';
 
 const Stack = createStackNavigator();
