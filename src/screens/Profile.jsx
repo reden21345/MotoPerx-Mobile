@@ -49,12 +49,12 @@ const Profile = ({ navigation }) => {
                     <Text style={styles.userRole}>Role: {user?.role}</Text>
                     <Text style={styles.userPoints}>Points: {points || 0}</Text>
 
-                    {/* {qrCode?.code && user?._id === qrCode?.user ? (
+                    {qrCode?.code && user?._id === qrCode?.user ? (
                         <QRCode key={qrCode.code} value={qrCode.code.toString()} size={150} />
                         // <QRCodeGenerator value={qrCode.code.toString()} size={150} />
                     ) : (
                         <Text>No QR Code available</Text>
-                    )} */}
+                    )}
 
 
                     <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
