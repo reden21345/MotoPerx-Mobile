@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../redux/actions/authAction';
 import { getUserPoints } from '../redux/actions/pointsAction';
 import { getQRCode } from '../redux/actions/qrcodeAction';
+import QRCode from 'react-native-qrcode-svg';
 
 const Profile = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -41,12 +42,11 @@ const Profile = ({ navigation }) => {
             <Text style={styles.userRole}>Role: {user?.role}</Text>
             <Text style={styles.userPoints}>Points: {points || 0}</Text>
             
-            {user?._id === qrCode.user && (
-                // <Image 
-                //     source={{ uri: user.qrCode }}
-                //     style={styles.qrCodeImage} 
-                // />
-                <Text style={styles.userName}>{qrCode.code}</Text>
+            {user?._id === qrCode.user && qrCode.code && (
+                <QRCode
+                    value={qrCode.code}
+                    size={150}
+                />
             )}
             
             <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>

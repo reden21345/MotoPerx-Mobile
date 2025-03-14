@@ -41,7 +41,9 @@ const BottomTab = () => {
             {user?.role === "partner" && (
                 <Tab.Screen name="QR Scanner" component={QRScanner} />
             )}
-            <Tab.Screen name="Badges" component={Badges} />
+            {user?.role === "user" && (
+                <Tab.Screen name="Badges" component={Badges} />
+            )}
             <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
     );

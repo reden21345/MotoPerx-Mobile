@@ -5,22 +5,12 @@ import { logoutUser } from '../../redux/actions/authAction';
 
 const QRScanner = ({ navigation }) => {
     const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.auth);
 
-    const handleLogout = async () => {
-        await dispatch(logoutUser());
-        navigation.replace('Login'); 
-    };
-
+  
     return (
         <View style={styles.container}>
             <Text style={styles.screenTitle}>QR Scanner Screen</Text>
-            <Text style={styles.userName}>{user?.name}</Text>
-            <Text style={styles.userEmail}>{user?.email}</Text>
-            
-            <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
-                <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
+
         </View>
     );
 };
