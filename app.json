@@ -30,6 +30,9 @@
         "projectId": "bf72bc7c-3253-4dfb-b5d4-d331384213af"
       }
     },
-    "owner": "reden21345"
+    "owner": "reden21345",
+    "plugins": [
+      "expo-barcode-scanner"
+    ]
   }
 }
