@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { getUserFromQr } from "../../redux/actions/qrcodeAction";
 import { resetData } from "../../redux/slices/qrSlice";
 
 const ScannedQR = ({ scannedQR, setScanned }) => {
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.qrCode);
+  const [rewardPoints, setRewardPoints] = useState("");
 
   useEffect(() => {
     if (scannedQR) {
@@ -24,6 +25,13 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
     }, [dispatch])
   );
 
+  const handleRewardSubmit = () => {
+    console.log("Reward Points Submitted:", rewardPoints);
+    // Alert.alert()
+
+    setRewardPoints("");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.screenTitle}>Reward Points</Text>
@@ -35,6 +43,18 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
       ) : (
         <Text style={styles.errorText}>No user data found</Text>
       )}
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter reward points"
+        keyboardType="numeric"
+        value={rewardPoints}
+        onChangeText={setRewardPoints}
+      />
+
+      <TouchableOpacity style={styles.submitButton} onPress={handleRewardSubmit}>
+        <Text style={styles.buttonText}>Submit Points</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => setScanned(false)}>
         <Text style={styles.buttonText}>Scan Another QR</Text>
@@ -77,6 +97,23 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: "red",
+  },
+  input: {
+    width: "80%",
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  submitButton: {
+    backgroundColor: "#28a745",
+    padding: 12,
+    borderRadius: 8,
+    width: "80%",
+    alignItems: "center",
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "#007bff",
