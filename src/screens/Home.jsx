@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../redux/actions/authAction';
 import { getQRCode } from '../redux/actions/qrcodeAction';
 
 const { width } = Dimensions.get('window');
@@ -36,12 +35,11 @@ const Home = ({ navigation }) => {
 
     fetchPosts();
 
-    // If you still want the QR code data, uncomment:
+    // If you need the QR code data, uncomment:
     // dispatch(getQRCode());
   }, [dispatch]);
 
   const openPost = (link) => {
-    // Opens the blog post in the device’s default browser
     Linking.openURL(link);
   };
 
@@ -66,26 +64,23 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* SCROLLABLE BODY */}
+      {/* Scrollable Body */}
       <ScrollView contentContainerStyle={styles.bodyContainer}>
-        {/* HORIZONTAL BANNERS (BEST CAR SERVICE + CAR WASH & DETAIL) */}
+        {/* Horizontal Banners */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.bannerScrollContainer}
         >
-          {/* FIRST BANNER: BEST CAR SERVICE */}
+          {/* FIRST BANNER */}
           <View style={styles.bannerItem}>
-            {/* Background Image (Placeholder) */}
             <Image
               source={{ uri: 'https://via.placeholder.com/400x200?text=BEST+CAR+SERVICE' }}
               style={styles.bannerBg}
             />
-            {/* “FREE CAR WASH” Bubble */}
             <View style={styles.freeCarWashBubble}>
               <Text style={styles.freeCarWashText}>FREE CAR WASH</Text>
             </View>
-            {/* Text Overlay / Bullet Points */}
             <View style={styles.bannerTextContainer}>
               <Text style={styles.bannerMainText}>BEST CAR SERVICE</Text>
               <View style={styles.bulletPoints}>
@@ -101,7 +96,7 @@ const Home = ({ navigation }) => {
             </View>
           </View>
 
-          {/* SECOND BANNER: CAR WASH & DETAIL */}
+          {/* SECOND BANNER */}
           <View style={styles.bannerItem}>
             <Image
               source={{ uri: 'https://via.placeholder.com/400x200?text=CAR+WASH+AND+DETAIL' }}
@@ -122,15 +117,29 @@ const Home = ({ navigation }) => {
           </View>
         </ScrollView>
 
-        {/* MOTOPERX POINTS BALANCE */}
-        <View style={styles.pointsBalanceContainer}>
-          <Text style={styles.pointsBalanceTitle}>MOTOPERX POINTS BALANCE</Text>
-          <Text style={styles.pointsBalanceValue}>1,567</Text>
-          <TouchableOpacity 
-            style={styles.redeemButton}
-            onPress={() => console.log('Redeem pressed')}
+        {/* Points + QR Container */}
+        <View style={styles.pointsRowContainer}>
+          {/* Points Balance Card */}
+          <View style={styles.pointsBalanceCard}>
+            <Ionicons name="card-outline" style={styles.walletIcon} />
+            <View style={styles.pointsTextWrapper}>
+              <Text style={styles.pointsBalanceTitle}>MOTOPERX POINTS BALANCE</Text>
+              <Text style={styles.pointsBalanceValue}>₱ 1,567</Text>
+            </View>
+            <TouchableOpacity 
+              style={styles.redeemButton}
+              onPress={() => console.log('Redeem pressed')}
+            >
+              <Text style={styles.redeemButtonText}>+ REDEEM</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* QR Code Button/Icon */}
+          <TouchableOpacity
+            onPress={() => console.log('QR Code pressed')}
+            style={styles.qrContainer}
           >
-            <Text style={styles.redeemButtonText}>REDEEM</Text>
+            <Ionicons name="qr-code-outline" size={32} color="#000" />
           </TouchableOpacity>
         </View>
 
@@ -220,31 +229,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  /****************
-   * HEADER STYLES
-   ****************/
-  header: {
-    width: '100%',
-    backgroundColor: '#000',
-    paddingVertical: 15,
-    paddingHorizontal: width * 0.05,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  headerWelcome: {
-    color: '#fff',
-    fontSize: 14,
-    marginLeft: 10,
-    flex: 1, // pushes profile icon to the far right
-  },
-  profileIconContainer: {
-    padding: 5,
   },
 
   /****************
@@ -336,39 +320,80 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  /*****************************
-   * MOTOPERX POINTS BALANCE
-   *****************************/
-  pointsBalanceContainer: {
-    backgroundColor: '#fff',
-    marginHorizontal: 10,
+  /********************************
+   * POINTS BALANCE + QR CONTAINER
+   ********************************/
+  pointsRowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
     marginTop: 10,
-    padding: 15,
-    borderRadius: 10,
+    // Adjust spacing as needed
+  },
+  pointsBalanceCard: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    alignItems: 'center',
+    // Optional shadow to pop out the card
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.84,
+    elevation: 2,
+    marginRight: 10, // space before QR code
+  },
+  walletIcon: {
+    fontSize: 28,
+    color: '#000',
+    marginRight: 8,
+  },
+  pointsTextWrapper: {
+    flex: 1,
   },
   pointsBalanceTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 2,
   },
   pointsBalanceValue: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#333',
+    color: '#000',
   },
   redeemButton: {
-    backgroundColor: '#000',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 6,
+    backgroundColor: '#ccc',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginLeft: 8,
   },
   redeemButtonText: {
-    color: '#fff',
+    fontSize: 14,
     fontWeight: 'bold',
+    color: '#000',
+  },
+  qrContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // Optional shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
 
   /**********************
