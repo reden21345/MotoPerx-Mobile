@@ -7,6 +7,7 @@ import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import BottomTab from './src/navigation/BottomTab';
 import Header from './src/screens/Header';
+import Landing from './src/screens/Landing'; // Import Landing screen here
 import 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 
@@ -19,12 +20,17 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Landing"  // Set Landing as the initial route
           screenOptions={{
             // Set the custom header globally
             header: (props) => <Header {...props} />,
           }}
         >
+          <Stack.Screen 
+            name="Landing" 
+            component={Landing} 
+            options={{ headerShown: false }} // Optionally hide header for Landing
+          />
           <Stack.Screen 
             name="Login" 
             component={Login} 
