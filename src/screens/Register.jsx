@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,38 +7,70 @@ import {
   Alert,
   ActivityIndicator,
   StyleSheet,
-  Dimensions
-} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../redux/actions/authAction';
+  Dimensions,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../redux/actions/authAction";
+import * as ImagePicker from "expo-image-picker";
+import { Image } from "react-native";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState(null);
+
+  const pickAvatar = async () => {
+    let permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert(
+        "Permission required",
+        "Permission to access gallery is required!"
+      );
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.3, // reduce to 30% to avoid large base64
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+      setAvatar(base64Image);
+    }
+  };
 
   const handleRegister = async () => {
-    const result = await dispatch(registerUser({ name, email, password }));
+    const result = await dispatch(
+      registerUser({ name, email, password, avatar })
+    );
     if (registerUser.fulfilled.match(result)) {
-      navigation.replace('Home');
+      navigation.replace("Home");
     } else {
-      Alert.alert('Registration Failed', result.payload || 'Something went wrong');
+      Alert.alert(
+        "Registration Failed",
+        result.payload || "Something went wrong"
+      );
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* Top Bar with Back Arrow */}
       <View style={styles.topBar}>
         <TouchableOpacity
           style={styles.arrowButton}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.navigate("Login")}
         >
           <Ionicons name="arrow-back" size={28} color="#000" />
         </TouchableOpacity>
@@ -46,11 +78,9 @@ const RegisterScreen = ({ navigation }) => {
 
       {/* Main Body */}
       <View style={styles.body}>
-        <Text style={styles.title}>CREATE YOUR{'\n'}ACCOUNT</Text>
+        <Text style={styles.title}>CREATE YOUR{"\n"}ACCOUNT</Text>
 
-        {error && (
-          <Text style={styles.error}>{String(error)}</Text>
-        )}
+        {error && <Text style={styles.error}>{String(error)}</Text>}
 
         {/* Name Input */}
         <View style={styles.inputContainer}>
@@ -61,12 +91,7 @@ const RegisterScreen = ({ navigation }) => {
             onChangeText={setName}
             style={styles.input}
           />
-          <Ionicons
-            name="person"
-            size={24}
-            color="#999"
-            style={styles.icon}
-          />
+          <Ionicons name="person" size={24} color="#999" style={styles.icon} />
         </View>
 
         {/* Email Input */}
@@ -80,12 +105,7 @@ const RegisterScreen = ({ navigation }) => {
             autoCapitalize="none"
             style={styles.input}
           />
-          <Ionicons
-            name="mail"
-            size={24}
-            color="#999"
-            style={styles.icon}
-          />
+          <Ionicons name="mail" size={24} color="#999" style={styles.icon} />
         </View>
 
         {/* Password Input */}
@@ -106,6 +126,15 @@ const RegisterScreen = ({ navigation }) => {
           />
         </View>
 
+        {/* Avatar Picker */}
+        <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
+          {avatar ? (
+            <Image source={{ uri: avatar }} style={styles.avatarImage} />
+          ) : (
+            <Text style={styles.avatarText}>Add Avatar</Text>
+          )}
+        </TouchableOpacity>
+
         {/* Register (Sign Up) Button */}
         <TouchableOpacity
           onPress={handleRegister}
@@ -125,72 +154,85 @@ const RegisterScreen = ({ navigation }) => {
 
 export default RegisterScreen;
 
-//---------------------------------------------------
-// STYLES
-//---------------------------------------------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
-  // Top bar with back arrow
   topBar: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 15,
     paddingHorizontal: width * 0.05,
-    alignItems: 'flex-start',
-    backgroundColor: '#fff',
+    alignItems: "flex-start",
+    backgroundColor: "#fff",
   },
   arrowButton: {
     padding: 5,
   },
-  // Main body
   body: {
     flex: 1,
-    paddingHorizontal: width * 0.08, // Responsive horizontal padding
-    justifyContent: 'center',
+    paddingHorizontal: width * 0.08,
+    justifyContent: "center",
   },
   title: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 30,
-    color: '#000',
+    color: "#000",
   },
   error: {
-    color: 'red',
+    color: "red",
     marginBottom: 15,
   },
-  // Input containers with icons
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: '#ccc',
+    flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#ccc",
     borderWidth: 1,
     marginBottom: 15,
     borderRadius: 6,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
     fontSize: 14,
-    color: '#000',
+    color: "#000",
     paddingVertical: 12,
   },
   icon: {
     marginLeft: 5,
   },
-  // Sign Up button
+  avatarPicker: {
+    alignSelf: 'center',
+    marginBottom: 20,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  avatarText: {
+    color: '#888',
+    textAlign: 'center',
+  },  
   signUpButton: {
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     borderRadius: 6,
     paddingVertical: 15,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 15,
   },
   signUpButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

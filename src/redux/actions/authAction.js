@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://192.168.100.79:5000/api/v1';
+const API_BASE_URL = 'http://192.168.100.100:5000/api/v1';
 
 // Async Thunks
 export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, password }, thunkAPI) => {
@@ -21,9 +21,9 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
 });
 
 // Register User and Generate QR Code
-export const registerUser = createAsyncThunk('auth/registerUser', async ({ name, email, password }, thunkAPI) => {
+export const registerUser = createAsyncThunk('auth/registerUser', async ({ name, email, password, avatar }, thunkAPI) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/register`, { name, email, password });
+        const response = await axios.post(`${API_BASE_URL}/register`, { name, email, password, avatar });
         const token = response.data.token;
         await AsyncStorage.setItem('token', token);
 
