@@ -24,6 +24,7 @@ const Tab = createBottomTabNavigator();
  *  - When pressed, it displays a modal with the user’s QR code.
  */
 const CustomTabBar = ({ state, descriptors, navigation }) => {
+  const { user } = useSelector((state) => state.auth);
   const { qrCode } = useSelector((reduxState) => reduxState.qrCode);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -72,11 +73,18 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         )}
 
         {/* Center Button */}
-        <View style={styles.centerButtonWrapper}>
+        {user?.role === 'user' && (
+          <View style={styles.centerButtonWrapper}>
+            <TouchableOpacity style={styles.centerButton} onPress={handleShowQR}>
+              <Ionicons name="qr-code-outline" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
+        {/* <View style={styles.centerButtonWrapper}>
           <TouchableOpacity style={styles.centerButton} onPress={handleShowQR}>
             <Ionicons name="qr-code-outline" size={30} color="#fff" />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         {/* Right side routes */}
         {visibleRoutes.slice(Math.ceil(visibleRoutes.length / 2)).map((route, index) => {
@@ -159,6 +167,7 @@ const BottomTab = () => {
         )}
         {user?.role === 'user' && (
           <Tab.Screen name="Badges" component={Badges} />
+          
         )}
         <Tab.Screen name="Profile" component={Profile} />
         {/*
@@ -170,6 +179,7 @@ const BottomTab = () => {
           component={() => null}
           options={{ tabBarButton: () => null }}
         />
+
       </Tab.Navigator>
     </SafeAreaView>
   );
@@ -183,11 +193,11 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   // Tab bar is now part of the layout (no absolute positioning)
   tabBarContainer: {
-    marginHorizontal: 20,
-    marginBottom: 20,
+    marginHorizontal: 0,
+    //marginBottom: 20,
     height: 60,
     backgroundColor: '#000',
-    borderRadius: 30,
+    //borderRadius: 30,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
