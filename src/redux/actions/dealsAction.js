@@ -11,6 +11,6 @@ export const getAllDeals = createAsyncThunk('deals/getDeals', async (_, thunkAPI
         return response.data;
     } catch (error) {
         
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get deals');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get deals');
     }
 });

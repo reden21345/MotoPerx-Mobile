@@ -17,7 +17,7 @@ export const getUserPoints = createAsyncThunk('points/getPoints', async (_, thun
         return response.data;
     } catch (error) {
         
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get points');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get points');
     }
 });
 
@@ -34,7 +34,23 @@ export const earnPoints = createAsyncThunk('points/earnPoints', async (data, thu
 
         return response.data;
     } catch (error) {
-        console.log("Error: ", error);
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get points');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});
+
+// Give points to user
+export const redeemPoints = createAsyncThunk('points/redeemPoints', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.post(`${API_BASE_URL}/points/redeem`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        console.log("Redeem Response: ", response.data)
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });

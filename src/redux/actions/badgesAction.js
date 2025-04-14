@@ -11,6 +11,6 @@ export const getUserBadges = createAsyncThunk('badges/getUserBadges', async (_, 
         return response.data;
     } catch (error) {
         
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get badges');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get badges');
     }
 });

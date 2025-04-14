@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { earnPoints, getUserPoints } from '../actions/pointsAction';
+import { earnPoints, getUserPoints, redeemPoints } from '../actions/pointsAction';
 
 const pointsSlice = createSlice({
     name: 'points',
@@ -14,6 +14,9 @@ const pointsSlice = createSlice({
         resetGivenPoints: (state) => {
             state.givenPoints = 0;
             state.message = '';
+        },
+        clearError: (state) => {
+            state.error = null;
         },
     },
     extraReducers: (builder) => {
@@ -42,8 +45,21 @@ const pointsSlice = createSlice({
             .addCase(earnPoints.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+            })
+            .addCase(redeemPoints.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(redeemPoints.fulfilled, (state, action) => {
+                state.loading = false;
+                state.points = action.payload.remainingPoints;
+                state.message = action.payload.message;
+            })
+            .addCase(redeemPoints.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            });;
     },
 });
-export const {resetGivenPoints} = pointsSlice.actions;
+export const {resetGivenPoints, clearError} = pointsSlice.actions;
 export default pointsSlice.reducer;

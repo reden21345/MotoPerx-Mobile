@@ -16,8 +16,7 @@ export const getQRCode = createAsyncThunk('QRCode/getQRCode', async (_, thunkAPI
 
         return response.data;
     } catch (error) {
-        
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get QRCode');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get QRCode');
     }
 });
 
@@ -34,7 +33,6 @@ export const getUserFromQr = createAsyncThunk('QRCode/getUserFromQr', async (qrC
 
         return response.data;
     } catch (error) {
-        console.log("Error: ", error);
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get points');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get user from qr code');
     }
 });

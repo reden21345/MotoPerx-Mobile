@@ -14,9 +14,9 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
         await AsyncStorage.setItem('token', response.data.token);
         return response.data;
     } catch (error) {
-        console.log('❌ Login Error:', error.response?.data || error); // Log Error Response
+        console.log('❌ Login Error:', error.response?.data?.errMessage || error); // Log Error Response
         
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Login failed');
     }
 });
 
@@ -34,7 +34,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async ({ name,
 
         return { ...response.data, qrCode: qrResponse.data.qrCode };
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Registration failed');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Registration failed');
     }
 });
 
