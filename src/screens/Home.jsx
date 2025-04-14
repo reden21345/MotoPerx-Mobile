@@ -34,10 +34,13 @@ const Home = ({ navigation }) => {
     };
 
     fetchPosts();
-
-    // If you need the QR code data, uncomment:
-    // dispatch(getQRCode());
   }, [dispatch]);
+
+  useEffect(() => {
+    if(user.role === 'user'){
+      dispatch(getQRCode());
+    }
+  }, [user, dispatch])
 
   const openPost = (link) => {
     Linking.openURL(link);

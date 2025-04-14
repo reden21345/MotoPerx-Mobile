@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";

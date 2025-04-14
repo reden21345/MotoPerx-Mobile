@@ -42,7 +42,7 @@ export default function App() {
             options={{ headerShown: false }} // Hide header for Register
           />
           <Stack.Screen 
-            name="Home" 
+            name="BottomTab" 
             component={BottomTab} 
             // Header will be displayed on Home and any other screens by default
           />

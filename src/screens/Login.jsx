@@ -27,7 +27,7 @@ const Login = ({ navigation }) => {
 
     if (loginUser.fulfilled.match(result)) {
       // Navigate to 'Home' on successful login
-      navigation.replace('Home');
+      navigation.replace('BottomTab');
     } else {
       Alert.alert('Login Failed', result.payload);
     }
