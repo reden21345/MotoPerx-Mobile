@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Screens
-import Home from '../screens/Home';
+import HomeTab from '../screens/Home';
 import Deals from '../screens/Deals';
 import QRScanner from '../screens/partner/QRScanner';
 import Profile from '../screens/Profile';
@@ -149,7 +149,7 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
     </TouchableOpacity>
   );
 };
-
+const DummyScreen = () => null;
 const BottomTab = () => {
   const { user } = useSelector((state) => state.auth);
 
@@ -160,7 +160,7 @@ const BottomTab = () => {
         screenOptions={{ headerShown: false }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Home" component={HomeTab} />
         <Tab.Screen name="Deals" component={Deals} />
         {user?.role === 'partner' && (
           <Tab.Screen name="QR Scanner" component={QRScanner} />
@@ -170,13 +170,10 @@ const BottomTab = () => {
           
         )}
         <Tab.Screen name="Profile" component={Profile} />
-        {/*
-          Dummy route so that the center "Show QR" button is in the middle.
-          This route is hidden in CustomTabBar.
-        */}
+        
         <Tab.Screen
           name="ShowQRButton"
-          component={() => null}
+          component={DummyScreen}
           options={{ tabBarButton: () => null }}
         />
 
