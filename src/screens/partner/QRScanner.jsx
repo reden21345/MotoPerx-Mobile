@@ -20,11 +20,19 @@ const QRScanner = () => {
   }, []);
 
   useEffect(() => {
-    // Continuously animate the scanning line up and down inside the scanning box
+    if (!scanned) {
+      startAnimation();
+    } else {
+      moveAnim.stopAnimation(); 
+    }
+  }, [scanned]);
+  
+  const startAnimation = () => {
+    moveAnim.setValue(0); // Reset to top
     Animated.loop(
       Animated.sequence([
         Animated.timing(moveAnim, {
-          toValue: SCAN_SIZE - 10, // move from top to near the bottom inside the box
+          toValue: SCAN_SIZE - 10,
           duration: 2500,
           useNativeDriver: true,
           easing: Easing.linear,
@@ -37,7 +45,7 @@ const QRScanner = () => {
         }),
       ])
     ).start();
-  }, [moveAnim]);
+  };
 
   const askForCameraPermission = async () => {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
