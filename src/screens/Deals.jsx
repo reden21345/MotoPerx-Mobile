@@ -12,12 +12,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDeals } from "../redux/actions/dealsAction";
 import { redeemPoints } from "../redux/actions/pointsAction";
-import { clearError } from "../redux/slices/pointSlice";
+import { clearMessages } from "../redux/slices/pointSlice";
 
 const Deals = () => {
   const dispatch = useDispatch();
-  const { deals, loading} = useSelector((state) => state.deals);
-  const { error } = useSelector((state) => state.points);
+  const { deals, loading } = useSelector((state) => state.deals);
+  const { error, message } = useSelector((state) => state.points);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Deals = () => {
   const onRefresh = () => {
     setRefreshing(true);
     dispatch(getAllDeals()).finally(() => setRefreshing(false));
-    dispatch(clearError())
+    dispatch(clearMessages());
   };
 
   if (loading && !refreshing) {
@@ -40,25 +40,35 @@ const Deals = () => {
     Alert.alert("Error", error);
   }
 
+  if (message) {
+    Alert.alert("Success", message);
+  }
 
   const renderItem = (item) => {
     return (
       <View style={styles.dealCard}>
         <Text style={styles.dealTitle}>{item.title}</Text>
         <Text style={styles.dealDescription}>{item.description}</Text>
-        <Text style={styles.dealDescription}>{item.partner.storeName} Shop</Text>
+        <Text style={styles.dealDescription}>
+          {item.partner.storeName} Shop
+        </Text>
         <Text style={styles.dealPoints}>
           Points Required: {item.redemptionPoints}
         </Text>
         <TouchableOpacity
           style={styles.redeemButton}
-          onPress={() => Alert.alert("Redeem", `Do you want to redeem this deal?`, [
+          onPress={() =>
+            Alert.alert("Redeem", `Do you want to redeem this deal?`, [
               { text: "No", style: "cancel" },
               {
                 text: "Yes",
-                onPress: () => dispatch(redeemPoints({dealId: item._id}))
+                onPress: () =>
+                  dispatch(redeemPoints({ dealId: item._id })).then(() => {
+                    dispatch(clearMessages());
+                  }),
               },
-            ])}
+            ])
+          }
         >
           <Text style={styles.buttonText}>Redeem</Text>
         </TouchableOpacity>

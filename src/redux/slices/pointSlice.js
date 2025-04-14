@@ -6,7 +6,7 @@ const pointsSlice = createSlice({
     initialState: {
         points: 0,
         givenPoints: 0,
-        message: '',
+        message: null,
         loading: false,
         error: null,
     },
@@ -15,8 +15,9 @@ const pointsSlice = createSlice({
             state.givenPoints = 0;
             state.message = '';
         },
-        clearError: (state) => {
+        clearMessages: (state) => {
             state.error = null;
+            state.message = null;
         },
     },
     extraReducers: (builder) => {
@@ -61,5 +62,5 @@ const pointsSlice = createSlice({
             });;
     },
 });
-export const {resetGivenPoints, clearError} = pointsSlice.actions;
+export const {resetGivenPoints, clearMessages} = pointsSlice.actions;
 export default pointsSlice.reducer;
