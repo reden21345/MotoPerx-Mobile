@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  Dimensions,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Screens
-import HomeTab from '../screens/Home';
-import Deals from '../screens/Deals';
-import QRScanner from '../screens/partner/QRScanner';
-import Profile from '../screens/Profile';
-import Badges from '../screens/user/Badges';
+import HomeTab from "../screens/Home";
+import Deals from "../screens/Deals";
+import QRScanner from "../screens/partner/QRScanner";
+import Profile from "../screens/Profile";
+import Badges from "../screens/user/Badges";
 
 // For showing QR in the modal
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from "react-native-qrcode-svg";
 
 const Tab = createBottomTabNavigator();
 
@@ -37,7 +44,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
   };
 
   // Filter out the dummy route for the center button.
-  const visibleRoutes = state.routes.filter((r) => r.name !== 'ShowQRButton');
+  const visibleRoutes = state.routes.filter((r) => r.name !== "ShowQRButton");
 
   return (
     <>
@@ -68,29 +75,63 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
       {/* The pill-shaped tab bar becomes part of the layout */}
       <View style={styles.tabBarContainer}>
         {/* Left side routes */}
-        {visibleRoutes.slice(0, Math.ceil(visibleRoutes.length / 2)).map((route, index) =>
-          renderTabItem(route, index, state, descriptors, navigation)
-        )}
+        {visibleRoutes
+          .slice(0, Math.ceil(visibleRoutes.length / 2))
+          .map((route, index) =>
+            renderTabItem(route, index, state, descriptors, navigation)
+          )}
 
         {/* Center Button */}
-        {user?.role === 'user' && (
+        {user?.role === "user" && (
           <View style={styles.centerButtonWrapper}>
-            <TouchableOpacity style={styles.centerButton} onPress={handleShowQR}>
+            <TouchableOpacity
+              style={styles.centerButton}
+              onPress={handleShowQR}
+            >
               <Ionicons name="qr-code-outline" size={30} color="#fff" />
             </TouchableOpacity>
           </View>
         )}
-        {/* <View style={styles.centerButtonWrapper}>
-          <TouchableOpacity style={styles.centerButton} onPress={handleShowQR}>
-            <Ionicons name="qr-code-outline" size={30} color="#fff" />
-          </TouchableOpacity>
-        </View> */}
+
+        {user?.role === "partner" && (
+          <View style={styles.centerButtonWrapper}>
+            <TouchableOpacity
+              style={styles.centerButton}
+              onPress={() => {
+                console.log("PartnerScreen here");
+              }}
+            >
+              <Ionicons name="storefront-outline" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {user?.role === "employee" && (
+          <View style={styles.centerButtonWrapper}>
+            <TouchableOpacity
+              style={styles.centerButton}
+              onPress={() => {
+                console.log("EmployeeScreen here");
+              }}
+            >
+              <Ionicons name="storefront-outline" size={30} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Right side routes */}
-        {visibleRoutes.slice(Math.ceil(visibleRoutes.length / 2)).map((route, index) => {
-          const actualIndex = index + Math.ceil(visibleRoutes.length / 2);
-          return renderTabItem(route, actualIndex, state, descriptors, navigation);
-        })}
+        {visibleRoutes
+          .slice(Math.ceil(visibleRoutes.length / 2))
+          .map((route, index) => {
+            const actualIndex = index + Math.ceil(visibleRoutes.length / 2);
+            return renderTabItem(
+              route,
+              actualIndex,
+              state,
+              descriptors,
+              navigation
+            );
+          })}
       </View>
     </>
   );
@@ -108,24 +149,25 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
       ? options.title
       : route.name;
 
-  const isFocused = state.index === state.routes.findIndex((r) => r.name === route.name);
+  const isFocused =
+    state.index === state.routes.findIndex((r) => r.name === route.name);
 
   let iconName;
-  if (route.name === 'Home') {
-    iconName = isFocused ? 'home' : 'home-outline';
-  } else if (route.name === 'Deals') {
-    iconName = isFocused ? 'pricetag' : 'pricetag-outline';
-  } else if (route.name === 'QR Scanner') {
-    iconName = isFocused ? 'scan' : 'scan-outline';
-  } else if (route.name === 'Badges') {
-    iconName = isFocused ? 'medal' : 'medal-outline';
-  } else if (route.name === 'Profile') {
-    iconName = isFocused ? 'person' : 'person-outline';
+  if (route.name === "Home") {
+    iconName = isFocused ? "home" : "home-outline";
+  } else if (route.name === "Deals") {
+    iconName = isFocused ? "pricetag" : "pricetag-outline";
+  } else if (route.name === "QR Scanner") {
+    iconName = isFocused ? "scan" : "scan-outline";
+  } else if (route.name === "Badges") {
+    iconName = isFocused ? "medal" : "medal-outline";
+  } else if (route.name === "Profile") {
+    iconName = isFocused ? "person" : "person-outline";
   }
 
   const onPress = () => {
     const event = navigation.emit({
-      type: 'tabPress',
+      type: "tabPress",
       target: route.key,
       canPreventDefault: true,
     });
@@ -142,8 +184,10 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <Ionicons name={iconName} size={24} color={isFocused ? '#fff' : '#999'} />
-      <Text style={[styles.tabItemText, { color: isFocused ? '#fff' : '#999' }]}>
+      <Ionicons name={iconName} size={24} color={isFocused ? "#fff" : "#999"} />
+      <Text
+        style={[styles.tabItemText, { color: isFocused ? "#fff" : "#999" }]}
+      >
         {label}
       </Text>
     </TouchableOpacity>
@@ -155,28 +199,25 @@ const BottomTab = () => {
 
   return (
     // Wrap in SafeAreaView so content from individual screens is automatically adjusted.
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <Tab.Navigator
         screenOptions={{ headerShown: false }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
         <Tab.Screen name="Home" component={HomeTab} />
         <Tab.Screen name="Deals" component={Deals} />
-        {user?.role === 'partner' && (
-          <Tab.Screen name="QR Scanner" component={QRScanner} />
-        )}
-        {user?.role === 'user' && (
+        {user?.role === "user" ? (
           <Tab.Screen name="Badges" component={Badges} />
-          
-        )}
+        ) : user?.role === "partner" || user?.role === "employee" ? (
+          <Tab.Screen name="QR Scanner" component={QRScanner} />
+        ) : (<Tab.Screen name="Admin" component={DummyScreen} />)}
         <Tab.Screen name="Profile" component={Profile} />
-        
+
         <Tab.Screen
           name="ShowQRButton"
           component={DummyScreen}
           options={{ tabBarButton: () => null }}
         />
-
       </Tab.Navigator>
     </SafeAreaView>
   );
@@ -185,7 +226,7 @@ const BottomTab = () => {
 export default BottomTab;
 
 /** STYLES */
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   // Tab bar is now part of the layout (no absolute positioning)
@@ -193,12 +234,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     //marginBottom: 20,
     height: 60,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     //borderRadius: 30,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    shadowColor: '#000',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
@@ -206,8 +247,8 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   tabItemText: {
     fontSize: 10,
@@ -216,46 +257,46 @@ const styles = StyleSheet.create({
   // Center button styles
   centerButtonWrapper: {
     width: 60,
-    alignItems: 'center',
+    alignItems: "center",
   },
   centerButton: {
     marginTop: -15, // Slight negative margin for a small floating effect
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#007bff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#007bff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   // Modal styles
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
     width: 260,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   qrLabel: {
     marginTop: 8,
     fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
+    fontWeight: "500",
+    color: "#333",
     marginBottom: 12,
   },
   closeButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 5,
   },
   closeButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
 });

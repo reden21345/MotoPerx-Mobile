@@ -19,11 +19,8 @@ const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { qrCode } = useSelector((state) => state.qrCode);
-  console.log(qrCode);
-  // const { qrCode = {} } = useSelector((state) => state.qrCode);
   const { points, loading, error } = useSelector((state) => state.points);
 
-  // ✅ Hooks should not be inside a conditional
   useEffect(() => {
     dispatch(getUserPoints());
     dispatch(getQRCode());
@@ -38,7 +35,7 @@ const Profile = ({ navigation }) => {
     if (error) {
       Alert.alert("Error", error);
     }
-  }, [error]); // ✅ Move alert inside useEffect
+  }, [error]); 
 
   return (
     <View style={styles.container}>

@@ -25,7 +25,6 @@ export const getQRCode = createAsyncThunk('QRCode/getQRCode', async (_, thunkAPI
 export const getUserFromQr = createAsyncThunk('QRCode/getUserFromQr', async (qrCode, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
-        console.log("Token: ", token);
         
         const response = await axios.get(`${API_BASE_URL}/partner/${qrCode}`, {
             headers: {
@@ -33,7 +32,6 @@ export const getUserFromQr = createAsyncThunk('QRCode/getUserFromQr', async (qrC
             },
         });
 
-        console.log("API Response: ", response.data); // Debugging API response
         return response.data;
     } catch (error) {
         console.log("Error: ", error);

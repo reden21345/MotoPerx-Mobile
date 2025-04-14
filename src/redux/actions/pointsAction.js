@@ -32,7 +32,6 @@ export const earnPoints = createAsyncThunk('points/earnPoints', async (data, thu
             },
         });
 
-        console.log("API Response: ", response.data);
         return response.data;
     } catch (error) {
         console.log("Error: ", error);
