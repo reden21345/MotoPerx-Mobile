@@ -4,11 +4,14 @@ import { useFocusEffect } from "@react-navigation/native";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { getUserFromQr } from "../../redux/actions/qrcodeAction";
 import { resetData } from "../../redux/slices/qrSlice";
+import { earnPoints } from "../../redux/actions/pointsAction";
+import { resetGivenPoints } from "../../redux/slices/pointSlice";
 
 const ScannedQR = ({ scannedQR, setScanned }) => {
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.qrCode);
-  const [rewardPoints, setRewardPoints] = useState("");
+  const { message, givenPoints } = useSelector((state) => state.points);
+  const [amount, setAmount] = useState("");
 
   useEffect(() => {
     if (scannedQR) {
@@ -17,19 +20,28 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
     }
   }, [dispatch, scannedQR]);
 
+  useEffect(() => {
+    if (message && givenPoints) {
+      Alert.alert("Success", `${message} \nPoints given ${givenPoints}`);
+    }
+  }, [message, givenPoints]);
+
   useFocusEffect(
     React.useCallback(() => {
       return () => {
         dispatch(resetData());
+        dispatch(resetGivenPoints());
       };
     }, [dispatch])
   );
 
   const handleRewardSubmit = () => {
-    console.log("Reward Points Submitted:", rewardPoints);
-    // Alert.alert()
+    const data = {
+      qrCode: scannedQR,
+      amount: Number(amount)
+    }
 
-    setRewardPoints("");
+    dispatch(earnPoints(data))
   };
 
   return (
@@ -46,10 +58,10 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
 
       <TextInput
         style={styles.input}
-        placeholder="Enter reward points"
+        placeholder="Enter transaction amount"
         keyboardType="numeric"
-        value={rewardPoints}
-        onChangeText={setRewardPoints}
+        value={amount}
+        onChangeText={setAmount}
       />
 
       <TouchableOpacity style={styles.submitButton} onPress={handleRewardSubmit}>

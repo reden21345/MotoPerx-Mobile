@@ -20,3 +20,22 @@ export const getUserPoints = createAsyncThunk('points/getPoints', async (_, thun
         return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get points');
     }
 });
+
+// Give points to user
+export const earnPoints = createAsyncThunk('points/earnPoints', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.post(`${API_BASE_URL}/points/earn`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        console.log("API Response: ", response.data);
+        return response.data;
+    } catch (error) {
+        console.log("Error: ", error);
+        return thunkAPI.rejectWithValue(error.response?.data?.message || 'Failed to get points');
+    }
+});
