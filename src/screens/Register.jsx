@@ -56,7 +56,7 @@ const RegisterScreen = ({ navigation }) => {
       registerUser({ name, email, password, avatar })
     );
     if (registerUser.fulfilled.match(result)) {
-      navigation.replace("Home");
+      navigation.replace("Main");
     } else {
       Alert.alert(
         "Registration Failed",
