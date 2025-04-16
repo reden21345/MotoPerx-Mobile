@@ -10,14 +10,13 @@ import {
   Pressable,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { logoutUser } from "../redux/actions/authAction";
+import { logoutAndReset } from "../redux/actions/logoutAndReset";
 
 const { width, height } = Dimensions.get("window");
 
 const Sidebar = ({ isOpen, onClose, navigation }) => {
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const translateY = React.useRef(new Animated.Value(-height)).current;
 
@@ -25,9 +24,9 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
     { name: "Dashboard", icon: "grid-outline", screen: "Shop" },
     { name: "Settings", icon: "settings-outline", screen: "Profile" },
     { name: "Transaction", icon: "card-outline", screen: "Deals" },
-    { name: "Charts", icon: "bar-chart-outline", screen: "Badges" },
+    { name: "Apply Partnership", icon: "business-outline", screen: "Apply" },
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
-  ]
+  ];
 
   React.useEffect(() => {
     Animated.timing(translateY, {
@@ -74,14 +73,23 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
               key={item.name}
               style={styles.link}
               onPress={() => {
-                if (item.name === 'Logout') {
-                    dispatch(logoutUser());
+                if (item.name === "Logout") {
+                  dispatch(logoutAndReset()).then(() => {
+                    navigation.navigate(item.screen);
+                    onClose();
+                  });
+                } else {
+                  navigation.navigate(item.screen);
+                  onClose();
                 }
-                navigation.navigate(item.screen);
-                onClose();
               }}
             >
-              <Ionicons name={item.icon} size={20} color="#fff" style={{ marginRight: 12 }} />
+              <Ionicons
+                name={item.icon}
+                size={20}
+                color="#fff"
+                style={{ marginRight: 12 }}
+              />
               <Text style={styles.linkText}>{item.name}</Text>
             </TouchableOpacity>
           ))}

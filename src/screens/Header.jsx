@@ -9,13 +9,13 @@ const Header = ({ navigation }) => {
   return (
     <View>
       <View style={styles.header}>
-        {/* Left: Logo */}
-        <Image
-          source={require("../../assets/logowhite.png")}
-          style={styles.logo}
-        />
+        <TouchableOpacity onPress={() => navigation.replace('Main')}>
+          <Image
+            source={require("../../assets/logowhite.png")}
+            style={styles.logo}
+          />
+        </TouchableOpacity>
 
-        {/* Right: Hamburger Menu */}
         <TouchableOpacity onPress={() => setSidebarOpen(true)}>
           <Ionicons name="menu" size={32} color="#fff" />
         </TouchableOpacity>

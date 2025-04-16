@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,12 +9,12 @@ import {
   Linking,
   ScrollView,
   Dimensions,
-} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useDispatch, useSelector } from 'react-redux';
-import { getQRCode } from '../redux/actions/qrcodeAction';
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useDispatch, useSelector } from "react-redux";
+import { getQRCode } from "../redux/actions/qrcodeAction";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -25,11 +25,11 @@ const Home = ({ navigation }) => {
     // Fetch blog posts
     const fetchPosts = async () => {
       try {
-        const response = await fetch('https://jabbre.shop/wp-json/wp/v2/posts');
+        const response = await fetch("https://jabbre.shop/wp-json/wp/v2/posts");
         const data = await response.json();
         setPosts(data);
       } catch (error) {
-        console.error('Error fetching blog posts:', error);
+        console.error("Error fetching blog posts:", error);
       }
     };
 
@@ -37,10 +37,10 @@ const Home = ({ navigation }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if(user.role === 'user'){
+    if (user?.role === "user") {
       dispatch(getQRCode());
     }
-  }, [user, dispatch])
+  }, [user, dispatch]);
 
   const openPost = (link) => {
     Linking.openURL(link);
@@ -48,16 +48,16 @@ const Home = ({ navigation }) => {
 
   // Renders each blog post item
   const renderPostItem = ({ item }) => {
-    const title = item?.title?.rendered || 'No Title';
-    const link = item?.link || '#';
+    const title = item?.title?.rendered || "No Title";
+    const link = item?.link || "#";
 
     return (
-      <TouchableOpacity 
-        style={styles.postContainer} 
+      <TouchableOpacity
+        style={styles.postContainer}
         onPress={() => openPost(link)}
       >
         <Image
-          source={{ uri: 'https://via.placeholder.com/350x150' }}
+          source={{ uri: "https://via.placeholder.com/350x150" }}
           style={styles.postImage}
         />
         <Text style={styles.postTitle}>{title}</Text>
@@ -78,7 +78,9 @@ const Home = ({ navigation }) => {
           {/* FIRST BANNER */}
           <View style={styles.bannerItem}>
             <Image
-              source={{ uri: 'https://via.placeholder.com/400x200?text=BEST+CAR+SERVICE' }}
+              source={{
+                uri: "https://via.placeholder.com/400x200?text=BEST+CAR+SERVICE",
+              }}
               style={styles.bannerBg}
             />
             <View style={styles.freeCarWashBubble}>
@@ -102,7 +104,9 @@ const Home = ({ navigation }) => {
           {/* SECOND BANNER */}
           <View style={styles.bannerItem}>
             <Image
-              source={{ uri: 'https://via.placeholder.com/400x200?text=CAR+WASH+AND+DETAIL' }}
+              source={{
+                uri: "https://via.placeholder.com/400x200?text=CAR+WASH+AND+DETAIL",
+              }}
               style={styles.bannerBg}
             />
             <View style={styles.bannerTextContainer}>
@@ -112,7 +116,7 @@ const Home = ({ navigation }) => {
               <Text style={styles.bulletText}>• Full Services Wash</Text>
               <TouchableOpacity
                 style={styles.contactUsBtn}
-                onPress={() => console.log('Contact us pressed')}
+                onPress={() => console.log("Contact us pressed")}
               >
                 <Text style={styles.contactUsBtnText}>CONTACT US</Text>
               </TouchableOpacity>
@@ -126,12 +130,14 @@ const Home = ({ navigation }) => {
           <View style={styles.pointsBalanceCard}>
             <Ionicons name="card-outline" style={styles.walletIcon} />
             <View style={styles.pointsTextWrapper}>
-              <Text style={styles.pointsBalanceTitle}>MOTOPERX POINTS BALANCE</Text>
+              <Text style={styles.pointsBalanceTitle}>
+                MOTOPERX POINTS BALANCE
+              </Text>
               <Text style={styles.pointsBalanceValue}>₱ 1,567</Text>
             </View>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.redeemButton}
-              onPress={() => console.log('Redeem pressed')}
+              onPress={() => console.log("Redeem pressed")}
             >
               <Text style={styles.redeemButtonText}>+ REDEEM</Text>
             </TouchableOpacity>
@@ -139,7 +145,7 @@ const Home = ({ navigation }) => {
 
           {/* QR Code Button/Icon */}
           <TouchableOpacity
-            onPress={() => console.log('QR Code pressed')}
+            onPress={() => console.log("QR Code pressed")}
             style={styles.qrContainer}
           >
             <Ionicons name="qr-code-outline" size={32} color="#000" />
@@ -177,7 +183,7 @@ const Home = ({ navigation }) => {
         <View style={styles.servicesContainer}>
           <View style={styles.servicesHeader}>
             <Text style={styles.servicesTitle}>SERVICES</Text>
-            <TouchableOpacity onPress={() => console.log('View All pressed')}>
+            <TouchableOpacity onPress={() => console.log("View All pressed")}>
               <Text style={styles.viewAllText}>VIEW ALL</Text>
             </TouchableOpacity>
           </View>
@@ -231,7 +237,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 
   /****************
@@ -252,99 +258,99 @@ const styles = StyleSheet.create({
     height: width * 0.45,
     marginHorizontal: 10,
     borderRadius: 8,
-    overflow: 'hidden',
-    backgroundColor: '#ccc',
-    position: 'relative',
+    overflow: "hidden",
+    backgroundColor: "#ccc",
+    position: "relative",
   },
   bannerBg: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   bannerTextContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     left: 10,
     right: 10,
   },
   bannerMainText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-    backgroundColor: '#fff',
-    alignSelf: 'flex-start',
+    fontWeight: "bold",
+    color: "#000",
+    backgroundColor: "#fff",
+    alignSelf: "flex-start",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
     marginBottom: 6,
   },
   bulletPoints: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 6,
     borderRadius: 4,
     marginBottom: 6,
   },
   bulletText: {
     fontSize: 14,
-    color: '#000',
+    color: "#000",
     marginBottom: 2,
   },
   contactText: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
-    color: '#000',
+    color: "#000",
   },
   freeCarWashBubble: {
-    position: 'absolute',
+    position: "absolute",
     top: 15,
     right: 15,
-    backgroundColor: '#ffc107',
+    backgroundColor: "#ffc107",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 20,
   },
   freeCarWashText: {
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
     fontSize: 12,
   },
   contactUsBtn: {
-    backgroundColor: '#ff0000',
-    alignSelf: 'flex-start',
+    backgroundColor: "#ff0000",
+    alignSelf: "flex-start",
     marginTop: 6,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 4,
   },
   contactUsBtnText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 
   /********************************
    * POINTS BALANCE + QR CONTAINER
    ********************************/
   pointsRowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 10,
     marginTop: 10,
     // Adjust spacing as needed
   },
   pointsBalanceCard: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     // Optional shadow to pop out the card
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 3.84,
@@ -353,7 +359,7 @@ const styles = StyleSheet.create({
   },
   walletIcon: {
     fontSize: 28,
-    color: '#000',
+    color: "#000",
     marginRight: 8,
   },
   pointsTextWrapper: {
@@ -361,17 +367,17 @@ const styles = StyleSheet.create({
   },
   pointsBalanceTitle: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
     marginBottom: 2,
   },
   pointsBalanceValue: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
   redeemButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -379,20 +385,20 @@ const styles = StyleSheet.create({
   },
   redeemButtonText: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
   qrContainer: {
     width: 60,
     height: 60,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: "#ddd",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
     // Optional shadow
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 3.84,
@@ -408,31 +414,31 @@ const styles = StyleSheet.create({
   },
   pointsTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   pointsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   pointBox: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
     marginHorizontal: 5,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 15,
   },
   pointValue: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
   pointLabel: {
     marginTop: 4,
     fontSize: 12,
-    color: '#555',
-    textAlign: 'center',
+    color: "#555",
+    textAlign: "center",
   },
 
   /****************
@@ -443,37 +449,37 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   servicesHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   servicesTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   viewAllText: {
     fontSize: 14,
-    color: '#007bff',
+    color: "#007bff",
   },
   servicesIconsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginTop: 10,
   },
   serviceBox: {
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#f2f2f2',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f2f2f2",
+    justifyContent: "center",
+    alignItems: "center",
   },
   serviceLabel: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 5,
     fontSize: 12,
-    color: '#000',
-    fontWeight: '500',
+    color: "#000",
+    fontWeight: "500",
   },
 
   /**************
@@ -485,28 +491,28 @@ const styles = StyleSheet.create({
   },
   blogTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   blogList: {},
   postContainer: {
     marginRight: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     width: width * 0.8,
   },
   postImage: {
-    width: '100%',
+    width: "100%",
     height: 150,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   postTitle: {
     padding: 10,
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
   },
 });

@@ -13,6 +13,7 @@ const qrCodeSlice = createSlice({
     resetData: (state) => {
       state.data = {};
       state.qrCode = {};
+      state.error = null;
     },
   },
   extraReducers: (builder) => {

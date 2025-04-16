@@ -40,10 +40,11 @@ export const registerUser = createAsyncThunk('auth/registerUser', async ({ name,
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, thunkAPI) => {
     try {
-        await AsyncStorage.removeItem('token');
-        await axios.post(`${API_BASE_URL}/logout`);
-        return {};
+      await axios.post(`${API_BASE_URL}/logout`);
+      await AsyncStorage.removeItem('token');
+      return {};
     } catch (error) {
-        return thunkAPI.rejectWithValue('Failed to logout');
+      console.error('Logout API error:', error?.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error?.response?.data?.errMessage || 'Failed to logouts');
     }
-}); 
+  });

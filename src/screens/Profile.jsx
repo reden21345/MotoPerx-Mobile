@@ -9,7 +9,6 @@ import {
   StyleSheet,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../redux/actions/authAction";
 import { getUserPoints } from "../redux/actions/pointsAction";
 import { getQRCode } from "../redux/actions/qrcodeAction";
 import QRCode from "react-native-qrcode-svg";
@@ -26,10 +25,6 @@ const Profile = ({ navigation }) => {
     dispatch(getQRCode());
   }, [dispatch]);
 
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    navigation.replace("Login");
-  };
 
   useEffect(() => {
     if (error) {
@@ -72,13 +67,6 @@ const Profile = ({ navigation }) => {
             // <QRCodeGenerator value={qrCode.code.toString()} size={150} />
             <Text>No QR Code available</Text>
           )}
-
-          <TouchableOpacity
-            style={[styles.button, styles.logoutButton]}
-            onPress={handleLogout}
-          >
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
         </>
       )}
     </View>
