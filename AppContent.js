@@ -8,6 +8,7 @@ import Header from './src/screens/Header';
 import Landing from './src/screens/Landing';
 import Apply from './src/screens/user/ApplyPartnership';
 import EditProfile from './src/screens/user/EditProfile';
+import EditPassword from './src/screens/user/EditPassword';
 import 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 
@@ -33,6 +34,7 @@ const AppContent = () => {
 
           {/* Profile Screens */}
           <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="EditPassword" component={EditPassword} />
         </Stack.Navigator>
       </NavigationContainer>
     );

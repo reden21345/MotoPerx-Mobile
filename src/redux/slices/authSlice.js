@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUser, registerUser, logoutUser, editProfile, profile } from "../actions/authAction";
+import { loginUser, registerUser, logoutUser, editProfile, profile, editPassword } from "../actions/authAction";
 
 // Auth Slice
 const authSlice = createSlice({
@@ -70,6 +70,19 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(editProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(editPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+      })
+      .addCase(editPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

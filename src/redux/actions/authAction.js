@@ -82,3 +82,20 @@ export const editProfile = createAsyncThunk('auth/editProfile', async (data, thu
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });
+
+// Edit password
+export const editPassword = createAsyncThunk('auth/editPassword', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.put(`${API_BASE_URL}/password/update`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});

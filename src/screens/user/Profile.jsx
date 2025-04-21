@@ -41,7 +41,7 @@ const Profile = ({ navigation }) => {
       Alert.alert("Error", error);
     }
   }, [error]);
-  console.log(user)
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -62,6 +62,13 @@ const Profile = ({ navigation }) => {
             onPress={() => navigation.navigate("EditProfile", { user })}
           >
             <Ionicons name="create-outline" size={28} color="#007bff" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.editPassword}
+            onPress={() => navigation.navigate("EditPassword")}
+          >
+            <Ionicons name="lock-closed-outline" size={28} color="#007bff" />
           </TouchableOpacity>
 
           <Image
@@ -141,6 +148,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 40,
     right: 20,
+    zIndex: 10,
+  },
+  editPassword: {
+    position: "absolute",
+    top: 40,
+    left: 20,
     zIndex: 10,
   },
   qrCodeImage: {
