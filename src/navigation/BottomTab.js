@@ -9,7 +9,7 @@ import HomeTab from "../screens/Home";
 import Deals from "../screens/Deals";
 import QRScanner from "../screens/partner/QRScanner";
 import PartnerDashboard from "../screens/dashboard/PartnerDashboard";
-import Profile from "../screens/Profile";
+import Profile from "../screens/user/Profile";
 import Badges from "../screens/user/Badges";
 
 const Tab = createBottomTabNavigator();

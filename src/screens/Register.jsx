@@ -8,12 +8,12 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
+  Image
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../redux/actions/authAction";
 import * as ImagePicker from "expo-image-picker";
-import { Image } from "react-native";
 
 const { width } = Dimensions.get("window");
 
@@ -41,8 +41,8 @@ const RegisterScreen = ({ navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.3, // reduce to 30% to avoid large base64
       base64: true,
+      quality: 0.6,
     });
 
     if (!result.canceled) {

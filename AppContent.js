@@ -7,6 +7,7 @@ import Main from './src/navigation/BottomTab';
 import Header from './src/screens/Header';
 import Landing from './src/screens/Landing';
 import Apply from './src/screens/user/ApplyPartnership';
+import EditProfile from './src/screens/user/EditProfile';
 import 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 
@@ -29,6 +30,9 @@ const AppContent = () => {
           <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
           <Stack.Screen name="Main" component={Main} />
           <Stack.Screen name="Apply" component={Apply} />
+
+          {/* Profile Screens */}
+          <Stack.Screen name="EditProfile" component={EditProfile} />
         </Stack.Navigator>
       </NavigationContainer>
     );

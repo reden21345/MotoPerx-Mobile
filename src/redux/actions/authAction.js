@@ -48,3 +48,37 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, thunkAPI
       return thunkAPI.rejectWithValue(error?.response?.data?.errMessage || 'Failed to logouts');
     }
   });
+
+// Get Profile 
+export const profile = createAsyncThunk('auth/profile', async (_, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.get(`${API_BASE_URL}/me`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Error fetching profile');
+    }
+});
+
+// Edit Profile
+export const editProfile = createAsyncThunk('auth/editProfile', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.put(`${API_BASE_URL}/me/update`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});

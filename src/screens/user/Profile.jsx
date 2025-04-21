@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,15 @@ import {
   Alert,
   Image,
   StyleSheet,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserPoints } from "../redux/actions/pointsAction";
-import { getQRCode } from "../redux/actions/qrcodeAction";
+import { Ionicons } from "@expo/vector-icons";
+import { getUserPoints } from "../../redux/actions/pointsAction";
+import { getQRCode } from "../../redux/actions/qrcodeAction";
+import { profile } from "../../redux/actions/authAction";
 import QRCode from "react-native-qrcode-svg";
-// import QRCodeGenerator from 'react-native-qrcode-generator';
 
 const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -20,20 +23,32 @@ const Profile = ({ navigation }) => {
   const { qrCode } = useSelector((state) => state.qrCode);
   const { points, loading, error } = useSelector((state) => state.points);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     dispatch(getUserPoints());
     dispatch(getQRCode());
   }, [dispatch]);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(profile());
+    dispatch(getUserPoints()).finally(() => setRefreshing(false));
+  };
 
   useEffect(() => {
     if (error) {
       Alert.alert("Error", error);
     }
-  }, [error]); 
-
+  }, [error]);
+  console.log(user)
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -42,7 +57,13 @@ const Profile = ({ navigation }) => {
         />
       ) : (
         <>
-          <Text style={styles.screenTitle}>Profile Screen</Text>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => navigation.navigate("EditProfile", { user })}
+          >
+            <Ionicons name="create-outline" size={28} color="#007bff" />
+          </TouchableOpacity>
+
           <Image
             source={{
               uri:
@@ -54,6 +75,7 @@ const Profile = ({ navigation }) => {
           />
           <Text style={styles.userName}>{user?.name}</Text>
           <Text style={styles.userEmail}>{user?.email}</Text>
+          <Text style={styles.userEmail}>Phone: {user?.phone || "N/A"}</Text>
           <Text style={styles.userRole}>Role: {user?.role}</Text>
           <Text style={styles.userPoints}>Points: {points || 0}</Text>
 
@@ -64,18 +86,17 @@ const Profile = ({ navigation }) => {
               size={150}
             />
           ) : (
-            // <QRCodeGenerator value={qrCode.code.toString()} size={150} />
             <Text>No QR Code available</Text>
           )}
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
@@ -115,6 +136,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#007bff",
     marginBottom: 20,
+  },
+  edit: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    zIndex: 10,
   },
   qrCodeImage: {
     width: 150,
