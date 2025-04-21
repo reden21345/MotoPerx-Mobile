@@ -21,9 +21,9 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
 });
 
 // Register User and Generate QR Code
-export const registerUser = createAsyncThunk('auth/registerUser', async ({ name, email, password, avatar }, thunkAPI) => {
+export const registerUser = createAsyncThunk('auth/registerUser', async (data, thunkAPI) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/register`, { name, email, password, avatar });
+        const response = await axios.post(`${API_BASE_URL}/register`, data);
         const token = response.data.token;
         await AsyncStorage.setItem('token', token);
 

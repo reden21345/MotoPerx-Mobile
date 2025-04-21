@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
-  Image
+  Image,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,13 +23,15 @@ const RegisterScreen = ({ navigation }) => {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
 
   const pickAvatar = async () => {
     let permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissionResult.granted === false) {
+    if (!permissionResult.granted) {
       Alert.alert(
         "Permission required",
         "Permission to access gallery is required!"
@@ -52,9 +54,8 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   const handleRegister = async () => {
-    const result = await dispatch(
-      registerUser({ name, email, password, avatar })
-    );
+    const data = { name, email, phone, password, avatar };
+    const result = await dispatch(registerUser(data));
     if (registerUser.fulfilled.match(result)) {
       navigation.replace("Main");
     } else {
@@ -76,7 +77,6 @@ const RegisterScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Main Body */}
       <View style={styles.body}>
         <Text style={styles.title}>CREATE YOUR{"\n"}ACCOUNT</Text>
 
@@ -108,6 +108,19 @@ const RegisterScreen = ({ navigation }) => {
           <Ionicons name="mail" size={24} color="#999" style={styles.icon} />
         </View>
 
+        {/* Phone Input */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="PHONE"
+            placeholderTextColor="#888"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+            style={styles.input}
+          />
+          <Ionicons name="call" size={24} color="#999" style={styles.icon} />
+        </View>
+
         {/* Password Input */}
         <View style={styles.inputContainer}>
           <TextInput
@@ -115,15 +128,19 @@ const RegisterScreen = ({ navigation }) => {
             placeholderTextColor="#888"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
+            secureTextEntry={!showPassword}
             style={styles.input}
           />
-          <Ionicons
-            name="lock-closed"
-            size={24}
-            color="#999"
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
             style={styles.icon}
-          />
+          >
+            <Ionicons
+              name={showPassword ? "eye-off" : "eye"}
+              size={24}
+              color="#999"
+            />
+          </TouchableOpacity>
         </View>
 
         {/* Avatar Picker */}
@@ -135,7 +152,7 @@ const RegisterScreen = ({ navigation }) => {
           )}
         </TouchableOpacity>
 
-        {/* Register (Sign Up) Button */}
+        {/* Register Button */}
         <TouchableOpacity
           onPress={handleRegister}
           style={styles.signUpButton}
@@ -201,28 +218,28 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   icon: {
-    marginLeft: 5,
+    paddingLeft: 10,
   },
   avatarPicker: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 20,
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
   },
   avatarImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   avatarText: {
-    color: '#888',
-    textAlign: 'center',
-  },  
+    color: "#888",
+    textAlign: "center",
+  },
   signUpButton: {
     backgroundColor: "#000",
     borderRadius: 6,
