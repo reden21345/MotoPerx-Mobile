@@ -22,6 +22,8 @@
       },
       "package": "com.reden21345.MotoPerxMobile"
     },
+    "scheme": "motoperx",
+    "deepLinking": true,
     "web": {
       "favicon": "./assets/favicon.png"
     },

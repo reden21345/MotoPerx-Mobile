@@ -1,5 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUser, registerUser, logoutUser, editProfile, profile, editPassword } from "../actions/authAction";
+import {
+  loginUser,
+  registerUser,
+  logoutUser,
+  editProfile,
+  profile,
+  editPassword,
+  forgetPassword,
+  resetPassword,
+} from "../actions/authAction";
 
 // Auth Slice
 const authSlice = createSlice({
@@ -9,6 +18,7 @@ const authSlice = createSlice({
     token: null,
     loading: false,
     error: null,
+    message: null,
   },
   reducers: {
     clearAuthState: (state) => {
@@ -83,6 +93,31 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(editPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(forgetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(forgetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

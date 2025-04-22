@@ -99,3 +99,28 @@ export const editPassword = createAsyncThunk('auth/editPassword', async (data, t
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });
+
+// Forgot password
+export const forgetPassword = createAsyncThunk('auth/forgetPassword', async ({email}, thunkAPI) => {
+    try {
+        
+        const response = await axios.post(`${API_BASE_URL}/password/forgot`, {email});
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});
+
+// Forgot password
+export const resetPassword = createAsyncThunk('auth/resetPassword', async (data, thunkAPI) => {
+    try {
+        const { token } = data;
+     
+        const response = await axios.put(`${API_BASE_URL}/password/reset/${token}`, data);
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});
