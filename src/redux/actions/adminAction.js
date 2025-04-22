@@ -20,3 +20,21 @@ export const getAllUsers = createAsyncThunk('admins/getAllUsers', async (_, thun
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get all users');
     }
 });
+
+// Get all users
+export const deleteUser = createAsyncThunk('admins/deleteUser', async (id, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.delete(`${API_BASE_URL}/admin/user/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get all users');
+    }
+});

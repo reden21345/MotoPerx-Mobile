@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllUsers } from "../actions/adminAction";
+import { deleteUser, getAllUsers } from "../actions/adminAction";
 
 const amdinSlice = createSlice({
   name: "admins",
@@ -7,6 +7,7 @@ const amdinSlice = createSlice({
     users: [],
     count: 0,
     loading: false,
+    success: false,
     error: null,
   },
   reducers: {
@@ -28,6 +29,18 @@ const amdinSlice = createSlice({
         state.count = action.payload.count;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
