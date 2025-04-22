@@ -36,6 +36,11 @@ const EditProfile = ({ route, navigation }) => {
       avatar,
     };
 
+    if (!user.avatar?.url && !avatar) {
+      Alert.alert("Required", "Required to upload avatar!");
+      return
+    }
+
     dispatch(editProfile(data)).then(() => {
       Alert.alert("Success", "Profile updated successfully");
       navigation.goBack();
