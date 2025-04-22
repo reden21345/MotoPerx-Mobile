@@ -13,6 +13,7 @@ import EditProfile from './src/screens/user/EditProfile';
 import EditPassword from './src/screens/user/EditPassword';
 import ForgotPassword from './src/screens/user/ForgotPassword';
 import ResetPassword from './src/screens/user/ResetPassword';
+import EditUser from './src/screens/admin/EditUser';
 import 'react-native-gesture-handler';
 
 enableScreens();
@@ -50,6 +51,9 @@ const AppContent = () => {
           {/* Profile Screens */}
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="EditPassword" component={EditPassword} />
+
+          {/* Admin Screens */}
+          <Stack.Screen name="EditUser" component={EditUser} />
         </Stack.Navigator>
       </NavigationContainer>
     );

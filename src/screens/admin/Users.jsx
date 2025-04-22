@@ -14,13 +14,16 @@ import {
   RefreshControl,
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers, deleteUser } from "../../redux/actions/adminAction";
+import { clearSuccess } from "../../redux/slices/adminSlice";
 import DropDownPicker from "react-native-dropdown-picker";
 
 const Users = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const { users, loading, error } = useSelector((state) => state.admins);
   const { user } = useSelector((state) => state.auth);
 
@@ -63,12 +66,13 @@ const Users = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await dispatch(getAllUsers()).finally(() => setRefreshing(false));
+    dispatch(getAllUsers()).finally(() => setRefreshing(false));
+    dispatch(clearSuccess())
   };
 
   const handleEdit = (item) => {
     console.log("Edit: ", item);
-    // navigation.navigate("EditStaffRequest", { user: item });
+    navigation.navigate("EditUser", { user: item });
   };
 
   const handleDelete = (id) => {

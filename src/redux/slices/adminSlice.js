@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteUser, getAllUsers } from "../actions/adminAction";
+import { deleteUser, editUser, getAllUsers } from "../actions/adminAction";
 
 const amdinSlice = createSlice({
   name: "admins",
@@ -14,6 +14,10 @@ const amdinSlice = createSlice({
     clearAdminState: (state) => {
       state.users = [];
       state.count = 0;
+      state.error = null;
+    },
+    clearSuccess: (state) => {
+      state.success = false;
       state.error = null;
     },
   },
@@ -32,6 +36,18 @@ const amdinSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(editUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success;
+      })
+      .addCase(editUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(deleteUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -46,5 +62,5 @@ const amdinSlice = createSlice({
       });
   },
 });
-export const { clearAdminState } = amdinSlice.actions;
+export const { clearAdminState, clearSuccess } = amdinSlice.actions;
 export default amdinSlice.reducer;
