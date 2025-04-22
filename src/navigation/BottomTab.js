@@ -12,6 +12,9 @@ import PartnerDashboard from "../screens/dashboard/PartnerDashboard";
 import Profile from "../screens/user/Profile";
 import Badges from "../screens/user/Badges";
 
+// Admin Screens
+import AllUsers from "../screens/admin/Users";
+
 const Tab = createBottomTabNavigator();
 
 const DummyScreen = () => null;
@@ -24,17 +27,19 @@ const BottomTab = () => {
         screenOptions={{ headerShown: false }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
-        <Tab.Screen name="Home" component={HomeTab} />
-        <Tab.Screen name="Deals" component={Deals} />
         {user?.role === "user" ? (
-          <Tab.Screen name="Badges" component={Badges} />
+          <>
+            <Tab.Screen name="Home" component={HomeTab} />
+            <Tab.Screen name="Deals" component={Deals} />
+            <Tab.Screen name="Badges" component={Badges} />
+          </>
         ) : user?.role === "partner" || user?.role === "employee" ? (
           <>
             <Tab.Screen name="Scanner" component={QRScanner} />
             <Tab.Screen name="Shop" component={PartnerDashboard} />
           </>
         ) : (
-          <Tab.Screen name="Admin" component={DummyScreen} />
+          <Tab.Screen name="Users" component={AllUsers} />
         )}
         <Tab.Screen name="Profile" component={Profile} />
 
