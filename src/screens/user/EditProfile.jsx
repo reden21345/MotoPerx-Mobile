@@ -9,6 +9,7 @@ import {
   Image,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 import { useDispatch, useSelector } from "react-redux";
 import { editProfile } from "../../redux/actions/authAction";
 
@@ -38,7 +39,7 @@ const EditProfile = ({ route, navigation }) => {
 
     if (!user.avatar?.url && !avatar) {
       Alert.alert("Required", "Required to upload avatar!");
-      return
+      return;
     }
 
     dispatch(editProfile(data)).then(() => {
@@ -48,26 +49,29 @@ const EditProfile = ({ route, navigation }) => {
   };
 
   const pickAvatar = async () => {
-    let permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permissionResult.granted === false) {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
       Alert.alert(
-        "Permission required",
+        "Permission Denied",
         "Permission to access gallery is required!"
       );
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      base64: true,
-      quality: 0.6,
     });
 
-    if (!result.canceled) {
-      const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+    if (!result.canceled && result.assets?.length > 0) {
+      const asset = result.assets[0];
+
+      const base64 = await FileSystem.readAsStringAsync(asset.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const base64Image = `data:image/jpeg;base64,${base64}`;
       setAvatar(base64Image);
     }
   };

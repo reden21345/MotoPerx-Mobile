@@ -54,7 +54,7 @@ const CreateDeal = ({ navigation }) => {
       allowsMultipleSelection: true,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets?.length > 0) {
       const base64Images = await Promise.all(
         result.assets.map(async (asset) => {
           const base64 = await FileSystem.readAsStringAsync(asset.uri, {
