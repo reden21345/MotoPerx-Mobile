@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -14,11 +14,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { logoutAndReset } from "../redux/actions/logoutAndReset";
 
 const { width, height } = Dimensions.get("window");
+const SIDEBAR_WIDTH = Math.round(width * 0.75);
 
 const Sidebar = ({ isOpen, onClose, navigation }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const translateY = React.useRef(new Animated.Value(-height)).current;
+  const translateX = useRef(new Animated.Value(SIDEBAR_WIDTH)).current;
 
   const items = [
     { name: "Dashboard", icon: "grid-outline", screen: "Shop" },
@@ -28,27 +29,23 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
   ];
 
-  React.useEffect(() => {
-    Animated.timing(translateY, {
-      toValue: isOpen ? 0 : -height,
+  useEffect(() => {
+    Animated.timing(translateX, {
+      toValue: isOpen ? 0 : SIDEBAR_WIDTH,
       duration: 300,
       useNativeDriver: true,
     }).start();
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   return (
-    <View style={styles.overlayContainer}>
-      {/* Background overlay */}
+    <View style={styles.overlayContainer} pointerEvents={isOpen ? 'auto' : 'none'}>
+      {/* Backdrop: only left side */}
       <Pressable style={styles.backdrop} onPress={onClose} />
 
       <Animated.View
         style={[
           styles.sidebar,
-          {
-            transform: [{ translateY }],
-          },
+          { width: SIDEBAR_WIDTH, transform: [{ translateX }], right: 0 },
         ]}
       >
         {/* Close Button */}
@@ -56,17 +53,17 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
           <Ionicons name="close" size={28} color="#fff" />
         </TouchableOpacity>
 
-        {/* Profile */}
+        {/* Profile Section */}
         <View style={styles.profileSection}>
           {user?.avatar?.url ? (
             <Image source={{ uri: user.avatar.url }} style={styles.avatar} />
           ) : (
             <Ionicons name="person-circle" size={60} color="#fff" />
           )}
-          <Text style={styles.name}>{user?.name || "Juan Dela Cruz"}</Text>
+          <Text style={styles.name}>{user?.name || "User Name"}</Text>
         </View>
 
-        {/* Navigation Links */}
+        {/* Navigation Items */}
         <View style={styles.links}>
           {items.map((item) => (
             <TouchableOpacity
@@ -106,28 +103,25 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    height: height,
-    width: width,
+    width,
+    height,
     zIndex: 999,
   },
   backdrop: {
     position: "absolute",
     top: 0,
     left: 0,
-    width: width,
-    height: height,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    width: width - SIDEBAR_WIDTH,
+    height,
+    backgroundColor: "transparent",
   },
   sidebar: {
     position: "absolute",
     top: 0,
-    left: 0,
-    width: width,
+    bottom: 0,
     backgroundColor: "#2b2b2b",
     paddingTop: 40,
     paddingHorizontal: 16,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
   },
   closeButton: {
     alignSelf: "flex-end",
