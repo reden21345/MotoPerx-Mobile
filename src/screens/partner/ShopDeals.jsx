@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, Alert, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllDeals } from "../redux/actions/dealsAction";
-import DealsComponent from "../components/DealsComponent";
+import { getAllDeals } from "../../redux/actions/dealsAction";
+import { getPartner } from "../../redux/actions/partnerAction";
+import DealsComponent from "../../components/DealsComponent";
 
 const Deals = () => {
   const dispatch = useDispatch();
-  const { deals, loading } = useSelector((state) => state.deals);
-  const { error, message } = useSelector((state) => state.points);
+  const { deals, loading, error } = useSelector((state) => state.deals);
+  const { partner } = useSelector((state) => state.partners);
 
   useEffect(() => {
     dispatch(getAllDeals());
+    dispatch(getPartner());
   }, [dispatch]);
 
   if (loading) {
@@ -23,14 +25,20 @@ const Deals = () => {
     Alert.alert("Error", error);
   }
 
-  if (message) {
-    Alert.alert("Success", message);
-  }
+  const filteredDeals = deals.filter(
+    (deal) => deal.partner._id === partner._id
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.screenTitle}>Available Deals</Text>
-      <DealsComponent dealsData={deals} partner={false} />
+      <Text style={styles.screenTitle}>Created Deals</Text>
+      {filteredDeals.length !== 0 ? (
+        <DealsComponent dealsData={filteredDeals} partner={true} />
+      ) : (
+        <View style={styles.noDealContainer}>
+          <Text style={styles.noDealText}>No deals created yet</Text>
+        </View>
+      )}
     </View>
   );
 };

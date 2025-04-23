@@ -115,7 +115,7 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
   let iconName;
   if (route.name === "Home") {
     iconName = isFocused ? "home" : "home-outline";
-  } else if (route.name === "Deals") {
+  } else if (route.name === "Deals" || route.name === "ShopDeals") {
     iconName = isFocused ? "pricetag" : "pricetag-outline";
   } else if (route.name === "Scanner") {
     iconName = isFocused ? "scan" : "scan-outline";

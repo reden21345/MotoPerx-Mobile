@@ -7,13 +7,16 @@ import CustomTabBar from "./CustomTabBar";
 // Screens
 import HomeTab from "../screens/Home";
 import Deals from "../screens/Deals";
-import QRScanner from "../screens/partner/QRScanner";
-import PartnerDashboard from "../screens/dashboard/PartnerDashboard";
 import Profile from "../screens/user/Profile";
 import Badges from "../screens/user/Badges";
 
 // Admin Screens
 import AllUsers from "../screens/admin/Users";
+
+// Partner Screens
+import PartnerDashboard from "../screens/dashboard/PartnerDashboard";
+import QRScanner from "../screens/partner/QRScanner";
+import ShopDeals from "../screens/partner/ShopDeals";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,8 +38,9 @@ const BottomTab = () => {
           </>
         ) : user?.role === "partner" || user?.role === "employee" ? (
           <>
-            <Tab.Screen name="Scanner" component={QRScanner} />
             <Tab.Screen name="Shop" component={PartnerDashboard} />
+            <Tab.Screen name="Scanner" component={QRScanner} />
+            <Tab.Screen name="ShopDeals" component={ShopDeals} />
           </>
         ) : (
           <Tab.Screen name="Users" component={AllUsers} />
