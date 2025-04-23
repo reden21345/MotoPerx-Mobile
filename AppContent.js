@@ -8,12 +8,20 @@ import Register from './src/screens/Register';
 import Main from './src/navigation/BottomTab';
 import Header from './src/screens/Header';
 import Landing from './src/screens/Landing';
+
+// Users Import
 import Apply from './src/screens/user/ApplyPartnership';
 import EditProfile from './src/screens/user/EditProfile';
 import EditPassword from './src/screens/user/EditPassword';
 import ForgotPassword from './src/screens/user/ForgotPassword';
 import ResetPassword from './src/screens/user/ResetPassword';
+
+// Admin Import
 import EditUser from './src/screens/admin/EditUser';
+
+// Partner Import
+import CreateDeal from './src/screens/partner/CreateDeal';
+
 import 'react-native-gesture-handler';
 
 enableScreens();
@@ -54,6 +62,10 @@ const AppContent = () => {
 
           {/* Admin Screens */}
           <Stack.Screen name="EditUser" component={EditUser} />
+
+          {/* Admin Screens */}
+          <Stack.Screen name="CreateDeal" component={CreateDeal} />
+
         </Stack.Navigator>
       </NavigationContainer>
     );

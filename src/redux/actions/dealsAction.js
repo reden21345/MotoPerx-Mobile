@@ -14,3 +14,21 @@ export const getAllDeals = createAsyncThunk('deals/getDeals', async (_, thunkAPI
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get deals');
     }
 });
+
+// Create Deals
+export const createDeals = createAsyncThunk('deals/createDeals', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.post(`${API_BASE_URL}/deals`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to create deal');
+    }
+});

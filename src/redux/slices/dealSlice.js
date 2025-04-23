@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllDeals } from "../actions/dealsAction";
+import { createDeals, getAllDeals } from "../actions/dealsAction";
 
 const dealsSlice = createSlice({
   name: "deals",
   initialState: {
     deals: [],
+    dealDetails: null,
     count: 0,
     loading: false,
     error: null,
@@ -28,6 +29,18 @@ const dealsSlice = createSlice({
         state.count = action.payload.count;
       })
       .addCase(getAllDeals.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(createDeals.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createDeals.fulfilled, (state, action) => {
+        state.loading = false;
+        state.dealDetails = action.payload.deal;
+      })
+      .addCase(createDeals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, Alert, StyleSheet } from "react-native";
+import { View, Text, ActivityIndicator, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDeals } from "../../redux/actions/dealsAction";
 import { getPartner } from "../../redux/actions/partnerAction";
 import DealsComponent from "../../components/DealsComponent";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-const Deals = () => {
+const Deals = ({navigation}) => {
   const dispatch = useDispatch();
   const { deals, loading, error } = useSelector((state) => state.deals);
   const { partner } = useSelector((state) => state.partners);
@@ -31,7 +32,25 @@ const Deals = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.screenTitle}>Created Deals</Text>
+      <Text style={styles.screenTitle}>Created deals</Text>
+      <View style={styles.buttonRow}>
+      <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => console.log("View History")}
+        >
+          <Text style={styles.buttonText}>
+            <Ionicons name="time" size={16} color="white" /> History
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate('CreateDeal')}
+        >
+          <Text style={styles.buttonText}>
+            <Ionicons name="add-circle" size={16} color="white" /> Add
+          </Text>
+        </TouchableOpacity>
+      </View>
       {filteredDeals.length !== 0 ? (
         <DealsComponent dealsData={filteredDeals} partner={true} />
       ) : (
@@ -58,6 +77,40 @@ const styles = StyleSheet.create({
   loader: {
     flex: 1,
     justifyContent: "center",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#000",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  noDealContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  noDealText: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#424242",
   },
 });
 
