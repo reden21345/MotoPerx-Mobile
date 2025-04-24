@@ -20,7 +20,7 @@ const Landing = () => {
 
   return (
     <View style={styles.container}>
-      {/* Top Section (Illustration area with a circular background) */}
+      {/* Top Section (Illustration area with a circular white background) */}
       <View style={styles.topSection}>
         <View style={styles.circleBackground}>
           <Image 
@@ -30,7 +30,7 @@ const Landing = () => {
         </View>
       </View>
 
-      {/* Bottom Section (Black container with rounded top corners for text and button) */}
+      {/* Bottom Section (Metal blue container with rounded top corners) */}
       <View style={styles.bottomSection}>
         <Text style={styles.title}>MOTOPERX REWARD POINTS</Text>
         <Text style={styles.subtitle}>
@@ -38,7 +38,7 @@ const Landing = () => {
         </Text>
         <TouchableOpacity 
           style={styles.button}
-          onPress={handleGetStarted} // Navigate to Login when pressed
+          onPress={handleGetStarted}
         >
           <Text style={styles.buttonText}>LET&apos;S GET STARTED</Text>
         </TouchableOpacity>
@@ -49,51 +49,51 @@ const Landing = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Occupies the full device screen
-    backgroundColor: '#fff',
+    flex: 1,
+    backgroundColor: '#fff',        // white
   },
   topSection: {
-    flex: 1, // Takes up remaining vertical space
-    backgroundColor: '#fff',
+    flex: 1,
+    backgroundColor: '#fff',        // white
     alignItems: 'center',
     justifyContent: 'center',
   },
   circleBackground: {
-    width: width * 0.6,      // 60% of the device's screen width
-    height: width * 0.6,     // Keeping it square
-    borderRadius: (width * 0.6) / 2, // Half of width to make it circular
-    backgroundColor: '#e0e0e0', // A subtle grey background; adjust as needed
+    width: width * 0.6,
+    height: width * 0.6,
+    borderRadius: (width * 0.6) / 2,
+    backgroundColor: '#fff',        // white circle
     alignItems: 'center',
     justifyContent: 'center',
   },
   illustration: {
-    width: width * 0.9,  // Motor image occupies 40% of screen width
-    height: width * 0.9, // Maintaining a square aspect ratio
+    width: width * 0.9,
+    height: width * 0.9,
     resizeMode: 'contain',
   },
   bottomSection: {
-    backgroundColor: '#000',
+    backgroundColor: '#4682B4',     // metal blue
     padding: 24,
     alignItems: 'center',
-    height: height * 0.3, // Adjust this value to make the container taller or shorter
+    height: height * 0.3,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff', // White text on dark background
+    color: '#fff',                  // white text
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: '#fff', // White text on dark background
+    color: '#fff',                  // white text
     marginBottom: 20,
     textAlign: 'center',
     lineHeight: 20,
   },
   button: {
-    backgroundColor: '#fff',
+    backgroundColor: '#fff',        // white button
     paddingVertical: 14,
     paddingHorizontal: 80,
     borderRadius: 20,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#4682B4',               // metal blue text
   },
 });
 

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Sidebar from "../navigation/Sidebar";
+
+const METAL_BLUE = "#4682B4";
 
 const Header = ({ navigation }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -10,10 +12,7 @@ const Header = ({ navigation }) => {
     <View>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.replace('Main')}>
-          <Image
-            source={require("../../assets/logowhite.png")}
-            style={styles.logo}
-          />
+          <Text style={styles.title}>MOTOPERX</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setSidebarOpen(true)}>
@@ -36,15 +35,15 @@ export default Header;
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
-    justifyContent: "space-between", // Add this to space logo and menu
+    justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#424242",
+    backgroundColor: METAL_BLUE,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  logo: {
-    width: 60,
-    height: 40,
-    resizeMode: "contain",
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
   },
 });

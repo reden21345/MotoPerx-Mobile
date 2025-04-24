@@ -12,137 +12,218 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserPoints } from "../redux/actions/pointsAction";
+import { getQRCode } from "../redux/actions/qrcodeAction";
 
 const { width } = Dimensions.get("window");
 
-// Static services for "Points per Services"
-const SERVICE_ITEMS = [
-  { label: "Fuel Service", points: 10 },
-  { label: "Accessories", points: 10 },
-  { label: "Motor Wash", points: 10 },
-  { label: "Change Oil", points: 10 },
-];
-
-const BannerItems = [
-  { key: "1", title: "BEST CAR SERVICE", bg: "#F0F0F0" },
-  { key: "2", title: "CAR WASH & DETAIL", bg: "#E0E0E0" },
-];
-
 const Home = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { points = 0 } = useSelector((state) => state.points);
+  const { user } = useSelector((state) => state.auth);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    dispatch(getUserPoints());
-    // Fetch posts with featured image
+    // Fetch blog posts
     const fetchPosts = async () => {
       try {
-        const res = await fetch(
-          "https://jabbre.shop/wp-json/wp/v2/posts?_embed"
-        );
-        const data = await res.json();
+        const response = await fetch("https://jabbre.shop/wp-json/wp/v2/posts");
+        const data = await response.json();
         setPosts(data);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("Error fetching blog posts:", error);
       }
     };
+
     fetchPosts();
   }, [dispatch]);
 
-  const openPost = (url) => Linking.openURL(url);
+  useEffect(() => {
+    if (user?.role === "user") {
+      dispatch(getQRCode());
+    }
+  }, [user, dispatch]);
 
+  const openPost = (link) => {
+    Linking.openURL(link);
+  };
+
+  // Renders each blog post item
   const renderPostItem = ({ item }) => {
-    const img =
-      item._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-      "https://via.placeholder.com/350x150?text=No+Image";
+    const title = item?.title?.rendered || "No Title";
+    const link = item?.link || "#";
+
     return (
       <TouchableOpacity
         style={styles.postContainer}
-        onPress={() => openPost(item.link)}
+        onPress={() => openPost(link)}
       >
-        <Image source={{ uri: img }} style={styles.postImage} />
-        <Text style={styles.postTitle}>{item.title.rendered}</Text>
+        <Image
+          source={{ uri: "https://via.placeholder.com/350x150" }}
+          style={styles.postImage}
+        />
+        <Text style={styles.postTitle}>{title}</Text>
       </TouchableOpacity>
     );
   };
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.body}>
-        {/* Banner + Points Card */}
-        <View style={styles.bannerWrap}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.bannerScroll}
-          >
-            {BannerItems.map((b) => (
-              <View
-                key={b.key}
-                style={[styles.banner, { backgroundColor: b.bg }]}
-              >
-                <Text style={styles.bannerText}>{b.title}</Text>
-              </View>
-            ))}
-          </ScrollView>
-          <View style={styles.pointsCard}>
-            <View style={styles.pointsInfo}>
-              <Text style={styles.pointsBalance}>₱ {points}</Text>
-              <Text style={styles.pointsLabel}>Points Balance</Text>
+      {/* Scrollable Body */}
+      <ScrollView contentContainerStyle={styles.bodyContainer}>
+        {/* Horizontal Banners */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.bannerScrollContainer}
+        >
+          {/* FIRST BANNER */}
+          <View style={styles.bannerItem}>
+            <Image
+              source={{
+                uri: "https://via.placeholder.com/400x200?text=BEST+CAR+SERVICE",
+              }}
+              style={styles.bannerBg}
+            />
+            <View style={styles.freeCarWashBubble}>
+              <Text style={styles.freeCarWashText}>FREE CAR WASH</Text>
             </View>
-            <TouchableOpacity style={styles.redeemBtn}>
-              <Text style={styles.redeemText}>+ Redeem</Text>
+            <View style={styles.bannerTextContainer}>
+              <Text style={styles.bannerMainText}>BEST CAR SERVICE</Text>
+              <View style={styles.bulletPoints}>
+                <Text style={styles.bulletText}>• Oil Changes</Text>
+                <Text style={styles.bulletText}>• Fluid Checks</Text>
+                <Text style={styles.bulletText}>• Tire Rotations</Text>
+                <Text style={styles.bulletText}>• Repair</Text>
+                <Text style={styles.bulletText}>• Engine Diagnostics</Text>
+              </View>
+              <Text style={styles.contactText}>
+                CONTACT US: +23-456-7980 (Mr. Alfredo)
+              </Text>
+            </View>
+          </View>
+
+          {/* SECOND BANNER */}
+          <View style={styles.bannerItem}>
+            <Image
+              source={{
+                uri: "https://via.placeholder.com/400x200?text=CAR+WASH+AND+DETAIL",
+              }}
+              style={styles.bannerBg}
+            />
+            <View style={styles.bannerTextContainer}>
+              <Text style={styles.bannerMainText}>CAR WASH AND DETAIL</Text>
+              <Text style={styles.bulletText}>• Standard Car Wash</Text>
+              <Text style={styles.bulletText}>• Interior Cleaning</Text>
+              <Text style={styles.bulletText}>• Full Services Wash</Text>
+              <TouchableOpacity
+                style={styles.contactUsBtn}
+                onPress={() => console.log("Contact us pressed")}
+              >
+                <Text style={styles.contactUsBtnText}>CONTACT US</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Points + QR Container */}
+        <View style={styles.pointsRowContainer}>
+          {/* Points Balance Card */}
+          <View style={styles.pointsBalanceCard}>
+            <Ionicons name="card-outline" style={styles.walletIcon} />
+            <View style={styles.pointsTextWrapper}>
+              <Text style={styles.pointsBalanceTitle}>
+                MOTOPERX POINTS BALANCE
+              </Text>
+              <Text style={styles.pointsBalanceValue}>₱ 1,567</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.redeemButton}
+              onPress={() => console.log("Redeem pressed")}
+            >
+              <Text style={styles.redeemButtonText}>+ REDEEM</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.qrBtn}>
-              <Ionicons name="qr-code-outline" size={24} color="#333" />
-            </TouchableOpacity>
+          </View>
+
+          {/* QR Code Button/Icon */}
+          <TouchableOpacity
+            onPress={() => console.log("QR Code pressed")}
+            style={styles.qrContainer}
+          >
+            <Ionicons name="qr-code-outline" size={32} color="#000" />
+          </TouchableOpacity>
+        </View>
+
+        {/* POINTS PER SERVICES */}
+        <View style={styles.pointsContainer}>
+          <Text style={styles.pointsTitle}>POINTS PER SERVICES</Text>
+          <View style={styles.pointsRow}>
+            {/* Sample box #1 */}
+            <View style={styles.pointBox}>
+              <Text style={styles.pointValue}>10</Text>
+              <Text style={styles.pointLabel}>CAR WASH</Text>
+            </View>
+            {/* Sample box #2 */}
+            <View style={styles.pointBox}>
+              <Text style={styles.pointValue}>10</Text>
+              <Text style={styles.pointLabel}>OIL CHANGE</Text>
+            </View>
+            {/* Sample box #3 */}
+            <View style={styles.pointBox}>
+              <Text style={styles.pointValue}>10</Text>
+              <Text style={styles.pointLabel}>TIRE</Text>
+            </View>
+            {/* Sample box #4 */}
+            <View style={styles.pointBox}>
+              <Text style={styles.pointValue}>10</Text>
+              <Text style={styles.pointLabel}>OTHERS</Text>
+            </View>
           </View>
         </View>
 
-        {/* Points Per Services */}
-        <Text style={styles.sectionTitle}>Points per Services</Text>
+        {/* SERVICES SECTION */}
         <View style={styles.servicesContainer}>
-          {SERVICE_ITEMS.map((s) => (
-            <View key={s.label} style={styles.serviceItem}>
-              <Text style={styles.servicePoints}>{s.points}</Text>
-              <Text style={styles.serviceLabel}>{s.label}</Text>
+          <View style={styles.servicesHeader}>
+            <Text style={styles.servicesTitle}>SERVICES</Text>
+            <TouchableOpacity onPress={() => console.log("View All pressed")}>
+              <Text style={styles.viewAllText}>VIEW ALL</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.servicesIconsRow}>
+            {/* Sample service #1 */}
+            <View style={styles.serviceBox}>
+              <Ionicons name="car-sport" size={32} color="#000" />
+              <Text style={styles.serviceLabel}>Car Repair</Text>
             </View>
-          ))}
+            {/* Sample service #2 */}
+            <View style={styles.serviceBox}>
+              <Ionicons name="water" size={32} color="#000" />
+              <Text style={styles.serviceLabel}>Car Wash</Text>
+            </View>
+            {/* Sample service #3 */}
+            <View style={styles.serviceBox}>
+              <Ionicons name="construct" size={32} color="#000" />
+              <Text style={styles.serviceLabel}>Maintenance</Text>
+            </View>
+            {/* Sample service #4 */}
+            <View style={styles.serviceBox}>
+              <Ionicons name="flash" size={32} color="#000" />
+              <Text style={styles.serviceLabel}>Tuning</Text>
+            </View>
+          </View>
         </View>
 
-        {/* Services Icons */}
-        <Text style={styles.sectionTitle}>Services</Text>
-        <View style={styles.servicesRow}>
-          <TouchableOpacity style={styles.serviceIcon}>
-            <Ionicons name="car-sport" size={28} color="#666" />
-            <Text style={styles.serviceIconLabel}>Car Repair</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.serviceIcon}>
-            <Ionicons name="water" size={28} color="#666" />
-            <Text style={styles.serviceIconLabel}>Car Wash</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.serviceIcon}>
-            <Ionicons name="construct" size={28} color="#666" />
-            <Text style={styles.serviceIconLabel}>Maintenance</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.serviceIcon}>
-            <Ionicons name="flash" size={28} color="#666" />
-            <Text style={styles.serviceIconLabel}>Tuning</Text>
-          </TouchableOpacity>
+        {/* LATEST BLOGS (Horizontally scrollable) */}
+        <View style={styles.blogContainer}>
+          <Text style={styles.blogTitle}>LATEST BLOGS</Text>
+          <FlatList
+            data={posts}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderPostItem}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.blogList}
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+          />
         </View>
-
-        {/* Latest Blogs */}
-        <Text style={styles.sectionTitle}>Latest Blogs</Text>
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderPostItem}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 8 }}
-        />
       </ScrollView>
     </View>
   );
@@ -150,115 +231,288 @@ const Home = ({ navigation }) => {
 
 export default Home;
 
+/* ======================
+   STYLES
+   ====================== */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FAFAFA' },
-  body: { paddingBottom: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
 
-  bannerWrap: { position: 'relative' },
-  bannerScroll: { paddingVertical: 12 },
-  banner: {
+  /****************
+   * SCROLL BODY
+   ****************/
+  bodyContainer: {
+    paddingBottom: 20,
+  },
+
+  /****************************
+   * HORIZONTAL SCROLL BANNERS
+   ****************************/
+  bannerScrollContainer: {
+    marginTop: 10,
+  },
+  bannerItem: {
     width: width * 0.9,
-    height: 160,
-    borderRadius: 10,
-    marginHorizontal: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: width * 0.45,
+    marginHorizontal: 10,
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#ccc",
+    position: "relative",
   },
-  bannerText: { fontSize: 18, fontWeight: '700', color: '#333' },
-
-  pointsCard: {
-    position: 'absolute',
-    bottom: -30,
-    left: width * 0.05,
-    right: width * 0.05,
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    elevation: 4,
+  bannerBg: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
-  pointsInfo: { flex: 1 },
-  pointsBalance: { fontSize: 20, fontWeight: '700', color: '#333' },
-  pointsLabel: { fontSize: 12, color: '#777' },
-  redeemBtn: {
-    backgroundColor: '#888',
-    paddingHorizontal: 12,
+  bannerTextContainer: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    right: 10,
+  },
+  bannerMainText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+    backgroundColor: "#fff",
+    alignSelf: "flex-start",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginBottom: 6,
+  },
+  bulletPoints: {
+    backgroundColor: "#fff",
+    padding: 6,
+    borderRadius: 4,
+    marginBottom: 6,
+  },
+  bulletText: {
+    fontSize: 14,
+    color: "#000",
+    marginBottom: 2,
+  },
+  contactText: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    color: "#000",
+  },
+  freeCarWashBubble: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+    backgroundColor: "#ffc107",
+    paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 20,
+  },
+  freeCarWashText: {
+    fontWeight: "bold",
+    color: "#000",
+    fontSize: 12,
+  },
+  contactUsBtn: {
+    backgroundColor: "#ff0000",
+    alignSelf: "flex-start",
+    marginTop: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  contactUsBtnText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+
+  /********************************
+   * POINTS BALANCE + QR CONTAINER
+   ********************************/
+  pointsRowContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    marginTop: 10,
+    // Adjust spacing as needed
+  },
+  pointsBalanceCard: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    // Optional shadow to pop out the card
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.84,
+    elevation: 2,
+    marginRight: 10, // space before QR code
+  },
+  walletIcon: {
+    fontSize: 28,
+    color: "#000",
     marginRight: 8,
   },
-  redeemText: { color: '#FFF', fontWeight: '600' },
-  qrBtn: {
-    backgroundColor: '#EEE',
-    padding: 8,
-    borderRadius: 8,
-  },
-
-  sectionTitle: {
-    marginTop: 40,
-    marginHorizontal: 16,
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#333',
-  },
-
-  servicesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 12,
-    marginHorizontal: 16,
-  },
-  serviceItem: {
+  pointsTextWrapper: {
     flex: 1,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    alignItems: 'center',
-    marginHorizontal: 4,
   },
-  servicePoints: {
+  pointsBalanceTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 2,
+  },
+  pointsBalanceValue: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#333',
-    marginBottom: 4,
+    fontWeight: "bold",
+    color: "#000",
   },
-  serviceLabel: {
-    fontSize: 12,
-    color: '#555',
-    textAlign: 'center',
+  redeemButton: {
+    backgroundColor: "#ccc",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginLeft: 8,
+  },
+  redeemButtonText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  qrContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    // Optional shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.84,
+    elevation: 2,
   },
 
-  servicesRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  /**********************
+   * POINTS PER SERVICES
+   **********************/
+  pointsContainer: {
+    marginHorizontal: 10,
     marginTop: 20,
-    marginHorizontal: 16,
   },
-  serviceIcon: {
+  pointsTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  pointsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  pointBox: {
+    flex: 1,
+    backgroundColor: "#f2f2f2",
+    marginHorizontal: 5,
+    borderRadius: 8,
+    alignItems: "center",
+    paddingVertical: 15,
+  },
+  pointValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  pointLabel: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#555",
+    textAlign: "center",
+  },
+
+  /****************
+   * SERVICES
+   ****************/
+  servicesContainer: {
+    marginHorizontal: 10,
+    marginTop: 20,
+  },
+  servicesHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  servicesTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  viewAllText: {
+    fontSize: 14,
+    color: "#007bff",
+  },
+  servicesIconsRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 10,
+  },
+  serviceBox: {
     width: 70,
     height: 70,
     borderRadius: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EEE',
+    backgroundColor: "#f2f2f2",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  serviceIconLabel: {
-    marginTop: 6,
+  serviceLabel: {
+    textAlign: "center",
+    marginTop: 5,
     fontSize: 12,
-    color: '#333',
-    textAlign: 'center',
+    color: "#000",
+    fontWeight: "500",
   },
 
-  postContainer: {
-    width: width * 0.7,
-    marginHorizontal: 8,
-    backgroundColor: '#FFF',
-    borderRadius: 10,
-    overflow: 'hidden',
-    elevation: 2,
+  /**************
+   * LATEST BLOGS
+   **************/
+  blogContainer: {
+    marginHorizontal: 10,
+    marginTop: 20,
   },
-  postImage: { width: '100%', height: 120 },
-  postTitle: { padding: 8, fontSize: 14, color: '#333', fontWeight: '600' },
+  blogTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  blogList: {},
+  postContainer: {
+    marginRight: 16,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    width: width * 0.8,
+  },
+  postImage: {
+    width: "100%",
+    height: 150,
+    resizeMode: "cover",
+  },
+  postTitle: {
+    padding: 10,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+  },
 });

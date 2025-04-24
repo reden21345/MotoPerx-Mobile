@@ -11,36 +11,25 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import QRCode from "react-native-qrcode-svg";
 
-/**
- * CustomTabBar
- *  - Renders a pill-shaped black tab bar with rounded corners.
- *  - Places a blue center button for "Show QR".
- *  - When pressed, it displays a modal with the user’s QR code.
- */
+const METAL_BLUE = "#4682B4";
+const INACTIVE_WHITE = "rgba(255,255,255,0.6)";
+const WHITE = "#FFFFFF";
+const { width } = Dimensions.get("window");
+
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   const { user } = useSelector((state) => state.auth);
   const { qrCode } = useSelector((reduxState) => reduxState.qrCode);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleShowQR = () => {
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
-  // Filter out the dummy route for the center button.
   const visibleRoutes = state.routes.filter((r) => r.name !== "ShowQRButton");
 
   return (
     <>
-      {/* Modal for displaying the QR code */}
       <Modal
         transparent
         visible={modalVisible}
         animationType="fade"
-        onRequestClose={closeModal}
+        onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
@@ -52,129 +41,108 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
             ) : (
               <Text style={styles.qrLabel}>QR Code Loading...</Text>
             )}
-            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={styles.closeButton}
+            >
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* The pill-shaped tab bar becomes part of the layout */}
       <View style={styles.tabBarContainer}>
-        {/* Left side routes */}
         {visibleRoutes
           .slice(0, Math.ceil(visibleRoutes.length / 2))
           .map((route, index) =>
             renderTabItem(route, index, state, descriptors, navigation)
           )}
 
-        {/* Center Button */}
         {user?.role === "user" && (
           <View style={styles.centerButtonWrapper}>
             <TouchableOpacity
               style={styles.centerButton}
-              onPress={handleShowQR}
+              onPress={() => setModalVisible(true)}
             >
-              <Ionicons name="qr-code-outline" size={30} color="#fff" />
+              <Ionicons name="qr-code-outline" size={30} color={METAL_BLUE} />
             </TouchableOpacity>
           </View>
         )}
 
-        {/* Right side routes */}
         {visibleRoutes
           .slice(Math.ceil(visibleRoutes.length / 2))
-          .map((route, index) => {
-            const actualIndex = index + Math.ceil(visibleRoutes.length / 2);
-            return renderTabItem(
+          .map((route, idx) =>
+            renderTabItem(
               route,
-              actualIndex,
+              idx + Math.ceil(visibleRoutes.length / 2),
               state,
               descriptors,
               navigation
-            );
-          })}
+            )
+          )}
       </View>
     </>
   );
 };
-/**
- * Helper function to render a single tab item (icon + label).
- */
+
 const renderTabItem = (route, index, state, descriptors, navigation) => {
   const { options } = descriptors[route.key];
-  const label =
-    options.tabBarLabel !== undefined
-      ? options.tabBarLabel
-      : options.title !== undefined
-      ? options.title
-      : route.name;
-
+  const label = options.tabBarLabel ?? options.title ?? route.name;
   const isFocused =
     state.index === state.routes.findIndex((r) => r.name === route.name);
 
   let iconName;
-  if (route.name === "Home") {
-    iconName = isFocused ? "home" : "home-outline";
-  } else if (route.name === "Deals") {
-    iconName = isFocused ? "pricetag" : "pricetag-outline";
-  } else if (route.name === "Scanner") {
-    iconName = isFocused ? "scan" : "scan-outline";
-  } else if (route.name === "Badges") {
-    iconName = isFocused ? "medal" : "medal-outline";
-  } else if (route.name === "Profile") {
-    iconName = isFocused ? "person" : "person-outline";
-  } else if (route.name === "Shop") {
-    iconName = isFocused ? "storefront" : "storefront-outline";
-  } else if (route.name === "Users") {
-    iconName = isFocused ? "people" : "people-outline";
+  switch (route.name) {
+    case "Home":
+      iconName = isFocused ? "home" : "home-outline";
+      break;
+    case "Deals":
+      iconName = isFocused ? "pricetag" : "pricetag-outline";
+      break;
+    case "Scanner":
+      iconName = isFocused ? "scan" : "scan-outline";
+      break;
+    case "Badges":
+      iconName = isFocused ? "medal" : "medal-outline";
+      break;
+    case "Profile":
+      iconName = isFocused ? "person" : "person-outline";
+      break;
+    case "Shop":
+      iconName = isFocused ? "storefront" : "storefront-outline";
+      break;
+    case "Users":
+      iconName = isFocused ? "people" : "people-outline";
+      break;
+    default:
+      iconName = isFocused ? "ellipse" : "ellipse-outline";
   }
-
-  const onPress = () => {
-    const event = navigation.emit({
-      type: "tabPress",
-      target: route.key,
-      canPreventDefault: true,
-    });
-    if (!event.defaultPrevented) {
-      navigation.navigate(route.name);
-    }
-  };
 
   return (
     <TouchableOpacity
       key={route.name}
-      onPress={onPress}
+      onPress={() => navigation.navigate(route.name)}
       style={styles.tabItem}
-      accessibilityRole="button"
-      accessibilityLabel={label}
     >
-      <Ionicons name={iconName} size={24} color={isFocused ? "#fff" : "#999"} />
-      <Text
-        style={[styles.tabItemText, { color: isFocused ? "#fff" : "#999" }]}
-      >
+      <Ionicons
+        name={iconName}
+        size={24}
+        color={isFocused ? WHITE : INACTIVE_WHITE}
+      />
+      <Text style={[styles.tabItemText, { color: isFocused ? WHITE : INACTIVE_WHITE }]}>
         {label}
       </Text>
     </TouchableOpacity>
   );
 };
 
-const { width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
-  // Tab bar is now part of the layout (no absolute positioning)
   tabBarContainer: {
-    marginHorizontal: 0,
-    //marginBottom: 20,
     height: 60,
-    backgroundColor: "#000",
-    //borderRadius: 30,
+    backgroundColor: METAL_BLUE,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
     elevation: 5,
   },
   tabItem: {
@@ -186,7 +154,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 2,
   },
-  // Center button styles
   centerButtonWrapper: {
     width: 60,
     alignItems: "center",
@@ -196,11 +163,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#007bff",
+    backgroundColor: WHITE,
     alignItems: "center",
     justifyContent: "center",
+    elevation: 4,
   },
-  // Modal styles
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
@@ -209,7 +176,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: 260,
-    backgroundColor: "#fff",
+    backgroundColor: WHITE,
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
@@ -222,13 +189,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   closeButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: METAL_BLUE,
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 5,
   },
   closeButtonText: {
-    color: "#fff",
+    color: WHITE,
     fontWeight: "600",
   },
 });
