@@ -21,6 +21,7 @@ import EditUser from './src/screens/admin/EditUser';
 
 // Partner Import
 import CreateDeal from './src/screens/partner/CreateDeal';
+import EditDeal from './src/screens/partner/EditDeal';
 
 import 'react-native-gesture-handler';
 
@@ -65,6 +66,7 @@ const AppContent = () => {
 
           {/* Admin Screens */}
           <Stack.Screen name="CreateDeal" component={CreateDeal} />
+          <Stack.Screen name="EditDeal" component={EditDeal} />
 
         </Stack.Navigator>
       </NavigationContainer>

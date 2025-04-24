@@ -32,3 +32,40 @@ export const createDeals = createAsyncThunk('deals/createDeals', async (data, th
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to create deal');
     }
 });
+
+// Update Deals
+export const updateDeals = createAsyncThunk('deals/updateDeals', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const {id} = data;
+
+        const response = await axios.put(`${API_BASE_URL}/deal/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to update deal');
+    }
+});
+
+// Delete Deal
+export const deleteDeal = createAsyncThunk('deals/deleteDeal', async (id, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.delete(`${API_BASE_URL}/deal/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to delete deal');
+    }
+});
