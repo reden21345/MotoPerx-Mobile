@@ -27,10 +27,14 @@ const Deals = () => {
     Alert.alert("Success", message);
   }
 
+  const filteredDeals = deals.filter(
+    (deal) => deal.status === 'Available'
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.screenTitle}>Available Deals</Text>
-      <DealsComponent dealsData={deals} partner={false} />
+      <DealsComponent dealsData={filteredDeals} partner={false} />
     </View>
   );
 };
