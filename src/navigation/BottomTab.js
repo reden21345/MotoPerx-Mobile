@@ -12,6 +12,7 @@ import Badges from "../screens/user/Badges";
 
 // Admin Screens
 import AllUsers from "../screens/admin/Users";
+import Partners from "../screens/admin/Partners";
 
 // Partner Screens
 import PartnerDashboard from "../screens/dashboard/PartnerDashboard";
@@ -43,7 +44,10 @@ const BottomTab = () => {
             <Tab.Screen name="ShopDeals" component={ShopDeals} />
           </>
         ) : (
-          <Tab.Screen name="Users" component={AllUsers} />
+          <>
+            <Tab.Screen name="Users" component={AllUsers} />
+            <Tab.Screen name="Partners" component={Partners} />
+          </>
         )}
         <Tab.Screen name="Profile" component={Profile} />
 

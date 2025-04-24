@@ -127,6 +127,8 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
     iconName = isFocused ? "storefront" : "storefront-outline";
   } else if (route.name === "Users") {
     iconName = isFocused ? "people" : "people-outline";
+  } else if (route.name === "Partners") {
+    iconName = isFocused ? "business" : "business-outline";
   }
 
   const onPress = () => {

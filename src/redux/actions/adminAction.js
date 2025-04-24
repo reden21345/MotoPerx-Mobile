@@ -56,3 +56,20 @@ export const editUser = createAsyncThunk('admins/editUser', async (data, thunkAP
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });
+
+// Get all partners
+export const getAllPartners = createAsyncThunk('partner/getAllPartners', async (_, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.get(`${API_BASE_URL}/partners`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get partners');
+    }
+});
