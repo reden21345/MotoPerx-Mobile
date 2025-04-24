@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from '@react-navigation/native'
 import { Swipeable } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getAllDeals } from "../redux/actions/dealsAction";
+import { deleteDeal, getAllDeals } from "../redux/actions/dealsAction";
 import { clearSuccess } from "../redux/slices/dealSlice";
 import { redeemPoints } from "../redux/actions/pointsAction";
 import { clearMessages } from "../redux/slices/pointSlice";
@@ -44,10 +44,9 @@ const DealsComponent = ({ dealsData, partner }) => {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            console.log("Deal deleted: ", id);
-            // dispatch(deleteUser(id))
-            //   .then(Alert.alert("Deleted", "User deleted successfully."))
-            //   .catch((err) => Alert.alert("Error", err.message));
+            dispatch(deleteDeal(id))
+              .then(Alert.alert("Deleted", "Deal deleted successfully."))
+              .catch((err) => Alert.alert("Error", err.message));
           },
         },
       ]
