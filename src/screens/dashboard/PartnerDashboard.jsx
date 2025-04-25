@@ -99,13 +99,15 @@ const PartnerDashboard = () => {
           value={partner.totalRedemptions}
         />
       </View>
+      {user.role === "partner" && (
+        <ManageRow
+          icon="account-multiple"
+          label="Employees"
+          value={partner.employees}
+          navigation={navigation}
+        />
+      )}
 
-      <ManageRow
-        icon="account-multiple"
-        label="Employees"
-        value={partner.employees}
-        navigation={navigation}
-      />
       <ManageRow
         icon="cube-outline"
         label="Products/Services"
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 15,
     marginTop: 5,
-    marginBottom: 5
+    marginBottom: 5,
   },
   manageHeader: {
     flexDirection: "row",
