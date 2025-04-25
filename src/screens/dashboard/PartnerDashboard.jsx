@@ -99,7 +99,7 @@ const PartnerDashboard = () => {
           value={partner.totalRedemptions}
         />
       </View>
-      {user.role === "partner" && (
+      {user?.role === "partner" && (
         <ManageRow
           icon="account-multiple"
           label="Employees"
