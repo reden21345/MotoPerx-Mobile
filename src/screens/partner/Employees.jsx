@@ -17,9 +17,9 @@ import { Swipeable } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { getPartner } from "../../redux/actions/partnerAction";
+import { getPartner, removeEmployee } from "../../redux/actions/partnerAction";
 
-const Employees = ({navigation}) => {
+const Employees = ({ navigation }) => {
   const dispatch = useDispatch();
   const { partner, loading, error } = useSelector((state) => state.partners);
 
@@ -32,24 +32,23 @@ const Employees = ({navigation}) => {
     );
   }
 
-  if (error) { 
+  if (error) {
     Alert.alert("Error", error);
   }
 
-  const filteredEmployees = partner.employees
-    .filter((emp) => {
-      const matchesSearch =
-        emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.email.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesSearch;
-    });
+  const filteredEmployees = partner.employees.filter((emp) => {
+    const matchesSearch =
+      emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      emp.email.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
+  });
 
   const handleRefresh = async () => {
     setRefreshing(true);
     dispatch(getPartner()).finally(() => setRefreshing(false));
   };
 
-  const handleDelete = (id) => {
+  const handleRemove = (id) => {
     Alert.alert(
       "Confirm Deletion",
       "Are you sure you want to delete this user?",
@@ -59,10 +58,17 @@ const Employees = ({navigation}) => {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => {
-            dispatch(deleteUser(id))
-              .then(Alert.alert("Deleted", "User deleted successfully."))
-              .catch((err) => Alert.alert("Error", err.message));
+          onPress: async () => {
+            const data = { employeeId: id };
+            try {
+              await dispatch(removeEmployee(data)).unwrap();
+              Alert.alert("Removed", "Employee removed successfully.");
+            } catch (err) {
+              Alert.alert(
+                "Removing Employee Failed",
+                err || "Something went wrong."
+              );
+            }
           },
         },
       ]
@@ -73,7 +79,7 @@ const Employees = ({navigation}) => {
     <View style={styles.actionsContainer}>
       <TouchableOpacity
         style={[styles.actionButton, styles.deleteButton]}
-        onPress={() => handleDelete(item._id)}
+        onPress={() => handleRemove(item._id)}
       >
         <Ionicons name="trash" size={20} color="white" />
       </TouchableOpacity>
@@ -114,6 +120,17 @@ const Employees = ({navigation}) => {
         value={searchTerm}
         onChangeText={setSearchTerm}
       />
+
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => navigation.navigate("AddEmployee")}
+        >
+          <Text style={styles.buttonText}>
+            <Ionicons name="add-circle" size={16} color="white" /> Add
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={filteredEmployees}
@@ -232,6 +249,30 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: "#F44336",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#000",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

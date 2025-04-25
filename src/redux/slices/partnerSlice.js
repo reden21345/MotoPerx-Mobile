@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apply, getPartner, updateStatus } from "../actions/partnerAction";
+import { addEmployee, apply, getPartner, updateStatus } from "../actions/partnerAction";
 
 const partnerSlice = createSlice({
   name: "partners",
