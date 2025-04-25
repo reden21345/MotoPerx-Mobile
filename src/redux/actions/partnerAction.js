@@ -37,3 +37,21 @@ export const getPartner = createAsyncThunk('partner/getPartner', async (_, thunk
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });
+
+// Update partnership status
+export const updateStatus = createAsyncThunk('partner/updateStatus', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const {id} = data;
+        
+        const response = await axios.put(`${API_BASE_URL}/partner/${id}/status`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});

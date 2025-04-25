@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apply, getPartner } from "../actions/partnerAction";
+import { apply, getPartner, updateStatus } from "../actions/partnerAction";
 
 const partnerSlice = createSlice({
   name: "partners",
@@ -45,6 +45,19 @@ const partnerSlice = createSlice({
         state.partner = action.payload.partner;
       })
       .addCase(getPartner.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      .addCase(updateStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(updateStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

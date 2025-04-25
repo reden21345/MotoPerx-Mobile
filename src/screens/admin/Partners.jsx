@@ -19,12 +19,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllPartners } from "../../redux/actions/adminAction";
 import { clearSuccess } from "../../redux/slices/adminSlice";
+import { clearMessage } from "../../redux/slices/partnerSlice";
 import DropDownPicker from "react-native-dropdown-picker";
+import { updateStatus } from "../../redux/actions/partnerAction";
 
 const Partners = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { partners, loading, error } = useSelector((state) => state.admins);
+  const { partners, loading } = useSelector((state) => state.admins);
+  const { message, error } = useSelector((state) => state.partners);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
@@ -55,6 +58,10 @@ const Partners = () => {
     Alert.alert("Error", error);
   }
 
+  if (message) {
+    Alert.alert("Message", message);
+  }
+
   const filteredPartners = partners.filter((p) => {
     const matchesSearch =
       p.owner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -69,6 +76,7 @@ const Partners = () => {
     setRefreshing(true);
     dispatch(getAllPartners()).finally(() => setRefreshing(false));
     dispatch(clearSuccess());
+    dispatch(clearMessage());
   };
 
   const handleEdit = (item) => {
@@ -88,9 +96,38 @@ const Partners = () => {
           style: "destructive",
           onPress: () => {
             console.log("Partner Deleted ", id);
-            // dispatch(deleteUser(id))
-            //   .then(Alert.alert("Deleted", "User deleted successfully."))
-            //   .catch((err) => Alert.alert("Error", err.message));
+          },
+        },
+      ]
+    );
+  };
+
+  const handleApproval = (id) => {
+    Alert.alert(
+      "Approval",
+      "Do you want to approve this application for partnership?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "No",
+          style: "destructive",
+          onPress: () => {
+            const data = {
+              id,
+              status: "Disapproved",
+            };
+            dispatch(updateStatus(data));
+          },
+        },
+        {
+          text: "Yes",
+          style: "default",
+          onPress: () => {
+            const data = {
+              id,
+              status: "Approved",
+            };
+            dispatch(updateStatus(data));
           },
         },
       ]
@@ -116,9 +153,16 @@ const Partners = () => {
 
   const renderItem = ({ item }) => {
     const createdAt = new Date(item.createdAt).toLocaleDateString();
+    const pending = item.status === "Pending";
     return (
-      <Swipeable renderRightActions={() => renderRightActions(item)}>
-        <View style={styles.card}>
+      <Swipeable
+        renderRightActions={() => (pending ? null : renderRightActions(item))}
+      >
+        <TouchableOpacity
+          style={styles.card}
+          disabled={!pending}
+          onPress={() => handleApproval(item._id)}
+        >
           {item.avatar?.url ? (
             <Image source={{ uri: item.avatar.url }} style={styles.avatar} />
           ) : (
@@ -133,11 +177,13 @@ const Partners = () => {
             <Text style={styles.role}>Status: {item.status}</Text>
             {item.status === "Pending" ? (
               <Text style={styles.created}>Created At: {createdAt}</Text>
+            ) : item.status === "Disapproved" ? (
+              <Text style={styles.created}>Declined: {createdAt}</Text>
             ) : (
               <Text style={styles.created}>Joined: {createdAt}</Text>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
       </Swipeable>
     );
   };
