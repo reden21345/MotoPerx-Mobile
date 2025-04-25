@@ -28,6 +28,7 @@ const CreateDeal = ({ navigation }) => {
   const [discount, setDiscount] = useState("");
   const [redemptionPoints, setRedemptionPoints] = useState("");
   const [images, setImages] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [expiryDate, setExpiryDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -83,7 +84,7 @@ const CreateDeal = ({ navigation }) => {
     return date.toLocaleDateString();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       !title ||
       !description ||
@@ -108,12 +109,16 @@ const CreateDeal = ({ navigation }) => {
       images,
     };
 
-    dispatch(createDeals(data))
-      .then(() => {
-        Alert.alert("Success", "Deal added successfully!");
-        navigation.goBack();
-      })
-      .catch((err) => Alert.alert("Error", err.message));
+    try {
+      setIsSubmitting(true);
+      await dispatch(createDeals(data)).unwrap();
+      Alert.alert("Success", "Deal added successfully!");
+      navigation.goBack();
+    } catch (err) {
+      Alert.alert("Create Failed", err || "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -215,8 +220,16 @@ const CreateDeal = ({ navigation }) => {
             </View>
           )}
 
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Add Deal</Text>
+          <TouchableOpacity
+            style={[styles.submitButton, isSubmitting && { opacity: 0.6 }]}
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Text style={styles.submitButtonText}>Creating...</Text>
+            ) : (
+              <Text style={styles.submitButtonText}>Add Deal</Text>
+            )}
           </TouchableOpacity>
         </SafeAreaView>
       </ScrollView>

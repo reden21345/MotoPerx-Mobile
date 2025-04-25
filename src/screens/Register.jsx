@@ -43,6 +43,7 @@ const RegisterScreen = ({ navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
+      quality: 0.6
     });
 
     if (!result.canceled && result.assets?.length > 0) {
@@ -167,7 +168,7 @@ const RegisterScreen = ({ navigation }) => {
           ) : (
             <Text style={styles.signUpButtonText}>SIGN UP</Text>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> 
       </View>
     </View>
   );

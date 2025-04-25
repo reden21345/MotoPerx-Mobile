@@ -109,6 +109,10 @@ const ApplyPartnership = () => {
           <View style={styles.pendingContainer}>
             <Text style={styles.pendingText}>Waiting for approval...</Text>
           </View>
+        ) : partner && partner.status === "Disapproved" ? (
+          <View style={styles.pendingContainer}>
+            <Text style={styles.pendingText}>Sorry your application has been declined</Text>
+          </View>
         ) : (
           <View style={styles.pendingContainer}>
             <Text style={styles.pendingText}>Styled Partner</Text>

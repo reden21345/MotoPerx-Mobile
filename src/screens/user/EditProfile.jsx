@@ -22,6 +22,7 @@ const EditProfile = ({ route, navigation }) => {
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [avatar, setAvatar] = useState(user?.avatar?.url || null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (error) {
@@ -29,7 +30,7 @@ const EditProfile = ({ route, navigation }) => {
     }
   }, [error]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
       name,
       email,
@@ -42,10 +43,16 @@ const EditProfile = ({ route, navigation }) => {
       return;
     }
 
-    dispatch(editProfile(data)).then(() => {
+    try {
+      setIsSubmitting(true);
+      await dispatch(editProfile(data)).unwrap();
       Alert.alert("Success", "Profile updated successfully");
       navigation.goBack();
-    });
+    } catch (err) {
+      Alert.alert("Update Failed", err || "Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const pickAvatar = async () => {
@@ -62,6 +69,7 @@ const EditProfile = ({ route, navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
+      quality: 0.6,
     });
 
     if (!result.canceled && result.assets?.length > 0) {
@@ -111,8 +119,16 @@ const EditProfile = ({ route, navigation }) => {
         keyboardType="phone-pad"
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Save Changes</Text>
+      <TouchableOpacity
+        style={[styles.button, isSubmitting && { opacity: 0.6 }]}
+        onPress={handleSubmit}
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? (
+          <Text style={styles.buttonText}>Saving...</Text>
+        ) : (
+          <Text style={styles.buttonText}>Save Profile</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
