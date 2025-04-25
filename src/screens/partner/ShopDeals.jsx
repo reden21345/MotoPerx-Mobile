@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDeals } from "../../redux/actions/dealsAction";
-import { getPartner } from "../../redux/actions/partnerAction";
 import DealsComponent from "../../components/DealsComponent";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -13,7 +12,6 @@ const Deals = ({navigation}) => {
 
   useEffect(() => {
     dispatch(getAllDeals());
-    dispatch(getPartner());
   }, [dispatch]);
 
   if (loading) {

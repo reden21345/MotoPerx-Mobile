@@ -125,7 +125,7 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
     iconName = isFocused ? "person" : "person-outline";
   } else if (route.name === "Shop") {
     iconName = isFocused ? "storefront" : "storefront-outline";
-  } else if (route.name === "Users") {
+  } else if (route.name === "Users" || route.name === "Employees") {
     iconName = isFocused ? "people" : "people-outline";
   } else if (route.name === "Partners") {
     iconName = isFocused ? "business" : "business-outline";

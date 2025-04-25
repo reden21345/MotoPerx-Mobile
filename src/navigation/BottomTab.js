@@ -18,6 +18,7 @@ import Partners from "../screens/admin/Partners";
 import PartnerDashboard from "../screens/dashboard/PartnerDashboard";
 import QRScanner from "../screens/partner/QRScanner";
 import ShopDeals from "../screens/partner/ShopDeals";
+import Employees from "../screens/partner/Employees";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,6 +43,9 @@ const BottomTab = () => {
             <Tab.Screen name="Shop" component={PartnerDashboard} />
             <Tab.Screen name="Scanner" component={QRScanner} />
             <Tab.Screen name="ShopDeals" component={ShopDeals} />
+            {user?.role === "partner" ? (
+              <Tab.Screen name="Employees" component={Employees} />
+            ) : null}
           </>
         ) : (
           <>
