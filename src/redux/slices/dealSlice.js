@@ -17,6 +17,7 @@ const dealsSlice = createSlice({
       state.count = 0;
       state.success = false;
       state.error = null;
+      state.dealDetails = null;
     },
     clearSuccess : (state) => {
       state.success = false;

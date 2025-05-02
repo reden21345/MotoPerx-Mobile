@@ -14,7 +14,9 @@ const amdinSlice = createSlice({
   reducers: {
     clearAdminState: (state) => {
       state.users = [];
+      state.partners = [],
       state.count = 0;
+      state.success = false,
       state.error = null;
     },
     clearSuccess: (state) => {

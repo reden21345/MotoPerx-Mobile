@@ -34,8 +34,10 @@ const Users = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllUsers());
-  }, [dispatch]);
+    if (user?.role === 'admin'){
+      dispatch(getAllUsers());
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (users) {

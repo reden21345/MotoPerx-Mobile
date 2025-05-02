@@ -23,7 +23,7 @@ const authSlice = createSlice({
   reducers: {
     clearAuthState: (state) => {
       state.user = null;
-      state.token = null;
+      state.message = null;
       state.error = null;
     },
     clearError: (state) => {

@@ -5,11 +5,13 @@ import { clearDealState } from '../slices/dealSlice';
 import { clearPartnerState } from '../slices/partnerSlice';
 import { clearPointState } from '../slices/pointSlice';
 import { resetData } from '../slices/qrSlice';
+import { clearAdminState } from '../slices/adminSlice';
 
 export const logoutAndReset = () => async (dispatch) => {
   try {
     await dispatch(logoutUser()).unwrap();
 
+    dispatch(clearAdminState());
     dispatch(clearAuthState());
     dispatch(clearBadgeState());
     dispatch(clearDealState());

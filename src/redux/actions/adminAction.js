@@ -21,7 +21,7 @@ export const getAllUsers = createAsyncThunk('admins/getAllUsers', async (_, thun
     }
 });
 
-// Get all users
+// Delete users
 export const deleteUser = createAsyncThunk('admins/deleteUser', async (id, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
