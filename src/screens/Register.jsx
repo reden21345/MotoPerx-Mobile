@@ -28,6 +28,8 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const [step, setStep] = useState(1);
+  const [code, setCode] = useState(null);
 
   const pickAvatar = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -43,7 +45,7 @@ const RegisterScreen = ({ navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0.6
+      quality: 0.6,
     });
 
     if (!result.canceled && result.assets?.length > 0) {
@@ -59,7 +61,7 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   const handleRegister = async () => {
-    const data = { name, email, phone, password, avatar };
+    const data = { name, email, phone, password, avatar, code };
     const result = await dispatch(registerUser(data));
     if (registerUser.fulfilled.match(result)) {
       navigation.replace("Main");
@@ -83,92 +85,149 @@ const RegisterScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.body}>
-        <Text style={styles.title}>CREATE YOUR{"\n"}ACCOUNT</Text>
+        {step === 3 &&(<Text style={styles.title}>CREATE YOUR{"\n"}ACCOUNT</Text>)}
 
         {error && <Text style={styles.error}>{String(error)}</Text>}
 
-        {/* Name Input */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="NAME"
-            placeholderTextColor="#888"
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-          />
-          <Ionicons name="person" size={24} color="#999" style={styles.icon} />
-        </View>
+        {step === 1 && (
+          <>
+            <Text style={styles.title}>Do you have a referral code?</Text>
+            <TouchableOpacity
+              onPress={() => setStep(2)}
+              style={styles.signUpButton}
+            >
+              <Text style={styles.signUpButtonText}>YES</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setStep(3)}
+              style={styles.signUpButton}
+            >
+              <Text style={styles.signUpButtonText}>NO</Text>
+            </TouchableOpacity>
+          </>
+        )}
+        {step === 2 && (
+          <>
+            <Text style={styles.title}>Enter Referral Code</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Referral Code"
+                placeholderTextColor="#888"
+                value={code}
+                onChangeText={setCode}
+                style={styles.input}
+              />
+              <Ionicons
+                name="code-outline"
+                size={24}
+                color="#999"
+                style={styles.icon}
+              />
+            </View>
 
-        {/* Email Input */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="EMAIL"
-            placeholderTextColor="#888"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            style={styles.input}
-          />
-          <Ionicons name="mail" size={24} color="#999" style={styles.icon} />
-        </View>
+            <TouchableOpacity
+              onPress={() => setStep(3)}
+              style={styles.signUpButton}
+            >
+              <Text style={styles.signUpButtonText}>Next</Text>
+            </TouchableOpacity>
+          </>
+        )}
+        {step === 3 && (
+          <>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="NAME"
+                placeholderTextColor="#888"
+                value={name}
+                onChangeText={setName}
+                style={styles.input}
+              />
+              <Ionicons
+                name="person"
+                size={24}
+                color="#999"
+                style={styles.icon}
+              />
+            </View>
 
-        {/* Phone Input */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="PHONE"
-            placeholderTextColor="#888"
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="phone-pad"
-            style={styles.input}
-          />
-          <Ionicons name="call" size={24} color="#999" style={styles.icon} />
-        </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="EMAIL"
+                placeholderTextColor="#888"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                style={styles.input}
+              />
+              <Ionicons
+                name="mail"
+                size={24}
+                color="#999"
+                style={styles.icon}
+              />
+            </View>
 
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="PASSWORD"
-            placeholderTextColor="#888"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-            style={styles.input}
-          />
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={styles.icon}
-          >
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={24}
-              color="#999"
-            />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="PHONE"
+                placeholderTextColor="#888"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                style={styles.input}
+              />
+              <Ionicons
+                name="call"
+                size={24}
+                color="#999"
+                style={styles.icon}
+              />
+            </View>
 
-        {/* Avatar Picker */}
-        <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
-          {avatar ? (
-            <Image source={{ uri: avatar }} style={styles.avatarImage} />
-          ) : (
-            <Text style={styles.avatarText}>Add Avatar</Text>
-          )}
-        </TouchableOpacity>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="PASSWORD"
+                placeholderTextColor="#888"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                style={styles.input}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.icon}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="#999"
+                />
+              </TouchableOpacity>
+            </View>
 
-        {/* Register Button */}
-        <TouchableOpacity
-          onPress={handleRegister}
-          style={styles.signUpButton}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.signUpButtonText}>SIGN UP</Text>
-          )}
-        </TouchableOpacity> 
+            <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
+              {avatar ? (
+                <Image source={{ uri: avatar }} style={styles.avatarImage} />
+              ) : (
+                <Text style={styles.avatarText}>Add Avatar</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleRegister}
+              style={styles.signUpButton}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.signUpButtonText}>SIGN UP</Text>
+              )}
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </View>
   );

@@ -91,12 +91,12 @@ const PartnerDashboard = () => {
         <InfoRow
           icon="cash-multiple"
           label="Total Points Given"
-          value={partner.totalPointsGiven}
+          value={(partner.totalPointsGiven).toFixed(2)}
         />
         <InfoRow
           icon="gift"
           label="Total Redemptions"
-          value={partner.totalRedemptions}
+          value={(partner.totalRedemptions).toFixed(2)}
         />
       </View>
       {user?.role === "partner" && (

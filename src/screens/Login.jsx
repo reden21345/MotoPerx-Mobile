@@ -10,8 +10,10 @@ import {
   Dimensions
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useFocusEffect } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../redux/actions/authAction';
+import { clearError } from '../redux/slices/authSlice';
 
 const { width } = Dimensions.get('window');
 
@@ -21,6 +23,14 @@ const Login = ({ navigation }) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useFocusEffect(
+      React.useCallback(() => {
+        return () => {
+          dispatch(clearError());
+        };
+      }, [dispatch])
+    );
 
   const handleLogin = async () => {
     const result = await dispatch(loginUser({ email, password }));
@@ -79,7 +89,7 @@ const Login = ({ navigation }) => {
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate('ForgotPassword')}
-        style={styles.registerContainer}
+        style={styles.forgotContainer}
       >
         <Text style={styles.registerText}>
           &nbsp;<Text style={styles.registerLink}>Forgot password</Text>
@@ -172,6 +182,10 @@ const styles = StyleSheet.create({
   registerContainer: {
     marginTop: 25,
     alignSelf: 'center',
+  },
+  forgotContainer: {
+    marginBottom: 25,
+    alignSelf: 'left',
   },
   registerText: {
     color: '#000',

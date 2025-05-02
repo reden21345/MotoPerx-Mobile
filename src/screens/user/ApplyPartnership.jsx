@@ -10,11 +10,14 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Image
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { apply, getPartner } from "../../redux/actions/partnerAction";
 import { clearMessage } from "../../redux/slices/partnerSlice";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
@@ -46,6 +49,7 @@ const ApplyPartnership = () => {
   const [storeName, setStoreName] = useState("");
   const [location, setLocation] = useState("");
   const [conversion, setConversion] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   if (loading) {
     return (
@@ -59,11 +63,41 @@ const ApplyPartnership = () => {
     Alert.alert("Error", error);
   }
 
+  const pickAvatar = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission Denied",
+        "Permission to access gallery is required!"
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.6,
+    });
+
+    if (!result.canceled && result.assets?.length > 0) {
+      const asset = result.assets[0];
+
+      const base64 = await FileSystem.readAsStringAsync(asset.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const base64Image = `data:image/jpeg;base64,${base64}`;
+      setAvatar(base64Image);
+    }
+  };
+
   const handleApply = () => {
     const data = {
       storeName,
       location,
       conversion: Number(conversion),
+      avatar
     };
 
     dispatch(apply(data));
@@ -101,6 +135,14 @@ const ApplyPartnership = () => {
               placeholderTextColor="#aaa"
             />
 
+            <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
+              {avatar ? (
+                <Image source={{ uri: avatar }} style={styles.avatarImage} />
+              ) : (
+                <Text style={styles.avatarText}>Add Logo</Text>
+              )}
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.submitButton} onPress={handleApply}>
               <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
@@ -111,7 +153,9 @@ const ApplyPartnership = () => {
           </View>
         ) : partner && partner.status === "Disapproved" ? (
           <View style={styles.pendingContainer}>
-            <Text style={styles.pendingText}>Sorry your application has been declined</Text>
+            <Text style={styles.pendingText}>
+              Sorry your application has been declined
+            </Text>
           </View>
         ) : (
           <View style={styles.pendingContainer}>
@@ -192,6 +236,26 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "600",
     color: "#424242",
+  },
+  avatarPicker: {
+    alignSelf: "center",
+    marginBottom: 20,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+  },
+  avatarText: {
+    color: "#888",
+    textAlign: "center",
   },
 });
 

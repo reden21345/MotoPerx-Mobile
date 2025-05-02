@@ -10,6 +10,7 @@ import {
   ScrollView,
   RefreshControl,
 } from "react-native";
+import * as Clipboard from "expo-clipboard";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { getUserPoints } from "../../redux/actions/pointsAction";
@@ -34,6 +35,13 @@ const Profile = ({ navigation }) => {
     setRefreshing(true);
     dispatch(profile());
     dispatch(getUserPoints()).finally(() => setRefreshing(false));
+  };
+
+  const handleCopyReferralCode = () => {
+    if (user?.referralCode) {
+      Clipboard.setStringAsync(user.referralCode);
+      Alert.alert("Copied", "Referral code copied to clipboard.");
+    }
   };
 
   useEffect(() => {
@@ -84,7 +92,23 @@ const Profile = ({ navigation }) => {
           <Text style={styles.userEmail}>{user?.email}</Text>
           <Text style={styles.userEmail}>Phone: {user?.phone || "N/A"}</Text>
           <Text style={styles.userRole}>Role: {user?.role}</Text>
-          <Text style={styles.userPoints}>Points: {points || 0}</Text>
+          <Text style={styles.userPoints}>Points: {(points || 0).toFixed(2)}</Text>
+          <TouchableOpacity
+            style={styles.referralContainer}
+            onPress={handleCopyReferralCode}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.referralLabel}>Referral Code:</Text>
+            <Text style={styles.referralCode}>
+              {user?.referralCode || "N/A"}
+            </Text>
+            <Ionicons
+              name="copy-outline"
+              size={18}
+              color="#007bff"
+              style={{ marginLeft: 5 }}
+            />
+          </TouchableOpacity>
 
           {qrCode?.code && user?._id === qrCode?.user ? (
             <QRCode
@@ -183,6 +207,25 @@ const styles = StyleSheet.create({
   logoutButton: {
     backgroundColor: "#dc3545",
   },
+  referralContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+    backgroundColor: "#e6f0ff",
+    padding: 10,
+    borderRadius: 8,
+  },
+  referralLabel: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "500",
+    marginRight: 6,
+  },
+  referralCode: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#007bff",
+  },  
 });
 
 export default Profile;

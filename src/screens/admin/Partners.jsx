@@ -136,12 +136,12 @@ const Partners = () => {
 
   const renderRightActions = (item) => (
     <View style={styles.actionsContainer}>
-      <TouchableOpacity
+      {item.status === 'Approved' &&(<TouchableOpacity
         style={[styles.actionButton, styles.editButton]}
         onPress={() => handleEdit(item)}
       >
         <Ionicons name="pencil" size={20} color="white" />
-      </TouchableOpacity>
+      </TouchableOpacity>)}
       <TouchableOpacity
         style={[styles.actionButton, styles.deleteButton]}
         onPress={() => handleDelete(item._id)}
