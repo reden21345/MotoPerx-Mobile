@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addEmployee, apply, getPartner, updateStatus } from "../actions/partnerAction";
+import { addEmployee, apply, getPartner, removeEmployee, updateStatus } from "../actions/partnerAction";
 
 const partnerSlice = createSlice({
   name: "partners",
@@ -58,6 +58,30 @@ const partnerSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(updateStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(addEmployee.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addEmployee.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(addEmployee.rejected, (state, action) => {
+        state.loading = false;
+      })
+
+      .addCase(removeEmployee.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(removeEmployee.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(removeEmployee.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -12,7 +12,7 @@ import {
   ScrollView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { addEmployee } from "../../redux/actions/partnerAction";
@@ -21,6 +21,8 @@ const { width } = Dimensions.get("window");
 
 const AddEmployee = ({ navigation }) => {
   const dispatch = useDispatch();
+
+  const { error, loading } = useSelector((state) => state.partners);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
