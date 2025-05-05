@@ -22,7 +22,9 @@ const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { qrCode } = useSelector((state) => state.qrCode);
-  const { points, loading, error } = useSelector((state) => state.points);
+  const { points, loyaltyTier, loading, error } = useSelector(
+    (state) => state.points
+  );
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -92,7 +94,10 @@ const Profile = ({ navigation }) => {
           <Text style={styles.userEmail}>{user?.email}</Text>
           <Text style={styles.userEmail}>Phone: {user?.phone || "N/A"}</Text>
           <Text style={styles.userRole}>Role: {user?.role}</Text>
-          <Text style={styles.userPoints}>Points: {(points || 0).toFixed(2)}</Text>
+          <Text style={styles.userPoints}>
+            Points: {(points || 0).toFixed(2)}
+          </Text>
+          <Text style={styles.userPoints}>Tier: {loyaltyTier || "N/A"}</Text>
           <TouchableOpacity
             style={styles.referralContainer}
             onPress={handleCopyReferralCode}
@@ -108,6 +113,20 @@ const Profile = ({ navigation }) => {
               color="#007bff"
               style={{ marginLeft: 5 }}
             />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.historyButton}
+            onPress={() => navigation.navigate("History")}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="time-outline"
+              size={18}
+              color="#fff"
+              style={{ marginRight: 6 }}
+            />
+            <Text style={styles.historyButtonText}>History</Text>
           </TouchableOpacity>
 
           {qrCode?.code && user?._id === qrCode?.user ? (
@@ -225,6 +244,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#007bff",
+  },
+  historyButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#000",
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    marginTop: 10,
+    marginBottom: 15,
+  },
+  historyButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },  
 });
 

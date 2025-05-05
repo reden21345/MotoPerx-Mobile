@@ -15,6 +15,8 @@ import EditProfile from './src/screens/user/EditProfile';
 import EditPassword from './src/screens/user/EditPassword';
 import ForgotPassword from './src/screens/user/ForgotPassword';
 import ResetPassword from './src/screens/user/ResetPassword';
+import GpsLocation from './src/screens/user/GpsLocation';
+import History from './src/screens/user/History';
 
 // Admin Import
 import EditUser from './src/screens/admin/EditUser';
@@ -62,6 +64,8 @@ const AppContent = () => {
           {/* Profile Screens */}
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="EditPassword" component={EditPassword} />
+          <Stack.Screen name="GpsLocation" component={GpsLocation} />
+          <Stack.Screen name="History" component={History} />
 
           {/* Admin Screens */}
           <Stack.Screen name="EditUser" component={EditUser} />

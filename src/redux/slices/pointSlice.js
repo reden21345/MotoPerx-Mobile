@@ -10,6 +10,9 @@ const pointsSlice = createSlice({
   initialState: {
     points: 0,
     givenPoints: 0,
+    transactions: [],
+    loyaltyTier: null,
+    lifetimePoints: 0,
     message: null,
     loading: false,
     error: null,
@@ -26,6 +29,9 @@ const pointsSlice = createSlice({
     clearPointState: (state) => {
       state.givenPoints = 0;
       state.points = 0;
+      state.transactions = [],
+      state.loyaltyTier = null,
+      state.lifetimePoints = 0,
       state.message = null;
       state.error = null;
     },
@@ -39,6 +45,9 @@ const pointsSlice = createSlice({
       .addCase(getUserPoints.fulfilled, (state, action) => {
         state.loading = false;
         state.points = action.payload.points;
+        state.transactions = action.payload.transactions;
+        state.loyaltyTier = action.payload.loyaltyTier;
+        state.lifetimePoints = action.payload.lifetimePoints;
       })
       .addCase(getUserPoints.rejected, (state, action) => {
         state.loading = false;
