@@ -8,7 +8,7 @@ import CustomTabBar from "./CustomTabBar";
 import HomeTab from "../screens/Home";
 import Deals from "../screens/Deals";
 import Profile from "../screens/user/Profile";
-import Badges from "../screens/user/Badges";
+import GpsLocation from "../screens/user/GpsLocation";
 
 // Admin Screens
 import AllUsers from "../screens/admin/Users";
@@ -36,7 +36,7 @@ const BottomTab = () => {
           <>
             <Tab.Screen name="Home" component={HomeTab} />
             <Tab.Screen name="Deals" component={Deals} />
-            <Tab.Screen name="Badges" component={Badges} />
+            <Tab.Screen name="Location" component={GpsLocation} />
           </>
         ) : user?.role === "partner" || user?.role === "employee" ? (
           <>
