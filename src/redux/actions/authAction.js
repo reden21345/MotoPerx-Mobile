@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_BASE_URL = 'https://motoperx-backend.onrender.com/api/v1';
+const API_BASE_URL = 'http://192.168.100.100:5000/api/v1';
 
 // Async Thunks
 export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, password }, thunkAPI) => {
