@@ -34,7 +34,13 @@
     },
     "owner": "motoperx",
     "plugins": [
-      "expo-barcode-scanner"
+      "expo-barcode-scanner",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow MotoPerx to use your location"
+        }
+      ]
     ]
   }
 }
