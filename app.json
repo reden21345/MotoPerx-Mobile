@@ -20,7 +20,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.reden21345.MotoPerxMobile"
+      "package": "com.reden21345.MotoPerxMobile",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDtbhafAucUtdQmagHIfpxyQKImqIqXbik"
+        }
+      }
     },
     "scheme": "motoperx",
     "deepLinking": true,
