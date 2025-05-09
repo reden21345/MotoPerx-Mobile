@@ -10,14 +10,21 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  Image
+  Image,
+  Modal,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
+import MapView, { Marker } from "react-native-maps";
+import Geocoder from "react-native-geocoding";
 import { apply, getPartner } from "../../redux/actions/partnerAction";
 import { clearMessage } from "../../redux/slices/partnerSlice";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import * as Location from "expo-location";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
+Geocoder.init("AIzaSyDtbhafAucUtdQmagHIfpxyQKImqIqXbik");
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
@@ -25,6 +32,15 @@ const ApplyPartnership = () => {
   const { partner, message, error, loading } = useSelector(
     (state) => state.partners
   );
+
+  const [storeName, setStoreName] = useState("");
+  const [location, setLocation] = useState([0, 0]);
+  const [conversion, setConversion] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const [region, setRegion] = useState(null);
+
+  const [mapVisible, setMapVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (user?.role === "partner" || user?.role === "employee") {
@@ -38,6 +54,40 @@ const ApplyPartnership = () => {
     }
   }, [message]);
 
+  useEffect(() => {
+    if (region) {
+      setLocation([region.longitude, region.latitude]);
+    }
+  }, [region]);
+
+  useEffect(() => {
+    const fetchCurrentLocation = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert("Permission Denied", "Location permission is required.");
+          return;
+        }
+
+        const { coords } = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+
+        setRegion({
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
+        });
+        setLocation([coords.longitude, coords.latitude]);
+      } catch (error) {
+        console.error("Error getting location:", error);
+      }
+    };
+
+    fetchCurrentLocation();
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -45,11 +95,6 @@ const ApplyPartnership = () => {
       };
     }, [dispatch])
   );
-
-  const [storeName, setStoreName] = useState("");
-  const [location, setLocation] = useState("");
-  const [conversion, setConversion] = useState("");
-  const [avatar, setAvatar] = useState(null);
 
   if (loading) {
     return (
@@ -97,10 +142,36 @@ const ApplyPartnership = () => {
       storeName,
       location,
       conversion: Number(conversion),
-      avatar
+      avatar,
     };
 
     dispatch(apply(data));
+  };
+
+  const handleRegionChangeComplete = (newRegion) => {
+    setRegion((prev) => ({
+      ...prev,
+      latitude: newRegion.latitude,
+      longitude: newRegion.longitude,
+      latitudeDelta: newRegion.latitudeDelta,
+      longitudeDelta: newRegion.longitudeDelta,
+    }));
+  };
+
+  const handleSearch = async () => {
+    try {
+      const geoData = await Geocoder.from(searchQuery);
+      const { lat, lng } = geoData.results[0].geometry.location;
+      setLocation([lng, lat]);
+      setRegion({
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.001,
+      });
+    } catch (error) {
+      console.error("Error during geocoding:", error);
+    }
   };
 
   return (
@@ -110,20 +181,21 @@ const ApplyPartnership = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.screenTitle}>Partner Application</Text>
+
         {!partner ? (
           <View style={styles.card}>
+            <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
+              {avatar ? (
+                <Image source={{ uri: avatar }} style={styles.avatarImage} />
+              ) : (
+                <Text style={styles.avatarText}>Add Logo</Text>
+              )}
+            </TouchableOpacity>
             <TextInput
               style={styles.input}
               placeholder="Store Name"
               value={storeName}
               onChangeText={setStoreName}
-              placeholderTextColor="#aaa"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Store Address"
-              value={location}
-              onChangeText={setLocation}
               placeholderTextColor="#aaa"
             />
             <TextInput
@@ -134,17 +206,69 @@ const ApplyPartnership = () => {
               onChangeText={setConversion}
               placeholderTextColor="#aaa"
             />
-
-            <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
-              {avatar ? (
-                <Image source={{ uri: avatar }} style={styles.avatarImage} />
-              ) : (
-                <Text style={styles.avatarText}>Add Logo</Text>
-              )}
+            <TouchableOpacity
+              style={styles.locBtn}
+              onPress={() => setMapVisible(true)}
+            >
+              <Text style={styles.buttonText}>Location</Text>
+              <Ionicons
+                name="map"
+                size={20}
+                color="white"
+                style={{ marginLeft: 10 }}
+              />
             </TouchableOpacity>
+            <Modal visible={mapVisible} animationType="slide">
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.input2}
+                  placeholder="Search Location"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                />
+                <TouchableOpacity
+                  onPress={handleSearch}
+                  style={styles.searchButton}
+                >
+                  <Ionicons name="search" size={20} color="white" />
+                </TouchableOpacity>
+              </View>
+              {region ? (
+                <MapView
+                  style={styles.map}
+                  initialRegion={region}
+                  onRegionChangeComplete={handleRegionChangeComplete}
+                >
+                  <Marker coordinate={region} />
+                </MapView>
+              ) : (
+                <ActivityIndicator size="large" color="#424242" />
+              )}
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleApply}>
-              <Text style={styles.buttonText}>Submit</Text>
+              <TouchableOpacity
+                onPress={() => setMapVisible(false)}
+                style={styles.saveButton}
+              >
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
+            </Modal>
+
+            {region ? (
+              <MapView style={styles.miniMap} region={region}>
+                <Marker coordinate={region} />
+              </MapView>
+            ) : (
+              <ActivityIndicator size="large" color="#424242" />
+            )}
+
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleApply}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? "Applying..." : "Apply"}
+              </Text>
             </TouchableOpacity>
           </View>
         ) : partner && partner.status === "Pending" ? (
@@ -222,6 +346,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
+  locBtn: {
+    backgroundColor: "#424242",
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: "50%",
+    alignItems: "center",
+    marginVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  saveButton: {
+    position: "absolute", // Position it over the map
+    bottom: 30, // Distance from the bottom of the screen
+    alignSelf: "center", // Center horizontally
+    backgroundColor: "#424242",
+    paddingVertical: 14,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: "50%",
+    alignItems: "center",
+    zIndex: 10, // Ensure it’s above the map
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 17,
+    fontWeight: "600",
+  },
   buttonText: {
     color: "#fff",
     fontSize: 17,
@@ -256,6 +409,29 @@ const styles = StyleSheet.create({
   avatarText: {
     color: "#888",
     textAlign: "center",
+  },
+  map: {
+    width: "100%",
+    height: "90%",
+  },
+  searchContainer: { flexDirection: "row", padding: 10 },
+  input2: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 8,
+    borderRadius: 5,
+  },
+  searchButton: {
+    backgroundColor: "#424242",
+    padding: 10,
+    marginLeft: 5,
+    borderRadius: 5,
+  },
+  searchText: { color: "#fff" },
+  miniMap: {
+    width: "100%",
+    height: "20%",
   },
 });
 
