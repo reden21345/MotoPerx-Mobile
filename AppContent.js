@@ -20,6 +20,7 @@ import History from './src/screens/user/History';
 
 // Admin Import
 import EditUser from './src/screens/admin/EditUser';
+import PartnerDetails from './src/screens/admin/PartnerDetails';
 
 // Partner Import
 import CreateDeal from './src/screens/partner/CreateDeal';
@@ -69,6 +70,7 @@ const AppContent = () => {
 
           {/* Admin Screens */}
           <Stack.Screen name="EditUser" component={EditUser} />
+          <Stack.Screen name="PartnerDetails" component={PartnerDetails} />
 
           {/* Partner Screens */}
           <Stack.Screen name="CreateDeal" component={CreateDeal} />

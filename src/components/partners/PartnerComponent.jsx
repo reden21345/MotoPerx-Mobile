@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
+import { useNavigation } from '@react-navigation/native'
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { updateStatus } from "../../redux/actions/partnerAction";
 import * as Location from "expo-location";
 
 const PartnerItem = ({ item }) => {
+  const navigation = useNavigation();
+  const createdAt = new Date(item.createdAt).toLocaleDateString();
+  const pending = item.status === "Pending";
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
@@ -38,10 +49,7 @@ const PartnerItem = ({ item }) => {
     getAddress();
   }, [item.location.coordinates]);
 
-  const createdAt = new Date(item.createdAt).toLocaleDateString();
-  const pending = item.status === "Pending";
-
-  const handleEdit = (item) => {
+  const handleEdit = () => {
     console.log("Partner Edit ", item);
     // navigation.navigate("EditUser", { user: item });
   };
@@ -59,6 +67,22 @@ const PartnerItem = ({ item }) => {
           onPress: () => {
             console.log("Partner Deleted ", id);
           },
+        },
+      ]
+    );
+  };
+
+  const handleDetails = () => {
+    Alert.alert(
+      "See Details",
+      "Do you want to see more details?",
+      [
+        { text: "No", style: "cancel" },
+        { text: "", style: "cancel" },
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: () => navigation.navigate("PartnerDetails", {item}),
         },
       ]
     );
@@ -96,12 +120,12 @@ const PartnerItem = ({ item }) => {
     );
   };
 
-  const renderRightActions = (item) => (
+  const renderRightActions = () => (
     <View style={styles.actionsContainer}>
       {item.status === "Approved" && (
         <TouchableOpacity
           style={[styles.actionButton, styles.editButton]}
-          onPress={() => handleEdit(item)}
+          onPress={() => handleEdit()}
         >
           <Ionicons name="pencil" size={20} color="white" />
         </TouchableOpacity>
@@ -117,12 +141,11 @@ const PartnerItem = ({ item }) => {
 
   return (
     <Swipeable
-      renderRightActions={() => (pending ? null : renderRightActions(item))}
+      renderRightActions={() => (pending ? null : renderRightActions())}
     >
       <TouchableOpacity
         style={styles.card}
-        disabled={!pending}
-        onPress={() => handleApproval(item._id)}
+        onPress={() => {pending ? handleApproval(item._id) : handleDetails()}}
       >
         {item.avatar?.url ? (
           <Image source={{ uri: item.avatar.url }} style={styles.avatar} />
