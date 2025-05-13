@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { Swipeable } from "react-native-gesture-handler";
 import { useNavigation } from '@react-navigation/native'
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -14,6 +15,7 @@ import { updateStatus } from "../../redux/actions/partnerAction";
 import * as Location from "expo-location";
 
 const PartnerItem = ({ item }) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const createdAt = new Date(item.createdAt).toLocaleDateString();
   const pending = item.status === "Pending";
