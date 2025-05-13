@@ -89,3 +89,20 @@ export const removeEmployee = createAsyncThunk('partner/removeEmployee', async (
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });
+
+// Get partner store details
+export const getNearbyPartners = createAsyncThunk('partner/getNearbyPartners', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.post(`${API_BASE_URL}/partners/nearby`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Error getting nearby partners');
+    }
+});
