@@ -37,8 +37,9 @@ const PartnerItem = ({ item }) => {
       try {
         const response = await Location.reverseGeocodeAsync(region);
         if (response && response.length > 0) {
-          const { street, city, region: state, postalCode } = response[0];
-          setAddress(`${street}, ${city}, ${state} ${postalCode}`);
+          console.log(response[0])
+          const { formattedAddress } = response[0];
+          setAddress(`${formattedAddress}`);
         }
       } catch (error) {
         console.warn("Failed to reverse geocode:", error);
