@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPartner } from "../../redux/actions/partnerAction";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import * as Location from "expo-location";
 
 const PartnerDashboard = () => {
   const dispatch = useDispatch();
@@ -21,12 +22,42 @@ const PartnerDashboard = () => {
   const { partner, loading, error } = useSelector((state) => state.partners);
   const { user } = useSelector((state) => state.auth);
   const [refreshing, setRefreshing] = useState(false);
+  const [address, setAddress] = useState(null);
 
   useEffect(() => {
     if (user) {
       dispatch(getPartner());
     }
   }, [dispatch, user]);
+
+  useEffect(() => {
+    const getAddress = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.warn("Permission to access location was denied");
+        setAddress("Permission denied");
+        return;
+      }
+
+      const region = {
+        latitude: partner?.location?.coordinates[1],
+        longitude: partner?.location?.coordinates[0],
+      };
+
+      try {
+        const response = await Location.reverseGeocodeAsync(region);
+        if (response && response.length > 0) {
+          const { street, city, region: state, postalCode } = response[0];
+          setAddress(`${street}, ${city}, ${state} ${postalCode}`);
+        }
+      } catch (error) {
+        console.warn("Failed to reverse geocode:", error);
+        setAddress("Unknown");
+      }
+    };
+
+    getAddress();
+  }, [partner]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -77,7 +108,7 @@ const PartnerDashboard = () => {
         />
         <View>
           <Text style={styles.storeName}>{partner.storeName}</Text>
-          <Text style={styles.subtext}>{partner.location}</Text>
+          <Text style={styles.subtext}>{address}</Text>
         </View>
       </View>
 
@@ -91,12 +122,12 @@ const PartnerDashboard = () => {
         <InfoRow
           icon="cash-multiple"
           label="Total Points Given"
-          value={(partner.totalPointsGiven).toFixed(2)}
+          value={partner.totalPointsGiven.toFixed(2)}
         />
         <InfoRow
           icon="gift"
           label="Total Redemptions"
-          value={(partner.totalRedemptions).toFixed(2)}
+          value={partner.totalRedemptions.toFixed(2)}
         />
       </View>
       {user?.role === "partner" && (

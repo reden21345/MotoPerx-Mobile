@@ -32,7 +32,7 @@ const BottomTab = () => {
         screenOptions={{ headerShown: false }}
         tabBar={(props) => <CustomTabBar {...props} />}
       >
-        {user?.role === "user" ? (
+        {user?.role === "user" || user?.role === "pendingPartner" ? (
           <>
             <Tab.Screen name="Home" component={HomeTab} />
             <Tab.Screen name="Deals" component={Deals} />

@@ -43,7 +43,7 @@ const ApplyPartnership = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    if (user?.role === "partner" || user?.role === "employee") {
+    if (user?.role === "partner" || user?.role === "employee" || user?.role === "pendingPartner") {
       dispatch(getPartner());
     }
   }, [dispatch, user]);
