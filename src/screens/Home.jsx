@@ -10,15 +10,19 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
+import { useNotification } from '../hooks/NotificationContext';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getQRCode } from "../redux/actions/qrcodeAction";
+import { notifChecker } from "../redux/actions/notifAction";
 
 const { width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
+  const { expoPushToken, error } = useNotification()
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { notifDetails } = useSelector((state) => state.notifications);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -42,6 +46,16 @@ const Home = ({ navigation }) => {
     }
   }, [user, dispatch]);
 
+  useEffect(() => {
+    if (user) {
+      const data = {
+        userId: user?._id,
+        expoToken: expoPushToken
+      }
+      dispatch(notifChecker(data));
+    }
+  }, [user, expoPushToken, dispatch]);
+  console.log(notifDetails)
   const openPost = (link) => {
     Linking.openURL(link);
   };

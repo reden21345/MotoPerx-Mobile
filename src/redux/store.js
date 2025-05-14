@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import adminReducer from './slices/adminSlice';
+import notifReducer from './slices/notifSlice';
 import authReducer from './slices/authSlice';
 import pointsReducer from './slices/pointSlice';
 import dealsReducer from './slices/dealSlice';
@@ -16,6 +17,7 @@ export const store = configureStore({
     qrCode: qrCodeReducer,
     badges: badgesReducer,
     partners: partnerReducer,
+    notifications: notifReducer
   },
 });
 

@@ -25,7 +25,7 @@ const useLocation = () => {
           const { latitude, longitude } = location.coords;
           setLatitude(latitude);
           setLongitude(longitude);
-          console.log(`[Location Log] Lat: ${latitude}, Long: ${longitude}`);
+          // console.log(`[Location Log] Lat: ${latitude}, Long: ${longitude}`);
         }
       );
     } catch (error) {
