@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { enableScreens } from 'react-native-screens';
+import { useNotification } from './src/hooks//NotificationContext';
 import * as Linking from 'expo-linking';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
@@ -45,7 +46,8 @@ const linking = {
 };
 
 const AppContent = () => {
-  
+  const { notification, expoPushToken, error } = useNotification()
+
     return (
       <NavigationContainer linking={linking}>
         <Stack.Navigator

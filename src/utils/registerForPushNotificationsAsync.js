@@ -37,7 +37,7 @@ export async function registerForPushNotificationsAsync() {
             const pushTokenString = (await Notifications.getExpoPushTokenAsync({
                 projectId,
             })).data
-            console.log(pushTokenString)
+            
             return pushTokenString
         } catch (error) {
             throw new Error(error)
