@@ -8,15 +8,21 @@ import {
   Dimensions
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useNotification } from '../hooks/NotificationContext';
 
 const { width, height } = Dimensions.get('window');
 
 const Landing = () => {
   const navigation = useNavigation();
+  const { notification, expoPushToken, error } = useNotification()
 
   const handleGetStarted = () => {
     navigation.navigate('Login');
   };
+
+  console.log("Notifications Message: ", notification)
+  console.log("Token: ", expoPushToken)
+  console.log("Notifications Error: ", error)
 
   return (
     <View style={styles.container}>
