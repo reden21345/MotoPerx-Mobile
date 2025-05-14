@@ -15,6 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getQRCode } from "../redux/actions/qrcodeAction";
 import { notifChecker } from "../redux/actions/notifAction";
+import { getUserPoints } from "../redux/actions/pointsAction";
 
 const { width } = Dimensions.get("window");
 
@@ -41,8 +42,9 @@ const Home = ({ navigation }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (user?.role === "user") {
+    if (user) {
       dispatch(getQRCode());
+      dispatch(getUserPoints());
     }
   }, [user, dispatch]);
 
@@ -55,7 +57,7 @@ const Home = ({ navigation }) => {
       dispatch(notifChecker(data));
     }
   }, [user, expoPushToken, dispatch]);
-  console.log(notifDetails)
+  
   const openPost = (link) => {
     Linking.openURL(link);
   };

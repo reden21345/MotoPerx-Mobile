@@ -25,7 +25,6 @@ const notifSlice = createSlice({
       .addCase(notifChecker.fulfilled, (state, action) => {
         state.loading = false;
         state.notifDetails = action.payload.notification;
-        state.count = action.payload.count;
       })
       .addCase(notifChecker.rejected, (state, action) => {
         state.loading = false;

@@ -23,7 +23,7 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
   const items = [
     { name: "Dashboard", icon: "grid-outline", screen: "Shop" },
     { name: "Settings", icon: "settings-outline", screen: "Profile" },
-    { name: "Transaction", icon: "card-outline", screen: "Deals" },
+    { name: "Transaction", icon: "card-outline", screen: "History" },
     { name: "Apply Partnership", icon: "business-outline", screen: "Apply" },
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
   ];

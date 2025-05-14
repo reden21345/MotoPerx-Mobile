@@ -28,11 +28,6 @@ const Profile = ({ navigation }) => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    dispatch(getUserPoints());
-    dispatch(getQRCode());
-  }, [dispatch]);
-
   const onRefresh = () => {
     setRefreshing(true);
     dispatch(profile());
