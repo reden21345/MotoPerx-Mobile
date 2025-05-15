@@ -59,9 +59,8 @@ const ProductServices = ({ navigation }) => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            const data = { employeeId: id };
             try {
-              await dispatch(deleteProduct(data)).unwrap();
+              await dispatch(deleteProduct(id)).unwrap();
               Alert.alert("Removed", "Product deleted successfully.");
             } catch (err) {
               Alert.alert(
@@ -96,7 +95,7 @@ const ProductServices = ({ navigation }) => {
     return (
       <Swipeable renderRightActions={() => renderRightActions(item)}>
         <View style={styles.card}>
-          {item.avatar?.url ? (
+          {item.images.length > 0 ? (
             <Image source={{ uri: item.images[0].url }} style={styles.avatar} />
           ) : (
             <View style={styles.avatarPlaceholder}>
@@ -131,7 +130,7 @@ const ProductServices = ({ navigation }) => {
       <View style={styles.buttonRow}>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => console.log("Add Product")}
+          onPress={() => navigation.navigate('AddProduct')}
         >
           <Text style={styles.buttonText}>
             <Ionicons name="add-circle" size={16} color="white" /> Add

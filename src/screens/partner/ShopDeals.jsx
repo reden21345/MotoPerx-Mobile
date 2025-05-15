@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, Alert, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllDeals } from "../../redux/actions/dealsAction";
 import DealsComponent from "../../components/DealsComponent";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const Deals = ({navigation}) => {
+const Deals = ({ navigation }) => {
   const dispatch = useDispatch();
   const { deals, loading, error } = useSelector((state) => state.deals);
   const { partner } = useSelector((state) => state.partners);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     dispatch(getAllDeals());
   }, [dispatch]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    dispatch(getAllDeals()).finally(() => setRefreshing(false));
+  };
 
   if (loading) {
     return (
@@ -32,7 +48,7 @@ const Deals = ({navigation}) => {
     <View style={styles.container}>
       <Text style={styles.screenTitle}>Created deals</Text>
       <View style={styles.buttonRow}>
-      <TouchableOpacity
+        <TouchableOpacity
           style={styles.addButton}
           onPress={() => console.log("View History")}
         >
@@ -42,7 +58,7 @@ const Deals = ({navigation}) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => navigation.navigate('CreateDeal')}
+          onPress={() => navigation.navigate("CreateDeal")}
         >
           <Text style={styles.buttonText}>
             <Ionicons name="add-circle" size={16} color="white" /> Add
@@ -52,9 +68,14 @@ const Deals = ({navigation}) => {
       {filteredDeals.length !== 0 ? (
         <DealsComponent dealsData={filteredDeals} partner={true} />
       ) : (
-        <View style={styles.noDealContainer}>
+        <ScrollView
+          style={styles.noDealContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        >
           <Text style={styles.noDealText}>No deals created yet</Text>
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -101,8 +122,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   noDealContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
     padding: 20,
   },
   noDealText: {
