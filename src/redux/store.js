@@ -7,6 +7,7 @@ import dealsReducer from './slices/dealSlice';
 import qrCodeReducer from './slices/qrSlice';
 import badgesReducer from './slices/badgeSlice';
 import partnerReducer from './slices/partnerSlice';
+import productReducer from './slices/producSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
     qrCode: qrCodeReducer,
     badges: badgesReducer,
     partners: partnerReducer,
-    notifications: notifReducer
+    notifications: notifReducer,
+    products: productReducer,
   },
 });
 

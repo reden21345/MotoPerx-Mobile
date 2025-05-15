@@ -108,7 +108,9 @@ const PartnerDashboard = () => {
         />
         <View>
           <Text style={styles.storeName}>{partner.storeName}</Text>
-          <Text style={styles.subtext}>{address}</Text>
+          <Text style={styles.subtext} numberOfLines={2} ellipsizeMode="tail">
+            {address}
+          </Text>
         </View>
       </View>
 
@@ -166,8 +168,7 @@ const ManageRow = ({ icon, label, value, navigation }) => (
       if (label === "Employees") {
         navigation.navigate("Employees");
       } else {
-        // navigation.navigate("Products/Services");
-        console.log("ProdServices: ", value);
+        navigation.navigate("Products");
       }
     }}
   >
@@ -218,6 +219,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     marginTop: 4,
+    flexWrap: "wrap",
+    maxWidth: 250,
   },
   infoCard: {
     backgroundColor: "#fff",

@@ -27,6 +27,7 @@ import CreateDeal from './src/screens/partner/CreateDeal';
 import EditDeal from './src/screens/partner/EditDeal';
 import Employees from './src/screens/partner/Employees';
 import AddEmployee from './src/screens/partner/AddEmployee';
+import ProductServices from './src/screens/partner/ProductServices';
 
 import 'react-native-gesture-handler';
 
@@ -76,6 +77,7 @@ const AppContent = () => {
           <Stack.Screen name="EditDeal" component={EditDeal} />
           <Stack.Screen name="Employees" component={Employees} />
           <Stack.Screen name="AddEmployee" component={AddEmployee} />
+          <Stack.Screen name="Products" component={ProductServices} />
 
         </Stack.Navigator>
       </NavigationContainer>
