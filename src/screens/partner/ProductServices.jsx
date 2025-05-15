@@ -105,7 +105,7 @@ const ProductServices = ({ navigation }) => {
           <View style={styles.info}>
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.subText}>{item.types}</Text>
-            <Text style={styles.subText}>{item.price}</Text>
+            <Text style={styles.subText}>{item.price} PHP</Text>
             <Text style={styles.subText}>{item.description}</Text>
           </View>
         </View>

@@ -180,7 +180,7 @@ const CreateProduct = ({ navigation }) => {
             {isSubmitting ? (
               <Text style={styles.submitButtonText}>Creating...</Text>
             ) : (
-              <Text style={styles.submitButtonText}>Add Deal</Text>
+              <Text style={styles.submitButtonText}>Add Product</Text>
             )}
           </TouchableOpacity>
         </SafeAreaView>

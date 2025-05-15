@@ -44,7 +44,7 @@ const BottomTab = () => {
             <Tab.Screen name="Shop" component={PartnerDashboard} />
             {user?.role === "partner" ? (
               <Tab.Screen name="Employees" component={Employees} />
-            ) : <Tab.Screen name="QRScanner" component={QRScanner} />}
+            ) : <Tab.Screen name="Scanner" component={QRScanner} />}
             <Tab.Screen name="ShopDeals" component={ShopDeals} />
             <Tab.Screen name="Products" component={Products} />
           </>
