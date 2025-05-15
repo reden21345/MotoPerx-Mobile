@@ -12,22 +12,22 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import DropDownPicker from "react-native-dropdown-picker";
-import { useDispatch, useSelector } from "react-redux";
-import { createProduct } from "../../redux/actions/productAction";
+import { useDispatch } from "react-redux";
+import { updateProduct } from "../../redux/actions/productAction";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
-const CreateProduct = ({ navigation }) => {
+const EditProduct = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { product } = route.params;
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [images, setImages] = useState([]);
+  const [name, setName] = useState(product.name || "");
+  const [description, setDescription] = useState(product.description || "");
+  const [price, setPrice] = useState(String(product.price) || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = useState(product.images || []);
 
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState(product.types || null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
     { label: "Products", value: "Products" },
@@ -79,21 +79,22 @@ const CreateProduct = ({ navigation }) => {
     }
 
     const data = {
+      id: product._id,
       name,
       description,
       price: Number(price),
       types: category,
-      createdBy: user?._id,
+      createdBy: product.createdBy,
       images,
     };
 
     try {
       setIsSubmitting(true);
-      await dispatch(createProduct(data)).unwrap();
-      Alert.alert("Success", "Product added successfully!");
+      await dispatch(updateProduct(data)).unwrap();
+      Alert.alert("Success", "Product updated successfully!");
       navigation.goBack();
     } catch (err) {
-      Alert.alert("Create Failed", err || "Something went wrong.");
+      Alert.alert("Update Failed", err || "Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
@@ -103,11 +104,11 @@ const CreateProduct = ({ navigation }) => {
     <View style={styles.container}>
       <ScrollView>
         <SafeAreaView style={styles.form}>
-          <Text style={styles.screenTitle}>Add Product/Service</Text>
+          <Text style={styles.screenTitle}>Edit Product</Text>
 
           <TextInput
             style={styles.input}
-            placeholder="Product/Service name"
+            placeholder="Product name"
             value={name}
             onChangeText={setName}
           />
@@ -140,7 +141,6 @@ const CreateProduct = ({ navigation }) => {
             onChangeText={setPrice}
           />
 
-
           {/* Image Upload Button */}
           <TouchableOpacity
             style={styles.imageButton}
@@ -154,11 +154,11 @@ const CreateProduct = ({ navigation }) => {
           {/* Display Selected Images */}
           {images.length > 0 && (
             <View style={styles.imagePreviewContainer}>
-              {images.map((uri, index) => (
+              {images.map((image, index) => (
                 <View key={index} style={styles.imageWrapper}>
                   <Image
                     key={index}
-                    source={{ uri }}
+                    source={{ uri: image?.url ? image.url : image }}
                     style={styles.imagePreview}
                   />
                   <TouchableOpacity
@@ -178,9 +178,9 @@ const CreateProduct = ({ navigation }) => {
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <Text style={styles.submitButtonText}>Creating...</Text>
+              <Text style={styles.submitButtonText}>Saving...</Text>
             ) : (
-              <Text style={styles.submitButtonText}>Add Deal</Text>
+              <Text style={styles.submitButtonText}>Save Product</Text>
             )}
           </TouchableOpacity>
         </SafeAreaView>
@@ -283,6 +283,17 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
   },
+  datePickerButton: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: "#fff",
+  },
+  datePickerText: {
+    color: "#000",
+  },
 });
 
-export default CreateProduct;
+export default EditProduct;

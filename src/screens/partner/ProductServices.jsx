@@ -17,7 +17,7 @@ import { Swipeable } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getPartner } from "../../redux/actions/partnerAction";
-import { deleteProduct, updateProduct } from "../../redux/actions/productAction";
+import { deleteProduct } from "../../redux/actions/productAction";
 
 const ProductServices = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -78,7 +78,7 @@ const ProductServices = ({ navigation }) => {
     <View style={styles.actionsContainer}>
       <TouchableOpacity
         style={[styles.actionButton, styles.editButton]}
-        onPress={() => console.log("Edit: ", item)}
+        onPress={() => navigation.navigate('EditProduct', { product: item })}
       >
         <Ionicons name="pencil" size={20} color="white" />
       </TouchableOpacity>
