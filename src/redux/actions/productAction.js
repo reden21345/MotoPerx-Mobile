@@ -7,7 +7,14 @@ const API_BASE_URL = 'http://192.168.100.100:5000/api/v1';
 // Get Products
 export const getAllProducts = createAsyncThunk('products/getAllProducts', async (_, thunkAPI) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/products`);
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.get(`${API_BASE_URL}/products`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        
         return response.data;
     } catch (error) {
         

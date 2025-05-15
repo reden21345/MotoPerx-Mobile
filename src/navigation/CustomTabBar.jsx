@@ -69,7 +69,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
           )}
 
         {/* Center Button */}
-        {user?.role === "user" || user?.role === "pendingPartner" && (
+        {(user?.role === "user" || user?.role === "pendingPartner") && (
           <View style={styles.centerButtonWrapper}>
             <TouchableOpacity
               style={styles.centerButton}

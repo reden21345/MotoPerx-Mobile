@@ -10,20 +10,23 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { useNotification } from '../hooks/NotificationContext';
+import { useNotification } from "../hooks/NotificationContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { getQRCode } from "../redux/actions/qrcodeAction";
 import { notifChecker } from "../redux/actions/notifAction";
 import { getUserPoints } from "../redux/actions/pointsAction";
+import { getAllProducts } from "../redux/actions/productAction";
 
 const { width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
-  const { expoPushToken, error } = useNotification()
+  const { expoPushToken, error } = useNotification();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { notifDetails } = useSelector((state) => state.notifications);
+  const { products } = useSelector((state) => state.products);
+  const { points, loyaltyTier } = useSelector((state) => state.points);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -45,6 +48,7 @@ const Home = ({ navigation }) => {
     if (user) {
       dispatch(getQRCode());
       dispatch(getUserPoints());
+      dispatch(getAllProducts());
     }
   }, [user, dispatch]);
 
@@ -52,12 +56,12 @@ const Home = ({ navigation }) => {
     if (user) {
       const data = {
         userId: user?._id,
-        expoToken: expoPushToken
-      }
+        expoToken: expoPushToken,
+      };
       dispatch(notifChecker(data));
     }
   }, [user, expoPushToken, dispatch]);
-  
+
   const openPost = (link) => {
     Linking.openURL(link);
   };
@@ -81,6 +85,39 @@ const Home = ({ navigation }) => {
     );
   };
 
+  const renderStores = ({ item }) => {
+    return (
+      <View style={styles.storeBox}>
+        {item.avatar?.url && (
+          <Image source={{ uri: item.avatar.url }} style={styles.storeBox} />
+        )}
+      </View>
+    );
+  };
+
+  const renderProductServiceItem = ({ item }) => {
+    const imageUrl = item.images?.[0]?.url || "https://via.placeholder.com/60";
+
+    return (
+      <View style={styles.productBox}>
+        <Image
+          source={{ uri: imageUrl }}
+          style={{ width: 100, height: 60, borderRadius: 8, marginBottom: 10 }}
+        />
+        <Text style={styles.productValue}>₱{item.price}</Text>
+        <Text style={styles.productLabel}>{item.name}</Text>
+        <Text style={styles.productLabel}>{item.types}</Text>
+      </View>
+    );
+  };
+
+  const allProducts = products.flatMap((store) =>
+    store.productService.map((service) => ({
+      ...service,
+    }))
+  );
+
+  console.log(allProducts);
   return (
     <View style={styles.container}>
       {/* Scrollable Body */}
@@ -149,11 +186,13 @@ const Home = ({ navigation }) => {
               <Text style={styles.pointsBalanceTitle}>
                 MOTOPERX POINTS BALANCE
               </Text>
-              <Text style={styles.pointsBalanceValue}>₱ 1,567</Text>
+              <Text style={styles.pointsBalanceValue}>
+                {(points || 0).toFixed(2)}
+              </Text>
             </View>
             <TouchableOpacity
               style={styles.redeemButton}
-              onPress={() => console.log("Redeem pressed")}
+              onPress={() => navigation.navigate("Deals")}
             >
               <Text style={styles.redeemButtonText}>+ REDEEM</Text>
             </TouchableOpacity>
@@ -161,7 +200,7 @@ const Home = ({ navigation }) => {
 
           {/* QR Code Button/Icon */}
           <TouchableOpacity
-            onPress={() => console.log("QR Code pressed")}
+            onPress={() => navigation.navigate("Profile")}
             style={styles.qrContainer}
           >
             <Ionicons name="qr-code-outline" size={32} color="#000" />
@@ -169,62 +208,39 @@ const Home = ({ navigation }) => {
         </View>
 
         {/* POINTS PER SERVICES */}
-        <View style={styles.pointsContainer}>
-          <Text style={styles.pointsTitle}>POINTS PER SERVICES</Text>
-          <View style={styles.pointsRow}>
-            {/* Sample box #1 */}
-            <View style={styles.pointBox}>
-              <Text style={styles.pointValue}>10</Text>
-              <Text style={styles.pointLabel}>CAR WASH</Text>
-            </View>
-            {/* Sample box #2 */}
-            <View style={styles.pointBox}>
-              <Text style={styles.pointValue}>10</Text>
-              <Text style={styles.pointLabel}>OIL CHANGE</Text>
-            </View>
-            {/* Sample box #3 */}
-            <View style={styles.pointBox}>
-              <Text style={styles.pointValue}>10</Text>
-              <Text style={styles.pointLabel}>TIRE</Text>
-            </View>
-            {/* Sample box #4 */}
-            <View style={styles.pointBox}>
-              <Text style={styles.pointValue}>10</Text>
-              <Text style={styles.pointLabel}>OTHERS</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* SERVICES SECTION */}
-        <View style={styles.servicesContainer}>
-          <View style={styles.servicesHeader}>
-            <Text style={styles.servicesTitle}>SERVICES</Text>
+        <View style={styles.productContainer}>
+          <View style={styles.storeHeader}>
+            <Text style={styles.productTitle}>PRODUCTS / SERVICES</Text>
             <TouchableOpacity onPress={() => console.log("View All pressed")}>
               <Text style={styles.viewAllText}>VIEW ALL</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.servicesIconsRow}>
-            {/* Sample service #1 */}
-            <View style={styles.serviceBox}>
-              <Ionicons name="car-sport" size={32} color="#000" />
-              <Text style={styles.serviceLabel}>Car Repair</Text>
-            </View>
-            {/* Sample service #2 */}
-            <View style={styles.serviceBox}>
-              <Ionicons name="water" size={32} color="#000" />
-              <Text style={styles.serviceLabel}>Car Wash</Text>
-            </View>
-            {/* Sample service #3 */}
-            <View style={styles.serviceBox}>
-              <Ionicons name="construct" size={32} color="#000" />
-              <Text style={styles.serviceLabel}>Maintenance</Text>
-            </View>
-            {/* Sample service #4 */}
-            <View style={styles.serviceBox}>
-              <Ionicons name="flash" size={32} color="#000" />
-              <Text style={styles.serviceLabel}>Tuning</Text>
-            </View>
+          <View style={styles.productRow}>
+            <FlatList
+              data={allProducts}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderProductServiceItem}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingVertical: 10 }}
+            />
           </View>
+        </View>
+
+        {/* SERVICES SECTION */}
+        <View style={styles.storeContainer}>
+          <View style={styles.storeHeader}>
+            <Text style={styles.storeTitle}>PARTNER STORES</Text>
+            <TouchableOpacity onPress={() => console.log("View All pressed")}>
+              <Text style={styles.viewAllText}>VIEW ALL</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={products}
+            keyExtractor={(item) => item._id}
+            renderItem={renderStores}
+            contentContainerStyle={styles.storeIconRow}
+          />
         </View>
 
         {/* LATEST BLOGS (Horizontally scrollable) */}
@@ -422,35 +438,35 @@ const styles = StyleSheet.create({
   },
 
   /**********************
-   * POINTS PER SERVICES
+   * PRODUCTS
    **********************/
-  pointsContainer: {
+  productContainer: {
     marginHorizontal: 10,
     marginTop: 20,
   },
-  pointsTitle: {
+  productTitle: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
   },
-  pointsRow: {
+  productRow: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  pointBox: {
+  productBox: {
     flex: 1,
     backgroundColor: "#f2f2f2",
     marginHorizontal: 5,
     borderRadius: 8,
     alignItems: "center",
-    paddingVertical: 15,
+    padding: 15,
   },
-  pointValue: {
+  productValue: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#000",
   },
-  pointLabel: {
+  productLabel: {
     marginTop: 4,
     fontSize: 12,
     color: "#555",
@@ -458,18 +474,18 @@ const styles = StyleSheet.create({
   },
 
   /****************
-   * SERVICES
+   * STORES
    ****************/
-  servicesContainer: {
+  storeContainer: {
     marginHorizontal: 10,
     marginTop: 20,
   },
-  servicesHeader: {
+  storeHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  servicesTitle: {
+  storeTitle: {
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -477,12 +493,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#007bff",
   },
-  servicesIconsRow: {
+  storeIconRow: {
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 10,
   },
-  serviceBox: {
+  storeBox: {
     width: 70,
     height: 70,
     borderRadius: 35,
@@ -490,7 +506,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  serviceLabel: {
+  storeLabel: {
     textAlign: "center",
     marginTop: 5,
     fontSize: 12,
