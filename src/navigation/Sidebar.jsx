@@ -41,7 +41,12 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
   ];
 
-  const items = user?.role === "partner" ? partners : user?.role === "user" ? riders : admins;
+  const items =
+    user?.role === "partner" || user?.role === "employee"
+      ? partners
+      : user?.role === "user" || user?.role === "pendingPartner"
+      ? riders
+      : admins;
 
   React.useEffect(() => {
     Animated.timing(translateY, {
