@@ -20,13 +20,28 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
   const { user } = useSelector((state) => state.auth);
   const translateY = React.useRef(new Animated.Value(-height)).current;
 
-  const items = [
-    { name: "Dashboard", icon: "grid-outline", screen: "Shop" },
+  const partners = [
+    { name: "Dashboard", icon: "grid-outline", screen: "Main" },
+    { name: "Settings", icon: "settings-outline", screen: "Profile" },
+    { name: "Transaction", icon: "card-outline", screen: "History" },
+    { name: "Logout", icon: "log-out-outline", screen: "Login" },
+  ];
+
+  const riders = [
+    { name: "Home", icon: "grid-outline", screen: "Main" },
     { name: "Settings", icon: "settings-outline", screen: "Profile" },
     { name: "Transaction", icon: "card-outline", screen: "History" },
     { name: "Apply Partnership", icon: "business-outline", screen: "Apply" },
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
   ];
+
+  const admins = [
+    { name: "Dashboard", icon: "grid-outline", screen: "Main" },
+    { name: "Settings", icon: "settings-outline", screen: "Profile" },
+    { name: "Logout", icon: "log-out-outline", screen: "Login" },
+  ];
+
+  const items = user?.role === "partner" ? partners : user?.role === "user" ? riders : admins;
 
   React.useEffect(() => {
     Animated.timing(translateY, {
@@ -68,7 +83,7 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
 
         {/* Navigation Links */}
         <View style={styles.links}>
-          {items.map((item) => (
+          {items?.map((item) => (
             <TouchableOpacity
               key={item.name}
               style={styles.link}

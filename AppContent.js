@@ -8,6 +8,7 @@ import Register from './src/screens/Register';
 import Main from './src/navigation/BottomTab';
 import Header from './src/screens/Header';
 import Landing from './src/screens/Landing';
+import Profile from './src/screens/user/Profile';
 
 // Users Import
 import Apply from './src/screens/user/ApplyPartnership';
@@ -30,6 +31,9 @@ import AddEmployee from './src/screens/partner/AddEmployee';
 import ProductServices from './src/screens/partner/ProductServices';
 import AddProduct from './src/screens/partner/AddProduct';
 import EditProduct from './src/screens/partner/EditProduct';
+
+// Dashboard
+import Shop from './src/screens/dashboard/PartnerDashboard';
 
 import 'react-native-gesture-handler';
 
@@ -69,6 +73,7 @@ const AppContent = () => {
           <Stack.Screen name="EditPassword" component={EditPassword} />
           <Stack.Screen name="GpsLocation" component={GpsLocation} />
           <Stack.Screen name="History" component={History} />
+          <Stack.Screen name="Profile" component={Profile} />
 
           {/* Admin Screens */}
           <Stack.Screen name="EditUser" component={EditUser} />
@@ -82,6 +87,9 @@ const AppContent = () => {
           <Stack.Screen name="Products" component={ProductServices} />
           <Stack.Screen name="AddProduct" component={AddProduct} />
           <Stack.Screen name="EditProduct" component={EditProduct} />
+
+          {/* Partner Screens */}
+          <Stack.Screen name="Shop" component={Shop} />
 
         </Stack.Navigator>
       </NavigationContainer>

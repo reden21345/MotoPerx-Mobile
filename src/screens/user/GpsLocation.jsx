@@ -155,7 +155,7 @@ const GpsLocation = () => {
               </View>
 
               <Text style={styles.conversionText}>
-                💱 {selectedPartner.conversion} pts = 1 PHP
+                💱 {selectedPartner.conversion} PHP = 1 point
               </Text>
 
               <TouchableOpacity style={styles.closeBtn} onPress={closeModal}>
