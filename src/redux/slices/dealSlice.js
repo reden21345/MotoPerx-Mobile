@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createDeals, deleteDeal, getAllDeals, updateDeals } from "../actions/dealsAction";
+import { createDeals, deleteDeal, getAllDeals, getRedeemedDeals, updateDeals } from "../actions/dealsAction";
 
 const dealsSlice = createSlice({
   name: "deals",
   initialState: {
     deals: [],
     dealDetails: null,
+    redeemed: [],
     count: 0,
     loading: false,
     success: false,
@@ -14,6 +15,7 @@ const dealsSlice = createSlice({
   reducers: {
     clearDealState: (state) => {
       state.deals = [];
+      state.redeemed = [];
       state.count = 0;
       state.success = false;
       state.error = null;
@@ -72,6 +74,20 @@ const dealsSlice = createSlice({
         state.success = action.payload.success;
       })
       .addCase(deleteDeal.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      .addCase(getRedeemedDeals.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getRedeemedDeals.fulfilled, (state, action) => {
+        state.loading = false;
+        state.redeemed = action.payload.deals;
+        state.count = action.payload.count;
+      })
+      .addCase(getRedeemedDeals.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

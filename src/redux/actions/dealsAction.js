@@ -69,3 +69,14 @@ export const deleteDeal = createAsyncThunk('deals/deleteDeal', async (id, thunkA
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to delete deal');
     }
 });
+
+// Get redeemed deals
+export const getRedeemedDeals = createAsyncThunk('deals/getRedeemedDeals', async (_, thunkAPI) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/deals/redeemed`);
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get deals');
+    }
+});

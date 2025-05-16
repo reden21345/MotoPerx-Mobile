@@ -124,6 +124,20 @@ const Profile = ({ navigation }) => {
             <Text style={styles.historyButtonText}>History</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity
+            style={styles.historyButton}
+            onPress={() => navigation.navigate("MyDeals")}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name="pricetag-outline"
+              size={18}
+              color="#fff"
+              style={{ marginRight: 6 }}
+            />
+            <Text style={styles.historyButtonText}>Redeemed Deals</Text>
+          </TouchableOpacity>
+
           {qrCode?.code && user?._id === qrCode?.user ? (
             <QRCode
               key={qrCode.code}
