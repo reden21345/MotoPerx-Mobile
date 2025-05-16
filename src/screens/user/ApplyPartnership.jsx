@@ -14,6 +14,7 @@ import {
   Modal,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { GOOGLE_MAPS_API } from '@env';
 import { useDispatch, useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
 import Geocoder from "react-native-geocoding";
@@ -24,7 +25,7 @@ import * as FileSystem from "expo-file-system";
 import * as Location from "expo-location";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-Geocoder.init("AIzaSyDtbhafAucUtdQmagHIfpxyQKImqIqXbik");
+Geocoder.init(`${GOOGLE_MAPS_API}`);
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
