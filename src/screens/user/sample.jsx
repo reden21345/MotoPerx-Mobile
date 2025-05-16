@@ -21,7 +21,7 @@ const GpsLocation = () => {
   const fetchNearbyPartners = async (coords) => {
     try {
       const res = await axios.post(
-        "http://192.168.100.100:5000/api/partners/nearby",
+        "https://motoperx-backend.onrender.com/api/partners/nearby",
         {
           latitude: coords.latitude,
           longitude: coords.longitude,
