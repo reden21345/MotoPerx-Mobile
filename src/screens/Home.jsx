@@ -246,7 +246,7 @@ const Home = ({ navigation }) => {
           <View style={styles.storeContainer}>
             <View style={styles.storeHeader}>
               <Text style={styles.storeTitle}>PARTNER STORES</Text>
-              <TouchableOpacity onPress={() => console.log("View All pressed")}>
+              <TouchableOpacity onPress={() => navigation.navigate("AllStores")}>
                 <Text style={styles.viewAllText}>VIEW ALL</Text>
               </TouchableOpacity>
             </View>

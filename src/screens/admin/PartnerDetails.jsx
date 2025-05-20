@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 const PartnerDetails = ({ route }) => {
-  const { item } = route.params;
+  const { item, admin, address } = route.params;
   const {
     storeName,
     avatar,
@@ -28,26 +28,30 @@ const PartnerDetails = ({ route }) => {
         <Text style={styles.label}>Store Name:</Text>
         <Text style={styles.value}>{storeName}</Text>
 
-        <Text style={styles.label}>Owner:</Text>
-        <Text style={styles.value}>{owner.name}</Text>
+        {admin && (
+          <>
+            <Text style={styles.label}>Owner:</Text>
+            <Text style={styles.value}>{owner.name}</Text>
 
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{owner.email}</Text>
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.value}>{owner.email}</Text>
 
-        <Text style={styles.label}>Phone:</Text>
-        <Text style={styles.value}>{owner.phone}</Text>
+            <Text style={styles.label}>Phone:</Text>
+            <Text style={styles.value}>{owner.phone}</Text>
 
-        <Text style={styles.label}>Status:</Text>
-        <Text style={styles.value}>{status}</Text>
+            <Text style={styles.label}>Status:</Text>
+            <Text style={styles.value}>{status}</Text>
 
-        <Text style={styles.label}>Total Customers:</Text>
-        <Text style={styles.value}>{totalCustomers}</Text>
+            <Text style={styles.label}>Total Customers:</Text>
+            <Text style={styles.value}>{totalCustomers}</Text>
 
-        <Text style={styles.label}>Total Points Given:</Text>
-        <Text style={styles.value}>{totalPointsGiven.toFixed(2)}</Text>
+            <Text style={styles.label}>Total Points Given:</Text>
+            <Text style={styles.value}>{totalPointsGiven.toFixed(2)}</Text>
 
-        <Text style={styles.label}>Total Redemptions:</Text>
-        <Text style={styles.value}>{totalRedemptions}</Text>
+            <Text style={styles.label}>Total Redemptions:</Text>
+            <Text style={styles.value}>{totalRedemptions}</Text>
+          </>
+        )}
 
         <Text style={styles.label}>Conversion Rate:</Text>
         <Text style={styles.value}>{conversion} pts = 1 PHP</Text>
@@ -67,7 +71,7 @@ const PartnerDetails = ({ route }) => {
         <Marker
           coordinate={{ latitude, longitude }}
           title={storeName}
-          description={`Owner: ${owner.name}`}
+          description={address}
         />
       </MapView>
     </ScrollView>

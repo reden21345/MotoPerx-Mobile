@@ -105,6 +105,7 @@ const Partners = () => {
         renderItem={({ item }) => (
           <PartnerItem
             item={item}
+            admin={true}
           />
         )}
         contentContainerStyle={styles.list}

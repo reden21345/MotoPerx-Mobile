@@ -9,16 +9,16 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Swipeable } from "react-native-gesture-handler";
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { updateStatus } from "../../redux/actions/partnerAction";
 import * as Location from "expo-location";
 
-const PartnerItem = ({ item }) => {
+const PartnerItem = ({ item, admin }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const createdAt = new Date(item.createdAt).toLocaleDateString();
-  const pending = item.status === "Pending";
+  const createdAt = new Date(item.createdAt).toLocaleDateString() || null;
+  const pending = item.status === "Pending" || null;
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const PartnerItem = ({ item }) => {
       try {
         const response = await Location.reverseGeocodeAsync(region);
         if (response && response.length > 0) {
-          console.log(response[0])
+          console.log(response[0]);
           const { formattedAddress } = response[0];
           setAddress(`${formattedAddress}`);
         }
@@ -76,19 +76,15 @@ const PartnerItem = ({ item }) => {
   };
 
   const handleDetails = () => {
-    Alert.alert(
-      "See Details",
-      "Do you want to see more details?",
-      [
-        { text: "No", style: "cancel" },
-        { text: "", style: "cancel" },
-        {
-          text: "Yes",
-          style: "destructive",
-          onPress: () => navigation.navigate("PartnerDetails", {item}),
-        },
-      ]
-    );
+    Alert.alert("See Details", "Do you want to see more details?", [
+      { text: "No", style: "cancel" },
+      { text: "", style: "cancel" },
+      {
+        text: "Yes",
+        style: "destructive",
+        onPress: () => navigation.navigate("PartnerDetails", { item, admin, address }),
+      },
+    ]);
   };
 
   const handleApproval = (id) => {
@@ -144,11 +140,15 @@ const PartnerItem = ({ item }) => {
 
   return (
     <Swipeable
-      renderRightActions={() => (pending ? null : renderRightActions())}
+      renderRightActions={() =>
+        !pending && admin ? renderRightActions() : null
+      }
     >
       <TouchableOpacity
         style={styles.card}
-        onPress={() => {pending ? handleApproval(item._id) : handleDetails()}}
+        onPress={() => {
+          pending && admin ? handleApproval(item._id) : handleDetails();
+        }}
       >
         {item.avatar?.url ? (
           <Image source={{ uri: item.avatar.url }} style={styles.avatar} />
@@ -158,17 +158,21 @@ const PartnerItem = ({ item }) => {
           </View>
         )}
         <View style={styles.info}>
-          <Text style={styles.name}>Owner: {item.owner.name}</Text>
+          {admin && <Text style={styles.name}>Owner: {item.owner.name}</Text>}
           <Text style={styles.name}>Store: {item.storeName}</Text>
           <Text style={styles.email}>Address: {address || "Loading..."}</Text>
-          <Text style={styles.role}>Status: {item.status}</Text>
-          <Text style={styles.created}>
-            {item.status === "Pending"
-              ? `Created At: ${createdAt}`
-              : item.status === "Disapproved"
-              ? `Declined: ${createdAt}`
-              : `Joined: ${createdAt}`}
-          </Text>
+          {admin && (
+            <>
+              <Text style={styles.role}>Status: {item.status}</Text>
+              <Text style={styles.created}>
+                {item.status === "Pending"
+                  ? `Created At: ${createdAt}`
+                  : item.status === "Disapproved"
+                  ? `Declined: ${createdAt}`
+                  : `Joined: ${createdAt}`}
+              </Text>
+            </>
+          )}
         </View>
       </TouchableOpacity>
     </Swipeable>
