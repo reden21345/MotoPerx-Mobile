@@ -17,6 +17,8 @@ import { getQRCode } from "../redux/actions/qrcodeAction";
 import { notifChecker } from "../redux/actions/notifAction";
 import { getUserPoints } from "../redux/actions/pointsAction";
 import { getAllProducts } from "../redux/actions/productAction";
+import ProductComponent from "../components/ProductComponent";
+import PartnerComponent from "../components/PartnerComponent";
 
 const { width } = Dimensions.get("window");
 
@@ -28,6 +30,8 @@ const Home = ({ navigation }) => {
   const { products } = useSelector((state) => state.products);
   const { points, loyaltyTier } = useSelector((state) => state.points);
   const [posts, setPosts] = useState([]);
+  const [comp, setComp] = useState("Home");
+  const [item, setItem] = useState(null)
 
   useEffect(() => {
     // Fetch blog posts
@@ -87,11 +91,17 @@ const Home = ({ navigation }) => {
 
   const renderStores = ({ item }) => {
     return (
-      <View style={styles.storeBox}>
+      <TouchableOpacity
+        style={styles.storeBox}
+        onPress={() => {
+          setItem(item);
+          setComp("Partner")
+        }}
+      >
         {item.avatar?.url && (
           <Image source={{ uri: item.avatar.url }} style={styles.storeBox} />
         )}
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -99,7 +109,13 @@ const Home = ({ navigation }) => {
     const imageUrl = item.images?.[0]?.url || "https://via.placeholder.com/60";
 
     return (
-      <View style={styles.productBox}>
+      <TouchableOpacity
+        style={styles.productBox}
+        onPress={() => {
+          setItem(item);
+          setComp("ProductDetails")
+        }}
+      >
         <Image
           source={{ uri: imageUrl }}
           style={{ width: 100, height: 60, borderRadius: 8, marginBottom: 10 }}
@@ -107,7 +123,7 @@ const Home = ({ navigation }) => {
         <Text style={styles.productValue}>₱{item.price}</Text>
         <Text style={styles.productLabel}>{item.name}</Text>
         <Text style={styles.productLabel}>{item.types}</Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -117,146 +133,150 @@ const Home = ({ navigation }) => {
     }))
   );
 
-  console.log(allProducts);
   return (
     <View style={styles.container}>
-      {/* Scrollable Body */}
-      <ScrollView contentContainerStyle={styles.bodyContainer}>
-        {/* Horizontal Banners */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.bannerScrollContainer}
-        >
-          {/* FIRST BANNER */}
-          <View style={styles.bannerItem}>
-            <Image
-              source={{
-                uri: "https://via.placeholder.com/400x200?text=BEST+CAR+SERVICE",
-              }}
-              style={styles.bannerBg}
-            />
-            <View style={styles.freeCarWashBubble}>
-              <Text style={styles.freeCarWashText}>FREE CAR WASH</Text>
-            </View>
-            <View style={styles.bannerTextContainer}>
-              <Text style={styles.bannerMainText}>BEST CAR SERVICE</Text>
-              <View style={styles.bulletPoints}>
-                <Text style={styles.bulletText}>• Oil Changes</Text>
-                <Text style={styles.bulletText}>• Fluid Checks</Text>
-                <Text style={styles.bulletText}>• Tire Rotations</Text>
-                <Text style={styles.bulletText}>• Repair</Text>
-                <Text style={styles.bulletText}>• Engine Diagnostics</Text>
-              </View>
-              <Text style={styles.contactText}>
-                CONTACT US: +23-456-7980 (Mr. Alfredo)
-              </Text>
-            </View>
-          </View>
-
-          {/* SECOND BANNER */}
-          <View style={styles.bannerItem}>
-            <Image
-              source={{
-                uri: "https://via.placeholder.com/400x200?text=CAR+WASH+AND+DETAIL",
-              }}
-              style={styles.bannerBg}
-            />
-            <View style={styles.bannerTextContainer}>
-              <Text style={styles.bannerMainText}>CAR WASH AND DETAIL</Text>
-              <Text style={styles.bulletText}>• Standard Car Wash</Text>
-              <Text style={styles.bulletText}>• Interior Cleaning</Text>
-              <Text style={styles.bulletText}>• Full Services Wash</Text>
-              <TouchableOpacity
-                style={styles.contactUsBtn}
-                onPress={() => console.log("Contact us pressed")}
-              >
-                <Text style={styles.contactUsBtnText}>CONTACT US</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* Points + QR Container */}
-        <View style={styles.pointsRowContainer}>
-          {/* Points Balance Card */}
-          <View style={styles.pointsBalanceCard}>
-            <Ionicons name="card-outline" style={styles.walletIcon} />
-            <View style={styles.pointsTextWrapper}>
-              <Text style={styles.pointsBalanceTitle}>
-                MOTOPERX POINTS BALANCE
-              </Text>
-              <Text style={styles.pointsBalanceValue}>
-                {(points || 0).toFixed(2)}
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={styles.redeemButton}
-              onPress={() => navigation.navigate("Deals")}
-            >
-              <Text style={styles.redeemButtonText}>+ REDEEM</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* QR Code Button/Icon */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Profile")}
-            style={styles.qrContainer}
-          >
-            <Ionicons name="qr-code-outline" size={32} color="#000" />
-          </TouchableOpacity>
-        </View>
-
-        {/* POINTS PER SERVICES */}
-        <View style={styles.productContainer}>
-          <View style={styles.storeHeader}>
-            <Text style={styles.productTitle}>PRODUCTS / SERVICES</Text>
-            <TouchableOpacity onPress={() => console.log("View All pressed")}>
-              <Text style={styles.viewAllText}>VIEW ALL</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.productRow}>
-            <FlatList
-              data={allProducts}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderProductServiceItem}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingVertical: 10 }}
-            />
-          </View>
-        </View>
-
-        {/* SERVICES SECTION */}
-        <View style={styles.storeContainer}>
-          <View style={styles.storeHeader}>
-            <Text style={styles.storeTitle}>PARTNER STORES</Text>
-            <TouchableOpacity onPress={() => console.log("View All pressed")}>
-              <Text style={styles.viewAllText}>VIEW ALL</Text>
-            </TouchableOpacity>
-          </View>
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item._id}
-            renderItem={renderStores}
-            contentContainerStyle={styles.storeIconRow}
-          />
-        </View>
-
-        {/* LATEST BLOGS (Horizontally scrollable) */}
-        <View style={styles.blogContainer}>
-          <Text style={styles.blogTitle}>LATEST BLOGS</Text>
-          <FlatList
-            data={posts}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderPostItem}
+      {comp === "Home" ? (
+        <ScrollView contentContainerStyle={styles.bodyContainer}>
+          {/* Horizontal Banners */}
+          <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={styles.blogList}
-            contentContainerStyle={{ paddingHorizontal: 10 }}
-          />
-        </View>
-      </ScrollView>
+            style={styles.bannerScrollContainer}
+          >
+            {/* FIRST BANNER */}
+            <View style={styles.bannerItem}>
+              <Image
+                source={{
+                  uri: "https://via.placeholder.com/400x200?text=BEST+CAR+SERVICE",
+                }}
+                style={styles.bannerBg}
+              />
+              <View style={styles.freeCarWashBubble}>
+                <Text style={styles.freeCarWashText}>FREE CAR WASH</Text>
+              </View>
+              <View style={styles.bannerTextContainer}>
+                <Text style={styles.bannerMainText}>BEST CAR SERVICE</Text>
+                <View style={styles.bulletPoints}>
+                  <Text style={styles.bulletText}>• Oil Changes</Text>
+                  <Text style={styles.bulletText}>• Fluid Checks</Text>
+                  <Text style={styles.bulletText}>• Tire Rotations</Text>
+                  <Text style={styles.bulletText}>• Repair</Text>
+                  <Text style={styles.bulletText}>• Engine Diagnostics</Text>
+                </View>
+                <Text style={styles.contactText}>
+                  CONTACT US: +23-456-7980 (Mr. Alfredo)
+                </Text>
+              </View>
+            </View>
+
+            {/* SECOND BANNER */}
+            <View style={styles.bannerItem}>
+              <Image
+                source={{
+                  uri: "https://via.placeholder.com/400x200?text=CAR+WASH+AND+DETAIL",
+                }}
+                style={styles.bannerBg}
+              />
+              <View style={styles.bannerTextContainer}>
+                <Text style={styles.bannerMainText}>CAR WASH AND DETAIL</Text>
+                <Text style={styles.bulletText}>• Standard Car Wash</Text>
+                <Text style={styles.bulletText}>• Interior Cleaning</Text>
+                <Text style={styles.bulletText}>• Full Services Wash</Text>
+                <TouchableOpacity
+                  style={styles.contactUsBtn}
+                  onPress={() => console.log("Contact us pressed")}
+                >
+                  <Text style={styles.contactUsBtnText}>CONTACT US</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+
+          {/* Points + QR Container */}
+          <View style={styles.pointsRowContainer}>
+            {/* Points Balance Card */}
+            <View style={styles.pointsBalanceCard}>
+              <Ionicons name="card-outline" style={styles.walletIcon} />
+              <View style={styles.pointsTextWrapper}>
+                <Text style={styles.pointsBalanceTitle}>
+                  MOTOPERX POINTS BALANCE
+                </Text>
+                <Text style={styles.pointsBalanceValue}>
+                  {(points || 0).toFixed(2)}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.redeemButton}
+                onPress={() => navigation.navigate("Deals")}
+              >
+                <Text style={styles.redeemButtonText}>+ REDEEM</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* QR Code Button/Icon */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Profile")}
+              style={styles.qrContainer}
+            >
+              <Ionicons name="qr-code-outline" size={32} color="#000" />
+            </TouchableOpacity>
+          </View>
+
+          {/* POINTS PER SERVICES */}
+          <View style={styles.productContainer}>
+            <View style={styles.storeHeader}>
+              <Text style={styles.productTitle}>PRODUCTS / SERVICES</Text>
+              <TouchableOpacity onPress={() => console.log("View All pressed")}>
+                <Text style={styles.viewAllText}>VIEW ALL</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.productRow}>
+              <FlatList
+                data={allProducts}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderProductServiceItem}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingVertical: 10 }}
+              />
+            </View>
+          </View>
+
+          {/* SERVICES SECTION */}
+          <View style={styles.storeContainer}>
+            <View style={styles.storeHeader}>
+              <Text style={styles.storeTitle}>PARTNER STORES</Text>
+              <TouchableOpacity onPress={() => console.log("View All pressed")}>
+                <Text style={styles.viewAllText}>VIEW ALL</Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={products}
+              keyExtractor={(item) => item._id}
+              renderItem={renderStores}
+              contentContainerStyle={styles.storeIconRow}
+            />
+          </View>
+
+          {/* LATEST BLOGS (Horizontally scrollable) */}
+          <View style={styles.blogContainer}>
+            <Text style={styles.blogTitle}>LATEST BLOGS</Text>
+            <FlatList
+              data={posts}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={renderPostItem}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.blogList}
+              contentContainerStyle={{ paddingHorizontal: 10 }}
+            />
+          </View>
+        </ScrollView>
+      ) : comp === "ProductDetails" ? (
+        <ProductComponent item={item} setComp={setComp} setItem={setItem}/>
+      ) : (
+        <PartnerComponent item={item} setComp={setComp} setItem={setItem}/>
+      )}
     </View>
   );
 };
