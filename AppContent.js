@@ -20,6 +20,7 @@ import ResetPassword from './src/screens/user/ResetPassword';
 import GpsLocation from './src/screens/user/GpsLocation';
 import History from './src/screens/user/History';
 import MyDeals from './src/screens/user/MyDeals';
+import AllProducts from './src/screens/Products';
 
 // Admin Import
 import EditUser from './src/screens/admin/EditUser';
@@ -70,6 +71,7 @@ const AppContent = () => {
           <Stack.Screen name="Main" component={Main} />
           <Stack.Screen name="Apply" component={Apply} />
           <Stack.Screen name="Deals" component={Deals} />
+          <Stack.Screen name="AllProducts" component={AllProducts} />
 
           {/* Profile Screens */}
           <Stack.Screen name="EditProfile" component={EditProfile} />
