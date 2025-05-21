@@ -10,23 +10,15 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { useNotification } from "../hooks/NotificationContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { getQRCode } from "../redux/actions/qrcodeAction";
-import { notifChecker } from "../redux/actions/notifAction";
-import { getUserPoints } from "../redux/actions/pointsAction";
-import { getAllProducts } from "../redux/actions/productAction";
 import ProductComponent from "../components/ProductComponent";
 import PartnerComponent from "../components/PartnerComponent";
 
 const { width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
-  const { expoPushToken, error } = useNotification();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
-  const { notifDetails } = useSelector((state) => state.notifications);
   const { products } = useSelector((state) => state.products);
   const { points, loyaltyTier } = useSelector((state) => state.points);
   const [posts, setPosts] = useState([]);
@@ -48,23 +40,6 @@ const Home = ({ navigation }) => {
     fetchPosts();
   }, [dispatch]);
 
-  useEffect(() => {
-    if (user) {
-      dispatch(getQRCode());
-      dispatch(getUserPoints());
-      dispatch(getAllProducts());
-    }
-  }, [user, dispatch]);
-
-  useEffect(() => {
-    if (user) {
-      const data = {
-        userId: user?._id,
-        expoToken: expoPushToken,
-      };
-      dispatch(notifChecker(data));
-    }
-  }, [user, expoPushToken, dispatch]);
 
   const openPost = (link) => {
     Linking.openURL(link);

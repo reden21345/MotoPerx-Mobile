@@ -3,7 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { API_BASE_URL } from '@env';
 
-// Get User Badges
+// Check user device
 export const notifChecker = createAsyncThunk('notifications/notifChecker', async (data, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
@@ -17,6 +17,24 @@ export const notifChecker = createAsyncThunk('notifications/notifChecker', async
         return response.data;
     } catch (error) {
         
-        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get badges');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to check notification details');
+    }
+});
+
+// Check user device
+export const getUserNotifications = createAsyncThunk('notifications/getUserNotifications', async (_, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.get(`${API_BASE_URL}/notifications`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get notifications');
     }
 });
