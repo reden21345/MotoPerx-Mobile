@@ -10,6 +10,7 @@ import Header from './src/screens/Header';
 import Landing from './src/screens/Landing';
 import Profile from './src/screens/user/Profile';
 import Deals from './src/screens/Deals';
+import Notifications from './src/screens/Notifications';
 
 // Users Import
 import Apply from './src/screens/user/ApplyPartnership';
@@ -74,6 +75,7 @@ const AppContent = () => {
           <Stack.Screen name="Deals" component={Deals} />
           <Stack.Screen name="AllProducts" component={AllProducts} />
           <Stack.Screen name="AllStores" component={AllStores} />
+          <Stack.Screen name="Notifications" component={Notifications} />
 
           {/* Profile Screens */}
           <Stack.Screen name="EditProfile" component={EditProfile} />
