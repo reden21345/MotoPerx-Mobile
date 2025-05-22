@@ -14,16 +14,24 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import ProductComponent from "../components/ProductComponent";
 import PartnerComponent from "../components/PartnerComponent";
+import motor1 from "../../assets/motor1.jpg"
+import motor2 from "../../assets/motor2.jpg"
+import motor3 from "../../assets/motor3.jpg"
 
 const { width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.products);
-  const { points, loyaltyTier } = useSelector((state) => state.points);
+  const { points, loyaltyTier} = useSelector((state) => state.points);
+  const expiresAt = useSelector(
+  (state) => state.points?.transactions?.length > 0 ? state.points.transactions[0].expiresAt : null
+  );
   const [posts, setPosts] = useState([]);
   const [comp, setComp] = useState("Home");
   const [item, setItem] = useState(null)
+  const carouselImages = [motor1, motor2, motor3];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -39,6 +47,16 @@ const Home = ({ navigation }) => {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
+    );
+  }, 3000); // change slide every 3 seconds
+
+  return () => clearInterval(interval);
+}, []);
+
   const openPost = (link) => {
     Linking.openURL(link);
   };
@@ -50,19 +68,18 @@ const Home = ({ navigation }) => {
   const imageUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
 
   return (
-    <TouchableOpacity
-      style={styles.postContainer}
-      onPress={() => openPost(link)}
-    >
-      <Image
-        source={{ uri: imageUrl || "https://via.placeholder.com/350x150" }}
-        style={styles.postImage}
-      />
-      <Text style={styles.postTitle}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
-
+      <TouchableOpacity
+        style={styles.postContainer}
+        onPress={() => openPost(link)}
+      >
+        <Image
+          source={{ uri: imageUrl || "https://via.placeholder.com/350x150" }}
+          style={styles.postImage}
+        />
+        <Text style={styles.postTitle}>{title}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderStores = ({ item }) => {
     return (
@@ -70,12 +87,13 @@ const Home = ({ navigation }) => {
         style={styles.storeBox}
         onPress={() => {
           setItem(item);
-          setComp("Partner")
+          setComp("Partner");
         }}
       >
         {item.avatar?.url && (
-          <Image source={{ uri: item.avatar.url }} style={styles.storeBox} />
+          <Image source={{ uri: item.avatar.url }} style={styles.storeImage} />
         )}
+        <Text style={styles.storeLabel}>{item.storeName}</Text>
       </TouchableOpacity>
     );
   };
@@ -118,89 +136,43 @@ const Home = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
             style={styles.bannerScrollContainer}
           >
-            {/* FIRST BANNER */}
-            <View style={styles.bannerItem}>
-              <Image
-                source={{
-                  uri: "https://via.placeholder.com/400x200?text=BEST+CAR+SERVICE",
-                }}
-                style={styles.bannerBg}
-              />
-              <View style={styles.freeCarWashBubble}>
-                <Text style={styles.freeCarWashText}>FREE CAR WASH</Text>
-              </View>
-              <View style={styles.bannerTextContainer}>
-                <Text style={styles.bannerMainText}>BEST CAR SERVICE</Text>
-                <View style={styles.bulletPoints}>
-                  <Text style={styles.bulletText}>• Oil Changes</Text>
-                  <Text style={styles.bulletText}>• Fluid Checks</Text>
-                  <Text style={styles.bulletText}>• Tire Rotations</Text>
-                  <Text style={styles.bulletText}>• Repair</Text>
-                  <Text style={styles.bulletText}>• Engine Diagnostics</Text>
-                </View>
-                <Text style={styles.contactText}>
-                  CONTACT US: +23-456-7980 (Mr. Alfredo)
-                </Text>
-              </View>
-            </View>
-
-            {/* SECOND BANNER */}
-            <View style={styles.bannerItem}>
-              <Image
-                source={{
-                  uri: "https://via.placeholder.com/400x200?text=CAR+WASH+AND+DETAIL",
-                }}
-                style={styles.bannerBg}
-              />
-              <View style={styles.bannerTextContainer}>
-                <Text style={styles.bannerMainText}>CAR WASH AND DETAIL</Text>
-                <Text style={styles.bulletText}>• Standard Car Wash</Text>
-                <Text style={styles.bulletText}>• Interior Cleaning</Text>
-                <Text style={styles.bulletText}>• Full Services Wash</Text>
-                <TouchableOpacity
-                  style={styles.contactUsBtn}
-                  onPress={() => console.log("Contact us pressed")}
-                >
-                  <Text style={styles.contactUsBtnText}>CONTACT US</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.carouselWrapper}>
+              <Image source={carouselImages[currentIndex]} style={styles.carouselImage} />
             </View>
           </ScrollView>
-
+          
           {/* Points + QR Container */}
-          <View style={styles.pointsRowContainer}>
-            {/* Points Balance Card */}
-            <View style={styles.pointsBalanceCard}>
-              <Ionicons name="card-outline" style={styles.walletIcon} />
-              <View style={styles.pointsTextWrapper}>
-                <Text style={styles.pointsBalanceTitle}>
-                  MOTOPERX POINTS BALANCE
-                </Text>
-                <Text style={styles.pointsBalanceValue}>
-                  {(points || 0).toFixed(2)}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={styles.redeemButton}
-                onPress={() => navigation.navigate("Deals")}
-              >
-                <Text style={styles.redeemButtonText}>+ REDEEM</Text>
-              </TouchableOpacity>
+          <View style={styles.rewardsCard}>
+            <View style={styles.rewardsLeft}>
+              <Text style={styles.rewardsTitle}>REWARDS POINTS</Text>
+              <Text style={styles.rewardsPoints}>{(points || 0).toFixed(2)}PTS</Text>
+              <Text style={styles.rewardsExpiry}>
+                {expiresAt ? new Date(expiresAt).toLocaleDateString('en-US') : 'No Points Yet'}
+              </Text> 
             </View>
 
-            {/* QR Code Button/Icon */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Profile")}
-              style={styles.qrContainer}
-            >
-              <Ionicons name="qr-code-outline" size={32} color="#000" />
-            </TouchableOpacity>
+            <View style={styles.rewardsRight}>
+              <TouchableOpacity
+                style={styles.viewHistoryButton}
+                onPress={() => navigation.navigate("History")}
+              >
+                <Text style={styles.viewHistoryText}>VIEW REWARDS HISTORY</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Deals")}
+                style={styles.redeemContainer}
+              >
+                <Ionicons name="gift-outline" size={30} color="#000" />
+                <Text style={styles.redeemLabel}>REDEEM POINTS</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* POINTS PER SERVICES */}
           <View style={styles.productContainer}>
             <View style={styles.storeHeader}>
-              <Text style={styles.productTitle}>PRODUCTS / SERVICES</Text>
+              <Text style={styles.productTitle}>DEALS</Text>
               <TouchableOpacity onPress={() => navigation.navigate("AllProducts")}>
                 <Text style={styles.viewAllText}>VIEW ALL</Text>
               </TouchableOpacity>
@@ -220,17 +192,20 @@ const Home = ({ navigation }) => {
           {/* SERVICES SECTION */}
           <View style={styles.storeContainer}>
             <View style={styles.storeHeader}>
-              <Text style={styles.storeTitle}>PARTNER STORES</Text>
+              <Text style={styles.storeTitle}>PARTNER MERCHANT</Text>
               <TouchableOpacity onPress={() => navigation.navigate("AllStores")}>
                 <Text style={styles.viewAllText}>VIEW ALL</Text>
               </TouchableOpacity>
             </View>
-            <FlatList
+           <FlatList
               data={products}
               keyExtractor={(item) => item._id}
               renderItem={renderStores}
-              contentContainerStyle={styles.storeIconRow}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.horizontalStoreRow}
             />
+
           </View>
 
           {/* LATEST BLOGS (Horizontally scrollable) */}
@@ -264,177 +239,79 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000000",
   },
 
-  /****************
-   * SCROLL BODY
-   ****************/
   bodyContainer: {
     paddingBottom: 20,
   },
 
-  /****************************
-   * HORIZONTAL SCROLL BANNERS
-   ****************************/
   bannerScrollContainer: {
-    marginTop: 10,
+    marginTop: -20,
   },
   bannerItem: {
     width: width * 0.9,
     height: width * 0.45,
     marginHorizontal: 10,
-    borderRadius: 8,
     overflow: "hidden",
-    backgroundColor: "#ccc",
+    backgroundColor: "#84DD31", // green
     position: "relative",
   },
-  bannerBg: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  bannerTextContainer: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    right: 10,
-  },
-  bannerMainText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000",
-    backgroundColor: "#fff",
-    alignSelf: "flex-start",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginBottom: 6,
-  },
-  bulletPoints: {
-    backgroundColor: "#fff",
-    padding: 6,
-    borderRadius: 4,
-    marginBottom: 6,
-  },
-  bulletText: {
-    fontSize: 14,
-    color: "#000",
-    marginBottom: 2,
-  },
-  contactText: {
-    backgroundColor: "#fff",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    color: "#000",
-  },
-  freeCarWashBubble: {
-    position: "absolute",
-    top: 15,
-    right: 15,
-    backgroundColor: "#ffc107",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+  rewardsCard: {
+    backgroundColor: "#84DD31", // green
     borderRadius: 20,
+    flexDirection: "row",
+    padding: 10,
+    marginHorizontal: 10,
+    marginTop: -80,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  freeCarWashText: {
+  rewardsLeft: {
+    flex: 1,
+  },
+  rewardsTitle: {
+    fontSize: 14,
     fontWeight: "bold",
-    color: "#000",
+    color: "#000000", // white
+    marginBottom: 4,
+  },
+  rewardsPoints: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#000000", // white
+  },
+  rewardsExpiry: {
     fontSize: 12,
+    color: "#000000", // white
+    marginTop: 4,
   },
-  contactUsBtn: {
-    backgroundColor: "#ff0000",
-    alignSelf: "flex-start",
-    marginTop: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  contactUsBtnText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-
-  /********************************
-   * POINTS BALANCE + QR CONTAINER
-   ********************************/
-  pointsRowContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    marginTop: 10,
-    // Adjust spacing as needed
-  },
-  pointsBalanceCard: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    // Optional shadow to pop out the card
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3.84,
-    elevation: 2,
-    marginRight: 10, // space before QR code
-  },
-  walletIcon: {
-    fontSize: 28,
-    color: "#000",
-    marginRight: 8,
-  },
-  pointsTextWrapper: {
-    flex: 1,
-  },
-  pointsBalanceTitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 2,
-  },
-  pointsBalanceValue: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  redeemButton: {
-    backgroundColor: "#ccc",
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginLeft: 8,
-  },
-  redeemButtonText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  qrContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
+  rewardsRight: {
     alignItems: "center",
     justifyContent: "center",
-    // Optional shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3.84,
-    elevation: 2,
+  },
+  viewHistoryButton: {
+    backgroundColor: "#000000", // black
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginBottom: 12,
+  },
+  viewHistoryText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  redeemContainer: {
+    alignItems: "center",
+  },
+  redeemLabel: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#000000",
+    marginTop: 4,
   },
 
-  /**********************
-   * PRODUCTS
-   **********************/
   productContainer: {
     marginHorizontal: 10,
     marginTop: 20,
@@ -443,6 +320,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#84DD31"
   },
   productRow: {
     flexDirection: "row",
@@ -450,7 +328,7 @@ const styles = StyleSheet.create({
   },
   productBox: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#FFFFFF", // white
     marginHorizontal: 5,
     borderRadius: 8,
     alignItems: "center",
@@ -459,18 +337,15 @@ const styles = StyleSheet.create({
   productValue: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#000",
+    color: "#000000",
   },
   productLabel: {
     marginTop: 4,
     fontSize: 12,
-    color: "#555",
+    color: "#000000",
     textAlign: "center",
   },
 
-  /****************
-   * STORES
-   ****************/
   storeContainer: {
     marginHorizontal: 10,
     marginTop: 20,
@@ -483,35 +358,46 @@ const styles = StyleSheet.create({
   storeTitle: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#84DD31"
   },
   viewAllText: {
     fontSize: 14,
-    color: "#007bff",
+    color: "#84DD31", // green for links
   },
   storeIconRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
     marginTop: 10,
   },
   storeBox: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: "#f2f2f2",
+    flexDirection: "row", // <-- horizontal layout
+    alignItems: "center",
+    backgroundColor: "#000000",
+    borderRadius: 10,
+    padding: 10,
+    marginHorizontal: 8,
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+  },
+
+  storeImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginRight: 10, // <-- spacing between image and text
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
   },
+
   storeLabel: {
-    textAlign: "center",
-    marginTop: 5,
-    fontSize: 12,
-    color: "#000",
-    fontWeight: "500",
+    fontSize: 16,
+    color: "#FFFFFF",
+    fontWeight: "600",
   },
 
-  /**************
-   * LATEST BLOGS
-   **************/
   blogContainer: {
     marginHorizontal: 10,
     marginTop: 20,
@@ -520,15 +406,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#84DD31"
   },
   blogList: {},
   postContainer: {
     marginRight: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderRadius: 8,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#FFFFFF", // green border
     width: width * 0.8,
   },
   postImage: {
@@ -540,6 +427,23 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 14,
     fontWeight: "600",
-    color: "#333",
+    color: "#000000",
   },
+
+  carouselWrapper: {
+    width: width,
+    height: width * 0.5,
+    marginBottom: 20,
+  },
+  carouselImage: {
+    width: "100%",
+    height: "200%",
+    resizeMode: "cover",
+  },
+  horizontalStoreRow: {
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+
 });
+

@@ -40,12 +40,19 @@ const Header = ({ navigation }) => {
   return (
     <View>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.replace("Main")}>
+        <View style={styles.userInfo}>
           <Image
-            source={require("../../assets/logowhite.png")}
-            style={styles.logo}
+              source={{
+                        uri:
+                        user && user.avatar && user.avatar.url
+                          ? user.avatar.url
+                          : "https://via.placeholder.com/150",
+                      }}
+              style={styles.profileImage}
           />
-        </TouchableOpacity>
+    
+          <Text style={styles.userName}>Hi {user?.name}!</Text>
+        </View>
 
         <View style={styles.iconGroup}>
           {/* Notification Icon with Badge */}
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#424242",
+    backgroundColor: "#000000", // black
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -102,7 +109,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -4,
     right: -6,
-    backgroundColor: "red",
+    backgroundColor: "red", // keeping red for visibility
     borderRadius: 10,
     paddingHorizontal: 5,
     paddingVertical: 1,
@@ -111,12 +118,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   badgeText: {
-    color: "#fff",
+    color: "#FFFFFF", // white
     fontSize: 10,
     fontWeight: "bold",
     textAlign: "center",
   },
   menuIcon: {
     paddingLeft: 4,
+  },
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 8,
+    backgroundColor: "#ccc", // fallback background color
+  },
+  userName: {
+    color: "#84DD31", // green
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

@@ -169,17 +169,14 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
 const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  // Tab bar is now part of the layout (no absolute positioning)
   tabBarContainer: {
     marginHorizontal: 0,
-    //marginBottom: 20,
     height: 60,
-    backgroundColor: "#000",
-    //borderRadius: 30,
+    backgroundColor: "#000000", // black
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    shadowColor: "#000",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
@@ -193,8 +190,8 @@ const styles = StyleSheet.create({
   tabItemText: {
     fontSize: 10,
     marginTop: 2,
+    color: "#FFFFFF", // white text
   },
-  // Center button styles
   centerButtonWrapper: {
     width: 60,
     alignItems: "center",
@@ -204,11 +201,10 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#007bff",
+    backgroundColor: "#84DD31", // green
     alignItems: "center",
     justifyContent: "center",
   },
-  // Modal styles
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
@@ -217,7 +213,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: 260,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF", // white
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
@@ -226,19 +222,20 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 16,
     fontWeight: "500",
-    color: "#333",
+    color: "#000000", // black
     marginBottom: 12,
   },
   closeButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#84DD31", // green
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 5,
   },
   closeButtonText: {
-    color: "#fff",
+    color: "#000000", // black text for contrast
     fontWeight: "600",
   },
 });
+
 
 export default CustomTabBar;
