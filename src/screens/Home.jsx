@@ -26,10 +26,9 @@ const Home = ({ navigation }) => {
   const [item, setItem] = useState(null)
 
   useEffect(() => {
-    // Fetch blog posts
     const fetchPosts = async () => {
       try {
-        const response = await fetch("https://jabbre.shop/wp-json/wp/v2/posts");
+        const response = await fetch("https://jabbre.shop/wp-json/wp/v2/posts?_embed");
         const data = await response.json();
         setPosts(data);
       } catch (error) {
@@ -38,8 +37,7 @@ const Home = ({ navigation }) => {
     };
 
     fetchPosts();
-  }, [dispatch]);
-
+  }, []);
 
   const openPost = (link) => {
     Linking.openURL(link);
@@ -47,22 +45,24 @@ const Home = ({ navigation }) => {
 
   // Renders each blog post item
   const renderPostItem = ({ item }) => {
-    const title = item?.title?.rendered || "No Title";
-    const link = item?.link || "#";
+  const title = item?.title?.rendered || "No Title";
+  const link = item?.link || "#";
+  const imageUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
 
-    return (
-      <TouchableOpacity
-        style={styles.postContainer}
-        onPress={() => openPost(link)}
-      >
-        <Image
-          source={{ uri: "https://via.placeholder.com/350x150" }}
-          style={styles.postImage}
-        />
-        <Text style={styles.postTitle}>{title}</Text>
-      </TouchableOpacity>
-    );
-  };
+  return (
+    <TouchableOpacity
+      style={styles.postContainer}
+      onPress={() => openPost(link)}
+    >
+      <Image
+        source={{ uri: imageUrl || "https://via.placeholder.com/350x150" }}
+        style={styles.postImage}
+      />
+      <Text style={styles.postTitle}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
 
   const renderStores = ({ item }) => {
     return (
