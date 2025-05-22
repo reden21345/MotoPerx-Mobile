@@ -38,3 +38,21 @@ export const getUserNotifications = createAsyncThunk('notifications/getUserNotif
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get notifications');
     }
 });
+
+// Send push notification
+export const sendNotifications = createAsyncThunk('notifications/sendNotifications', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.post(`${API_BASE_URL}/notifications/send`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to send notification');
+    }
+});

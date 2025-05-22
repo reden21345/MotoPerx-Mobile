@@ -27,6 +27,7 @@ import AllStores from './src/screens/Stores';
 // Admin Import
 import EditUser from './src/screens/admin/EditUser';
 import PartnerDetails from './src/screens/admin/PartnerDetails';
+import NotifyUsers from './src/screens/admin/NotifyUsers';
 
 // Partner Import
 import CreateDeal from './src/screens/partner/CreateDeal';
@@ -88,6 +89,7 @@ const AppContent = () => {
           {/* Admin Screens */}
           <Stack.Screen name="EditUser" component={EditUser} />
           <Stack.Screen name="PartnerDetails" component={PartnerDetails} />
+          <Stack.Screen name="Broadcast" component={NotifyUsers} />
 
           {/* Partner Screens */}
           <Stack.Screen name="CreateDeal" component={CreateDeal} />

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserNotifications, notifChecker } from "../actions/notifAction";
+import { getUserNotifications, notifChecker, sendNotifications } from "../actions/notifAction";
 
 const notifSlice = createSlice({
   name: "notifications",
@@ -8,6 +8,7 @@ const notifSlice = createSlice({
     notifications: [],
     unseen: 0,
     count: 0,
+    message: null,
     loading: false,
     error: null,
   },
@@ -17,6 +18,7 @@ const notifSlice = createSlice({
       state.notifications = [],
       state.unseen = 0;
       state.count = 0;
+      state.message = null;
       state.error = null;
     },
   },
@@ -46,6 +48,19 @@ const notifSlice = createSlice({
         state.unseen = action.payload.unseen;
       })
       .addCase(getUserNotifications.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      .addCase(sendNotifications.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(sendNotifications.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(sendNotifications.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

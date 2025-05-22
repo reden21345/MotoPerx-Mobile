@@ -133,6 +133,8 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
     iconName = isFocused ? "location" : "location-outline";
   } else if (route.name === "Products") {
     iconName = isFocused ? "construct" : "construct-outline";
+  } else if (route.name === "Broadcast") {
+    iconName = isFocused ? "megaphone" : "megaphone-outline";
   }
 
   const onPress = () => {

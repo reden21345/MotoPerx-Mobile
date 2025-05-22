@@ -12,7 +12,7 @@ export const getUserPoints = createAsyncThunk('points/getPoints', async (_, thun
                 Authorization: `Bearer ${token}`,
             },
         });
-
+console.log(`${API_BASE_URL}/points/me`)
         return response.data;
     } catch (error) {
         
@@ -47,7 +47,7 @@ export const redeemPoints = createAsyncThunk('points/redeemPoints', async (data,
                 Authorization: `Bearer ${token}`,
             },
         });
-        console.log("Redeem Response: ", response.data)
+        
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');

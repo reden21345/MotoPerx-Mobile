@@ -13,6 +13,7 @@ import GpsLocation from "../screens/user/GpsLocation";
 // Admin Screens
 import AllUsers from "../screens/admin/Users";
 import Partners from "../screens/admin/Partners";
+import NotifyUsers from "../screens/admin/NotifyUsers";
 
 // Partner Screens
 import PartnerDashboard from "../screens/dashboard/PartnerDashboard";
@@ -52,6 +53,7 @@ const BottomTab = () => {
           <>
             <Tab.Screen name="Users" component={AllUsers} />
             <Tab.Screen name="Partners" component={Partners} />
+            <Tab.Screen name="Broadcast" component={NotifyUsers} />
           </>
         )}
         <Tab.Screen name="Profile" component={Profile} />
