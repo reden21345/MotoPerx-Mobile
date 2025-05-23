@@ -37,6 +37,7 @@ const DealCard = ({ item, partner, onRightActions, onRedeem }) => {
           <View style={styles.textContainer}>
             <Text style={styles.dealTitle}>{item.title}</Text>
             <Text style={styles.dealDescription}>{item.description}</Text>
+            <Text style={styles.dealDescription}>Required Tier: {item.tier}</Text>
             <Text style={styles.dealDescription}>
               {item.partner.storeName} Shop
             </Text>

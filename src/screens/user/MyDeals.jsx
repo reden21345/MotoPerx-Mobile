@@ -90,6 +90,7 @@ const MyDeals = () => {
                   {deal.partner?.storeName}
                 </Text>
                 <Text style={styles.description}>{deal.description}</Text>
+                <Text style={styles.description}>{deal.tier}</Text>
                 <Text style={styles.discountText}>
                   Discount: {deal.discount}%
                 </Text>

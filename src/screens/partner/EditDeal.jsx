@@ -44,6 +44,14 @@ const EditDeal = ({ navigation, route }) => {
     { label: "Service", value: "Service" },
   ]);
 
+  const [tier, setTier] = useState(deal.tier || null);
+  const [open2, setOpen2] = useState(false);
+  const [items2, setItems2] = useState([
+    { label: "Bronze", value: "Bronze" },
+    { label: "Silver", value: "Silver" },
+    { label: "Gold", value: "Gold" },
+  ]);
+
   const handlePickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -95,6 +103,7 @@ const EditDeal = ({ navigation, route }) => {
       !discount ||
       !expiryDate ||
       !category ||
+      !tier ||
       !redemptionPoints
     ) {
       Alert.alert("Error", "Please fill out all fields.");
@@ -110,6 +119,7 @@ const EditDeal = ({ navigation, route }) => {
       expiryDate,
       redemptionPoints: Number(redemptionPoints),
       category,
+      tier,
       createdBy: deal.createdBy,
       updatedAt: Date.now(),
       images,
@@ -174,6 +184,18 @@ const EditDeal = ({ navigation, route }) => {
             keyboardType="numeric"
             value={redemptionPoints}
             onChangeText={setRedemptionPoints}
+          />
+
+          <DropDownPicker
+            open={open2}
+            value={tier}
+            items={items2}
+            setOpen={setOpen2}
+            setValue={setTier}
+            setItems={setItems2}
+            placeholder="Select tier availability"
+            style={styles.dropdown}
+            dropDownContainerStyle={styles.dropdownContainer}
           />
 
           {/* Expiry Date Picker */}

@@ -20,7 +20,7 @@ const Deals = () => {
   }
 
   if (error) {
-    Alert.alert("Error", error);
+    Alert.alert("Failed", error);
   }
 
   if (message) {
