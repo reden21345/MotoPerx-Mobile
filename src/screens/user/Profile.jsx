@@ -143,6 +143,8 @@ const Profile = ({ navigation }) => {
               key={qrCode.code}
               value={qrCode.code.toString()}
               size={150}
+              color='#98DB52'
+              backgroundColor='transparent'
             />
           ) : (
             <Text>No QR Code available</Text>
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#000000",
     padding: 20,
   },
   screenTitle: {
@@ -178,16 +180,16 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#333",
+    color: "#fff",
   },
   userEmail: {
     fontSize: 16,
-    color: "#666",
+    color: "#fff",
     marginBottom: 5,
   },
   userRole: {
     fontSize: 16,
-    color: "#444",
+    color: "#fff",
     marginBottom: 5,
   },
   userPoints: {
@@ -260,12 +262,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     paddingVertical: 8,
     paddingHorizontal: 15,
-    borderRadius: 20,
+    borderRadius: 5,
     marginTop: 10,
     marginBottom: 15,
+    borderColor: "#FFFFFF",
+    borderWidth: 1,
+    shadowColor: "#FFFFFF",           
+    shadowOffset: { width: 2, height: 8 }, 
+    shadowOpacity: 0.75,             
+    shadowRadius: 12,             
+    elevation: 15,    
   },
   historyButtonText: {
-    color: "#fff",
+    color: "#76A51D",
     fontSize: 14,
     fontWeight: "600",
   },  
