@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
-    color: "#FF5B00",
+    color: "#84DD31",
   },
   loader: {
     flex: 1,
