@@ -14,8 +14,7 @@ import MapView, { Marker } from "react-native-maps";
 import { getNearbyPartners } from "../../redux/actions/partnerAction";
 
 const GpsLocation = () => {
-  const { latitude, longitude, errorMsg, startTracking, stopTracking } =
-    useLocation();
+  const { latitude, longitude, startTracking, stopTracking } = useLocation();
   const mapRef = useRef(null);
   const dispatch = useDispatch();
   const { nearby } = useSelector((state) => state.partners);
@@ -26,27 +25,14 @@ const GpsLocation = () => {
 
   useEffect(() => {
     startTracking();
-    return () => {
-      stopTracking();
-    };
+    return () => stopTracking();
   }, []);
 
   useEffect(() => {
     if (latitude && longitude) {
-      const data = { latitude, longitude };
-      dispatch(getNearbyPartners(data));
+      dispatch(getNearbyPartners({ latitude, longitude }));
     }
   }, [latitude, longitude]);
-
-  const handleStopTracking = () => {
-    stopTracking();
-    setIsTracking(false);
-  };
-
-  const handleStartTracking = () => {
-    startTracking();
-    setIsTracking(true);
-  };
 
   const handleMarkerPress = (partner) => {
     setSelectedPartner(partner);
@@ -107,17 +93,24 @@ const GpsLocation = () => {
           <Text style={styles.coords}>
             Latitude: {latitude.toFixed(6)} | Longitude: {longitude.toFixed(6)}
           </Text>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.stopBtn} onPress={() => {
+            stopTracking();
+            setIsTracking(false);
+            }}>
+              <Text style={styles.stopBtnText}>Stop Tracking</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.stopBtn} onPress={handleStopTracking}>
-            <Text style={styles.stopBtnText}>Stop Tracking</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.startBtn} onPress={centerMap}>
-            <Text style={styles.startBtnText}>Recenter</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.startBtn} onPress={centerMap}>
+              <Text style={styles.startBtnText}>Recenter</Text>
+            </TouchableOpacity>
+          </View>
         </>
       ) : (
-        <TouchableOpacity style={styles.startBtn} onPress={handleStartTracking}>
+        <TouchableOpacity style={styles.startBtn} onPress={() => {
+          startTracking();
+          setIsTracking(true);
+        }}>
           <Text style={styles.startBtnText}>Start Tracking</Text>
         </TouchableOpacity>
       )}
@@ -125,22 +118,21 @@ const GpsLocation = () => {
       {selectedPartner && (
         <Modal
           visible={modalVisible}
-          transparent={true}
+          transparent
           animationType="slide"
           onRequestClose={closeModal}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Image
-                source={{ uri: selectedPartner.avatar?.url }}
-                style={styles.partnerLogo}
-                resizeMode="contain"
-              />
-
+              {selectedPartner.avatar?.url && (
+                <Image
+                  source={{ uri: selectedPartner.avatar.url }}
+                  style={styles.partnerLogo}
+                  resizeMode="contain"
+                />
+              )}
               <View style={styles.nameStatusRow}>
-                <Text style={styles.storeName}>
-                  {selectedPartner.storeName}
-                </Text>
+                <Text style={styles.storeName}>{selectedPartner.storeName}</Text>
                 <View
                   style={[
                     styles.statusDot,
@@ -153,11 +145,9 @@ const GpsLocation = () => {
                   ]}
                 />
               </View>
-
               <Text style={styles.conversionText}>
                 💱 {selectedPartner.conversion} PHP = 1 point
               </Text>
-
               <TouchableOpacity style={styles.closeBtn} onPress={closeModal}>
                 <Text style={styles.closeBtnText}>Close</Text>
               </TouchableOpacity>
@@ -174,62 +164,91 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#121212",
     alignItems: "center",
     paddingTop: 60,
   },
   title: {
-    fontSize: 20,
-    color: "#1a1a1a",
-    marginBottom: 10,
+    fontSize: 24,
+    color: "#FF5B00",
+    fontWeight: "bold",
+    marginBottom: 15,
   },
   map: {
     width: width - 40,
     height: height / 2,
-    borderRadius: 10,
+    borderRadius: 12,
+    borderColor: "#FF5B00",
+    borderWidth: 1,
   },
   coords: {
-    marginTop: 10,
+    marginTop: 12,
     fontSize: 14,
-    color: "#333",
+    color: "#ccc",
     textAlign: "center",
   },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 15,
+    marginTop: 20,
+  },
   stopBtn: {
-    backgroundColor: "#ff3333",
-    borderRadius: 6,
+    backgroundColor: "#000000",
+    borderRadius: 30,
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
     marginTop: 15,
+    shadowColor: "#ff4d4d",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.10,
+    shadowRadius: 6,
+    elevation: 10,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#ff4d4d",
   },
   stopBtnText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 14,
+    fontSize: 16,
   },
   startBtn: {
-    backgroundColor: "#000",
-    borderRadius: 6,
+    backgroundColor: "#000000",
+    borderRadius: 30,
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 20,
+    paddingHorizontal: 30,
+    marginTop: 15,
+    shadowColor: "#ff4d4d",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 8,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#ff4d4d",
   },
   startBtnText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 14,
+    fontSize: 16,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.7)",
     justifyContent: "center",
     alignItems: "center",
   },
   modalContainer: {
     width: "85%",
-    backgroundColor: "#fff",
+    backgroundColor: "#1f1f1f",
     borderRadius: 16,
     padding: 20,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
     elevation: 10,
   },
   partnerLogo: {
@@ -237,6 +256,8 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 12,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "#FF5B00",
   },
   nameStatusRow: {
     flexDirection: "row",
@@ -246,7 +267,7 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#222",
+    color: "#FF5B00",
     marginRight: 10,
   },
   statusDot: {
@@ -256,17 +277,22 @@ const styles = StyleSheet.create({
   },
   conversionText: {
     fontSize: 16,
-    color: "#333",
+    color: "#ccc",
     marginBottom: 20,
   },
   closeBtn: {
-    backgroundColor: "#007aff",
+    backgroundColor: "#FF5B00",
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 25,
+    shadowColor: "#FF5B00",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 6,
   },
   closeBtnText: {
-    color: "#fff",
+    color: "#121212",
     fontWeight: "bold",
     fontSize: 16,
   },

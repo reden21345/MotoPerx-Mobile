@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 2,
     paddingRight: 10,
+    color: "#000000",
   },
   imageIndex: {
     position: "absolute",
@@ -191,26 +192,27 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   dealCard: {
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#000000",
     padding: 15,
     borderRadius: 12,
     marginBottom: 15,
-    shadowColor: "#000",
+    shadowColor: "#ff4d4d",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 6,
-    borderLeftWidth: 5,
-    borderLeftColor: "#ff3c00",
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 8,
+    borderLeftWidth: 6,
+    borderLeftColor: "#FF5B00",
   },
+
   dealTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#ffdd00",
+    color: "#FF5B00",
   },
   dealDescription: {
     fontSize: 14,
-    color: "#ccc",
+    color: "#fff",
     marginVertical: 2,
   },
   dealPoints: {
@@ -220,7 +222,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   redeemButton: {
-    backgroundColor: "#ff3c00",
+    backgroundColor: "#FF5B00",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",

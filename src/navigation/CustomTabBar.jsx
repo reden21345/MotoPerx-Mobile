@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#84DD31", // green
+    backgroundColor: "#FF5B00", // green
     alignItems: "center",
     justifyContent: "center",
   },
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   closeButton: {
-    backgroundColor: "#84DD31", // green
+    backgroundColor: "#FF5B00", // green
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 5,

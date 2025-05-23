@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     color: "#666",
     marginTop: 4,
     flexWrap: "wrap",
-    maxWidth: 250,
+    maxWidth: 200,
   },
   infoCard: {
     backgroundColor: "#fff",
