@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ccc", // fallback background color
   },
   userName: {
-    color: "#84DD31", // green
+    color: "#98DB52", // green
     fontSize: 16,
     fontWeight: "bold",
   },

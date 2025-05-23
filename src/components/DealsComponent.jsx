@@ -196,19 +196,19 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     marginBottom: 15,
-    shadowColor: "#84DD31",
+    shadowColor: "#98DB52",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 8,
     borderLeftWidth: 6,
-    borderLeftColor: "#84DD31",
+    borderLeftColor: "#98DB52",
   },
 
   dealTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#84DD31",
+    color: "#98DB52",
   },
   dealDescription: {
     fontSize: 14,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   redeemButton: {
-    backgroundColor: "#84DD31",
+    backgroundColor: "#98DB52",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",

@@ -254,11 +254,11 @@ const styles = StyleSheet.create({
     height: width * 0.45,
     marginHorizontal: 10,
     overflow: "hidden",
-    backgroundColor: "#84DD31", // green
+    backgroundColor: "#98DB52", // green
     position: "relative",
   },
   rewardsCard: {
-    backgroundColor: "#84DD31", // green
+    backgroundColor: "#98DB52", // green
     borderRadius: 20,
     flexDirection: "row",
     padding: 10,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#84DD31"
+    color: "#98DB52"
   },
   productRow: {
     flexDirection: "row",
@@ -365,11 +365,11 @@ const styles = StyleSheet.create({
   storeTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#84DD31"
+    color: "#98DB52"
   },
   viewAllText: {
     fontSize: 14,
-    color: "#84DD31", // green for links
+    color: "#98DB52", // green for links
   },
   storeIconRow: {
     flexDirection: "row",
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#84DD31"
+    color: "#98DB52"
   },
   blogList: {},
   postContainer: {

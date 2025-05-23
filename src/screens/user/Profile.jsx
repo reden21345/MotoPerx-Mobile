@@ -57,7 +57,7 @@ const Profile = ({ navigation }) => {
       {loading ? (
         <ActivityIndicator
           size="large"
-          color="#84DD31"
+          color="#98DB52"
           style={{ flex: 1, justifyContent: "center" }}
         />
       ) : (
@@ -66,14 +66,14 @@ const Profile = ({ navigation }) => {
             style={styles.edit}
             onPress={() => navigation.navigate("EditProfile", { user })}
           >
-            <Ionicons name="create-outline" size={28} color="#84DD31" />
+            <Ionicons name="create-outline" size={28} color="#98DB52" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.editPassword}
             onPress={() => navigation.navigate("EditPassword")}
           >
-            <Ionicons name="lock-closed-outline" size={28} color="#84DD31" />
+            <Ionicons name="lock-closed-outline" size={28} color="#98DB52" />
           </TouchableOpacity>
 
           <Image
@@ -105,7 +105,7 @@ const Profile = ({ navigation }) => {
             <Ionicons
               name="copy-outline"
               size={18}
-              color="#84DD31"
+              color="#98DB52"
               style={{ marginLeft: 5 }}
             />
           </TouchableOpacity>
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     marginBottom: 15,
     borderWidth: 2,
-    borderColor: "#84DD31",
+    borderColor: "#98DB52",
   },
   userName: {
     fontSize: 22,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   userPoints: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#84DD31",
+    color: "#98DB52",
     marginBottom: 20,
   },
   edit: {
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button: {
-    backgroundColor: "#84DD31",
+    backgroundColor: "#98DB52",
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 25,
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   referralCode: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#84DD31",
+    color: "#98DB52",
   },
   historyButton: {
     flexDirection: "row",
