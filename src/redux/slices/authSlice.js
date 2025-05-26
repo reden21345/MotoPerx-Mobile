@@ -8,6 +8,7 @@ import {
   editPassword,
   forgetPassword,
   resetPassword,
+  validateReferral,
 } from "../actions/authAction";
 
 // Auth Slice
@@ -121,6 +122,19 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      .addCase(validateReferral.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(validateReferral.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(validateReferral.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

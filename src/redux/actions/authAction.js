@@ -123,3 +123,14 @@ export const resetPassword = createAsyncThunk('auth/resetPassword', async (data,
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });
+
+// Validate referral code
+export const validateReferral = createAsyncThunk('auth/validateReferral', async (data, thunkAPI) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/validate/referral`, data);
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Error in validation code');
+    }
+});
