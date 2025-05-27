@@ -8,11 +8,11 @@ const NotifyUsers = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  const handleRewardSubmit = () => {
+  const handleSubmit = () => {
     const data = {
         title,
         body,
-        role: 'user'
+        role: 'admin'
     }
 
     dispatch(sendNotifications(data)).then(()=>{
@@ -41,7 +41,7 @@ const NotifyUsers = ({ navigation }) => {
         onChangeText={setBody}
       />
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleRewardSubmit}>
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Send</Text>
       </TouchableOpacity>
     </View>
