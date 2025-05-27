@@ -9,13 +9,12 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import { addEmployee } from "../../redux/actions/partnerAction";
+import { pickAvatar } from "../../utils/helpers";
 
 const { width } = Dimensions.get("window");
 
@@ -31,35 +30,6 @@ const AddEmployee = ({ navigation }) => {
   const [newUser, setNewUser] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
-
-  const pickAvatar = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission Denied",
-        "Permission to access gallery is required!"
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.6,
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      const asset = result.assets[0];
-
-      const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      const base64Image = `data:image/jpeg;base64,${base64}`;
-      setAvatar(base64Image);
-    }
-  };
 
   const handleAddEmployee = async () => {
     const data = { name, email, phone, password, avatar };
@@ -177,7 +147,10 @@ const AddEmployee = ({ navigation }) => {
             </View>
 
             {/* Avatar Picker */}
-            <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
+            <TouchableOpacity
+              onPress={() => pickAvatar(setAvatar)}
+              style={styles.avatarPicker}
+            >
               {avatar ? (
                 <Image source={{ uri: avatar }} style={styles.avatarImage} />
               ) : (

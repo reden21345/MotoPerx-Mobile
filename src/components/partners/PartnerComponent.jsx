@@ -12,7 +12,7 @@ import { Swipeable } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { updateStatus } from "../../redux/actions/partnerAction";
-import * as Location from "expo-location";
+import { getAddress } from "../../utils/helpers";
 
 const PartnerItem = ({ item, admin }) => {
   const dispatch = useDispatch();
@@ -22,34 +22,7 @@ const PartnerItem = ({ item, admin }) => {
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
-    const getAddress = async () => {
-      // ✅ Request foreground location permission
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.warn("Permission to access location was denied");
-        setAddress("Permission denied");
-        return;
-      }
-
-      const region = {
-        latitude: item.location.coordinates[1],
-        longitude: item.location.coordinates[0],
-      };
-
-      try {
-        const response = await Location.reverseGeocodeAsync(region);
-        if (response && response.length > 0) {
-          console.log(response[0]);
-          const { formattedAddress } = response[0];
-          setAddress(`${formattedAddress}`);
-        }
-      } catch (error) {
-        console.warn("Failed to reverse geocode:", error);
-        setAddress("Unknown");
-      }
-    };
-
-    getAddress();
+    getAddress(item?.location?.coordinates, setAddress);
   }, [item.location.coordinates]);
 
   const handleEdit = () => {

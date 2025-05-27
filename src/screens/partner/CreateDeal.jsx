@@ -9,14 +9,13 @@ import {
   Alert,
   Image,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { createDeals } from "../../redux/actions/dealsAction";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { handlePickImages, formatDate, handleRemoveImage } from "../../utils/helpers";
 
 const CreateDeal = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -48,48 +47,11 @@ const CreateDeal = ({ navigation }) => {
     { label: "Gold", value: "Gold" },
   ]);
 
-  const handlePickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission Denied",
-        "You need to grant camera roll permissions to upload images."
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      const base64Images = await Promise.all(
-        result.assets.map(async (asset) => {
-          const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-          return `data:image/jpeg;base64,${base64}`;
-        })
-      );
-
-      setImages((prevImages) => [...prevImages, ...base64Images]);
-    }
-  };
-
-  const handleRemoveImage = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
-
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setExpiryDate(selectedDate);
     }
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString();
   };
 
   const handleSubmit = async () => {
@@ -214,7 +176,7 @@ const CreateDeal = ({ navigation }) => {
           {/* Image Upload Button */}
           <TouchableOpacity
             style={styles.imageButton}
-            onPress={handlePickImage}
+            onPress={() => handlePickImages(setImages)}
           >
             <Text style={styles.imageButtonText}>
               <Ionicons name="images-sharp" size={30} color={"#000"} />
@@ -233,7 +195,7 @@ const CreateDeal = ({ navigation }) => {
                   />
                   <TouchableOpacity
                     style={styles.removeImageButton}
-                    onPress={() => handleRemoveImage(index)}
+                    onPress={() => handleRemoveImage(index, setImages)}
                   >
                     <Text style={styles.removeImageText}>X</Text>
                   </TouchableOpacity>

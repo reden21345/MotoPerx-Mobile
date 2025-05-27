@@ -44,29 +44,6 @@ const AllPartners = ({ navigation }) => {
     dispatch(getAllProducts()).finally(() => setRefreshing(false));
   };
 
-  const renderItem = ({ item }) => {
-    return (
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => {
-          pending ? handleApproval(item._id) : handleDetails();
-        }}
-      >
-        {item.avatar?.url ? (
-          <Image source={{ uri: item.avatar.url }} style={styles.avatar} />
-        ) : (
-          <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarText}>{item.storeName[0]}</Text>
-          </View>
-        )}
-        <View style={styles.info}>
-          <Text style={styles.name}>Store: {item.storeName}</Text>
-          <Text style={styles.email}>Address: {address || "Loading..."}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}

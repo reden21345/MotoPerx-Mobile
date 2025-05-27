@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPartner } from "../../redux/actions/partnerAction";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import * as Location from "expo-location";
+import { getAddress } from "../../utils/helpers";
 
 const PartnerDashboard = () => {
   const dispatch = useDispatch();
@@ -31,32 +31,7 @@ const PartnerDashboard = () => {
   }, [dispatch, user]);
 
   useEffect(() => {
-    const getAddress = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.warn("Permission to access location was denied");
-        setAddress("Permission denied");
-        return;
-      }
-
-      const region = {
-        latitude: partner?.location?.coordinates[1],
-        longitude: partner?.location?.coordinates[0],
-      };
-
-      try {
-        const response = await Location.reverseGeocodeAsync(region);
-        if (response && response.length > 0) {
-          const { street, city, region: state, postalCode } = response[0];
-          setAddress(`${street}, ${city}, ${state} ${postalCode}`);
-        }
-      } catch (error) {
-        console.warn("Failed to reverse geocode:", error);
-        setAddress("Unknown");
-      }
-    };
-
-    getAddress();
+    getAddress(partner?.location?.coordinates, setAddress);
   }, [partner]);
 
   const onRefresh = () => {

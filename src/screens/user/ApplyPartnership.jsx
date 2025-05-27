@@ -14,18 +14,12 @@ import {
   Modal,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { GOOGLE_MAPS_API } from '@env';
 import { useDispatch, useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
-import Geocoder from "react-native-geocoding";
 import { apply, getPartner } from "../../redux/actions/partnerAction";
 import { clearMessage } from "../../redux/slices/partnerSlice";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import * as Location from "expo-location";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
-Geocoder.init(`${GOOGLE_MAPS_API}`);
+import { fetchCurrentLocation, handleMapSearch, pickAvatar } from "../../utils/helpers";
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
@@ -44,7 +38,11 @@ const ApplyPartnership = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    if (user?.role === "partner" || user?.role === "employee" || user?.role === "pendingPartner") {
+    if (
+      user?.role === "partner" ||
+      user?.role === "employee" ||
+      user?.role === "pendingPartner"
+    ) {
       dispatch(getPartner());
     }
   }, [dispatch, user]);
@@ -62,31 +60,7 @@ const ApplyPartnership = () => {
   }, [region]);
 
   useEffect(() => {
-    const fetchCurrentLocation = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Permission Denied", "Location permission is required.");
-          return;
-        }
-
-        const { coords } = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
-
-        setRegion({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        });
-        setLocation([coords.longitude, coords.latitude]);
-      } catch (error) {
-        console.error("Error getting location:", error);
-      }
-    };
-
-    fetchCurrentLocation();
+    fetchCurrentLocation(setRegion);
   }, []);
 
   useFocusEffect(
@@ -109,35 +83,6 @@ const ApplyPartnership = () => {
     Alert.alert("Error", error);
   }
 
-  const pickAvatar = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission Denied",
-        "Permission to access gallery is required!"
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.6,
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      const asset = result.assets[0];
-
-      const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      const base64Image = `data:image/jpeg;base64,${base64}`;
-      setAvatar(base64Image);
-    }
-  };
-
   const handleApply = () => {
     const data = {
       storeName,
@@ -159,22 +104,6 @@ const ApplyPartnership = () => {
     }));
   };
 
-  const handleSearch = async () => {
-    try {
-      const geoData = await Geocoder.from(searchQuery);
-      const { lat, lng } = geoData.results[0].geometry.location;
-      setLocation([lng, lat]);
-      setRegion({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
-      });
-    } catch (error) {
-      console.error("Error during geocoding:", error);
-    }
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -185,7 +114,10 @@ const ApplyPartnership = () => {
 
         {!partner ? (
           <View style={styles.card}>
-            <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
+            <TouchableOpacity
+              onPress={() => pickAvatar(setAvatar)}
+              style={styles.avatarPicker}
+            >
               {avatar ? (
                 <Image source={{ uri: avatar }} style={styles.avatarImage} />
               ) : (
@@ -228,7 +160,9 @@ const ApplyPartnership = () => {
                   onChangeText={setSearchQuery}
                 />
                 <TouchableOpacity
-                  onPress={handleSearch}
+                  onPress={() =>
+                    handleMapSearch(searchQuery, setLocation, setRegion)
+                  }
                   style={styles.searchButton}
                 >
                   <Ionicons name="search" size={20} color="white" />

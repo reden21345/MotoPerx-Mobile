@@ -11,18 +11,19 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
-import { GOOGLE_MAPS_API } from "@env";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import * as Location from "expo-location";
+
 import MapView, { Marker } from "react-native-maps";
-import Geocoder from "react-native-geocoding";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { editProfile } from "../../redux/actions/authAction";
-
-Geocoder.init(`${GOOGLE_MAPS_API}`);
+import {
+  pickAvatar,
+  formatDate,
+  fetchCurrentLocation,
+  getAddress,
+  handleMapSearch,
+} from "../../utils/helpers";
 
 const EditProfile = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -50,61 +51,11 @@ const EditProfile = ({ route, navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const getAddress = async () => {
-      if (!location) return;
-
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.warn("Permission to access location was denied");
-        setAddress("Permission denied");
-        return;
-      }
-
-      const reverseRegion = {
-        latitude: location[1],
-        longitude: location[0],
-      };
-
-      try {
-        const response = await Location.reverseGeocodeAsync(reverseRegion);
-        if (response && response.length > 0) {
-          const { formattedAddress } = response[0];
-          setAddress(`${formattedAddress}`);
-        }
-      } catch (error) {
-        console.warn("Failed to reverse geocode:", error);
-        setAddress("Unknown");
-      }
-    };
-
-    getAddress();
+    getAddress(location, setAddress);
   }, [location]);
 
   useEffect(() => {
-    const fetchCurrentLocation = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Permission Denied", "Location permission is required.");
-          return;
-        }
-
-        const { coords } = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
-
-        setRegion({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        });
-      } catch (error) {
-        console.error("Error getting location:", error);
-      }
-    };
-
-    fetchCurrentLocation();
+    fetchCurrentLocation(setRegion);
   }, []);
 
   const handleRegionChangeComplete = (newRegion) => {
@@ -151,51 +102,6 @@ const EditProfile = ({ route, navigation }) => {
     }
   };
 
-  const pickAvatar = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission Denied",
-        "Permission to access gallery is required!"
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.6,
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      const asset = result.assets[0];
-
-      const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      const base64Image = `data:image/jpeg;base64,${base64}`;
-      setAvatar(base64Image);
-    }
-  };
-
-  const handleSearch = async () => {
-    try {
-      const geoData = await Geocoder.from(searchQuery);
-      const { lat, lng } = geoData.results[0].geometry.location;
-      setLocation([lng, lat]);
-      setRegion({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
-      });
-    } catch (error) {
-      console.error("Error during geocoding:", error);
-    }
-  };
-
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
@@ -203,15 +109,14 @@ const EditProfile = ({ route, navigation }) => {
     }
   };
 
-  const formatDate = (date) => {
-    return date.toLocaleDateString();
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Edit Profile</Text>
 
-      <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
+      <TouchableOpacity
+        onPress={() => pickAvatar(setAvatar)}
+        style={styles.avatarPicker}
+      >
         {avatar ? (
           <Image source={{ uri: avatar }} style={styles.avatarImage} />
         ) : (
@@ -277,7 +182,10 @@ const EditProfile = ({ route, navigation }) => {
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
-          <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
+          <TouchableOpacity
+            onPress={() => handleMapSearch(searchQuery, setLocation, setRegion)}
+            style={styles.searchButton}
+          >
             <Ionicons name="search" size={20} color="white" />
           </TouchableOpacity>
         </View>

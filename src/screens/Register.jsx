@@ -12,20 +12,19 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
-import { GOOGLE_MAPS_API } from "@env";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, validateReferral } from "../redux/actions/authAction";
 import MapView, { Marker } from "react-native-maps";
-import Geocoder from "react-native-geocoding";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import * as Location from "expo-location";
+import {
+  pickAvatar,
+  formatDate,
+  fetchCurrentLocation,
+  handleMapSearch,
+} from "../utils/helpers";
 
 const { width } = Dimensions.get("window");
-
-Geocoder.init(`${GOOGLE_MAPS_API}`);
 
 const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -55,31 +54,7 @@ const RegisterScreen = ({ navigation }) => {
   }, [region]);
 
   useEffect(() => {
-    const fetchCurrentLocation = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert("Permission Denied", "Location permission is required.");
-          return;
-        }
-
-        const { coords } = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
-
-        setRegion({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        });
-        setLocation([coords.longitude, coords.latitude]);
-      } catch (error) {
-        console.error("Error getting location:", error);
-      }
-    };
-
-    fetchCurrentLocation();
+    fetchCurrentLocation(setRegion);
   }, []);
 
   const handleRegionChangeComplete = (newRegion) => {
@@ -90,35 +65,6 @@ const RegisterScreen = ({ navigation }) => {
       latitudeDelta: newRegion.latitudeDelta,
       longitudeDelta: newRegion.longitudeDelta,
     }));
-  };
-
-  const pickAvatar = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission Denied",
-        "Permission to access gallery is required!"
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.6,
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      const asset = result.assets[0];
-
-      const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      const base64Image = `data:image/jpeg;base64,${base64}`;
-      setAvatar(base64Image);
-    }
   };
 
   const handleRegister = async () => {
@@ -157,31 +103,11 @@ const RegisterScreen = ({ navigation }) => {
     }
   };
 
-  const handleSearch = async () => {
-    try {
-      const geoData = await Geocoder.from(searchQuery);
-      const { lat, lng } = geoData.results[0].geometry.location;
-      setLocation([lng, lat]);
-      setRegion({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
-      });
-    } catch (error) {
-      console.error("Error during geocoding:", error);
-    }
-  };
-
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setBirthday(selectedDate);
     }
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString();
   };
 
   return (
@@ -252,6 +178,17 @@ const RegisterScreen = ({ navigation }) => {
         )}
         {step === 3 && (
           <>
+            <TouchableOpacity
+              onPress={() => pickAvatar(setAvatar)}
+              style={styles.avatarPicker}
+            >
+              {avatar ? (
+                <Image source={{ uri: avatar }} style={styles.avatarImage} />
+              ) : (
+                <Text style={styles.avatarText}>Add Avatar</Text>
+              )}
+            </TouchableOpacity>
+
             <View style={styles.inputContainer}>
               <TextInput
                 placeholder="NAME"
@@ -371,7 +308,7 @@ const RegisterScreen = ({ navigation }) => {
                   onChangeText={setSearchQuery}
                 />
                 <TouchableOpacity
-                  onPress={handleSearch}
+                  onPress={() => handleMapSearch(searchQuery, setLocation, setRegion)}
                   style={styles.searchButton}
                 >
                   <Ionicons name="search" size={20} color="white" />
@@ -404,14 +341,6 @@ const RegisterScreen = ({ navigation }) => {
             ) : (
               <ActivityIndicator size="large" color="#424242" />
             )}
-
-            <TouchableOpacity onPress={pickAvatar} style={styles.avatarPicker}>
-              {avatar ? (
-                <Image source={{ uri: avatar }} style={styles.avatarImage} />
-              ) : (
-                <Text style={styles.avatarText}>Add Avatar</Text>
-              )}
-            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleRegister}

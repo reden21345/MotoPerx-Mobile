@@ -9,13 +9,12 @@ import {
   Alert,
   Image,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useDispatch } from "react-redux";
 import { updateProduct } from "../../redux/actions/productAction";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { handlePickImages, handleRemoveImage } from "../../utils/helpers";
 
 const EditProduct = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -33,39 +32,6 @@ const EditProduct = ({ navigation, route }) => {
     { label: "Products", value: "Products" },
     { label: "Services", value: "Services" },
   ]);
-
-  const handlePickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission Denied",
-        "You need to grant camera roll permissions to upload images."
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      const base64Images = await Promise.all(
-        result.assets.map(async (asset) => {
-          const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-            encoding: FileSystem.EncodingType.Base64,
-          });
-          return `data:image/jpeg;base64,${base64}`;
-        })
-      );
-
-      setImages((prevImages) => [...prevImages, ...base64Images]);
-    }
-  };
-
-  const handleRemoveImage = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
 
   const handleSubmit = async () => {
     if (
@@ -144,7 +110,7 @@ const EditProduct = ({ navigation, route }) => {
           {/* Image Upload Button */}
           <TouchableOpacity
             style={styles.imageButton}
-            onPress={handlePickImage}
+            onPress={() => handlePickImages(setImages)}
           >
             <Text style={styles.imageButtonText}>
               <Ionicons name="images-sharp" size={30} color={"#000"} />
@@ -163,7 +129,7 @@ const EditProduct = ({ navigation, route }) => {
                   />
                   <TouchableOpacity
                     style={styles.removeImageButton}
-                    onPress={() => handleRemoveImage(index)}
+                    onPress={() => handleRemoveImage(index, setImages)}
                   >
                     <Text style={styles.removeImageText}>X</Text>
                   </TouchableOpacity>
