@@ -8,6 +8,7 @@ import { getUserNotifications, notifChecker } from "../redux/actions/notifAction
 import { getQRCode } from "../redux/actions/qrcodeAction";
 import { getUserPoints } from "../redux/actions/pointsAction";
 import { getAllProducts } from "../redux/actions/productAction";
+import Notifications from "./Notifications";
 
 const Header = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const Header = ({ navigation }) => {
 
   const { user } = useSelector((state) => state.auth);
   const { unseen } = useSelector((state) => state.notifications);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
@@ -56,7 +58,7 @@ const Header = ({ navigation }) => {
 
         <View style={styles.iconGroup}>
           {/* Notification Icon with Badge */}
-          <TouchableOpacity onPress={() => navigation.navigate("Notifications")} style={styles.notifContainer}>
+          <TouchableOpacity onPress={() => setShowNotifications(true)} style={styles.notifContainer}>
             <Ionicons name="notifications-outline" size={28} color="#fff" />
             {unseen > 0 && (
               <View style={styles.badge}>
@@ -78,6 +80,9 @@ const Header = ({ navigation }) => {
         onClose={() => setSidebarOpen(false)}
         navigation={navigation}
       />
+
+      <Notifications visible={showNotifications} onClose={() => setShowNotifications(false)} />
+
     </View>
   );
 };
