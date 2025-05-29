@@ -74,7 +74,13 @@ const PartnerComponent = ({ item, setComp, setItem }) => {
               data={productService}
               keyExtractor={(item) => item._id}
               renderItem={({ item }) => <ProductCard item={item} />}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              decelerationRate="fast"
             />
+
           ) : (
             <Text style={{ color: "#fff" }}>No products or services yet</Text>
           )}
@@ -163,7 +169,7 @@ const styles = StyleSheet.create({
   productBox: {
     backgroundColor: "#000000",
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
     borderWidth: 1,
     borderColor: "#FFFFFF",
     borderWidth: 1,

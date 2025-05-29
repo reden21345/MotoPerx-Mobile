@@ -1,6 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+
+const screenWidth = Dimensions.get("window").width;
 
 const ProductComponent = ({ item, setComp, setItem }) => {
   const handleBack = () => {
@@ -8,36 +19,71 @@ const ProductComponent = ({ item, setComp, setItem }) => {
     setItem(null);
   };
 
+  const isService = item.types === "Services";
+  const isProduct = item.types === "Products";
+
   return (
     <View style={styles.container}>
       {/* Back Button */}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Ionicons name="arrow-back" size={28} color="#333" />
+        <View style={styles.backIconWrapper}>
+          <Ionicons name="arrow-back" size={24} color="#333" />
+        </View>
       </TouchableOpacity>
 
-      <Text style={styles.screenTitle}>Details</Text>
+      {/* Avatar & Carousel */}
+      <View style={styles.card}>
+        <ScrollView
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          style={styles.carousel}
+        >
+          {item.images.map((img) => (
+            <Image key={img._id} source={{ uri: img.url }} style={styles.image} />
+          ))}
+        </ScrollView>
 
-      {/* Product Images */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
-        {item.images.map((img) => (
-          <Image key={img._id} source={{ uri: img.url }} style={styles.image} />
-        ))}
-      </ScrollView>
-
-      {/* Product Info */}
-      <View style={styles.infoBox}>
-        <Text style={styles.label}>Name:</Text>
-        <Text style={styles.value}>{item.name}</Text>
-
-        <Text style={styles.label}>Type:</Text>
-        <Text style={styles.value}>{item.types}</Text>
-
-        <Text style={styles.label}>Price:</Text>
-        <Text style={styles.value}>₱{item.price}</Text>
-
-        <Text style={styles.label}>Description:</Text>
-        <Text style={styles.value}>{item.description}</Text>
+        {/* Carousel Dots */}
+        <View style={styles.dotsContainer}>
+          {item.images.map((_, index) => (
+            <View key={index} style={styles.dot} />
+          ))}
+        </View>
       </View>
+
+      {/* Name and Price */}
+      <View style={styles.rowBetween}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.price}>₱{item.price}</Text>
+      </View>
+
+      {/* Type */}
+      <Text style={styles.label}>Type:</Text>
+      <View style={styles.typeRow}>
+        <View
+          style={[
+            styles.typeButton,
+            isService && styles.activeTypeButton,
+          ]}
+        >
+          <FontAwesome5 name="tools" size={16} color="#333" />
+          <Text style={styles.typeText}>Services</Text>
+        </View>
+        <View
+          style={[
+            styles.typeButton,
+            isProduct && styles.activeTypeButton,
+          ]}
+        >
+          <MaterialCommunityIcons name="cube" size={18} color="#333" />
+          <Text style={styles.typeText}>Products</Text>
+        </View>
+      </View>
+
+      {/* Description */}
+      <Text style={styles.label}>Description:</Text>
+      <Text style={styles.description}>{item.description}</Text>
     </View>
   );
 };
@@ -45,8 +91,7 @@ const ProductComponent = ({ item, setComp, setItem }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#000000",
   },
   backButton: {
     position: "absolute",
@@ -54,35 +99,91 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 10,
   },
-  screenTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 20,
+  backIconWrapper: {
+    backgroundColor: "#98DB52", // Semi-transparent white
+    padding: 8,
+    borderRadius: 50,
   },
-  imageScroll: {
+  card: {
+    height: 300, // taller for more emphasis
+    backgroundColor: "#ddd",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: "hidden",
     marginBottom: 20,
   },
   image: {
-    width: 250,
-    height: 150,
-    borderRadius: 10,
-    marginRight: 15,
+    width: screenWidth,
+    height: 300,
+    resizeMode: "cover",
   },
-  infoBox: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    elevation: 2,
+  carousel: {
+    flexGrow: 0,
+  },
+  dotsContainer: {
+    position: "absolute",
+    bottom: 10,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  dot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#e4dcdc",
+    marginHorizontal: 4,
+  },
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  name: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#98DB52"
+  },
+  price: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#98DB52"
   },
   label: {
+    fontSize: 15,
+    //fontWeight: "800",
+    marginTop: 10,
+    marginBottom: 5,
+    paddingHorizontal: 20,
+    color: "#98DB52"
+  },
+  typeRow: {
+    flexDirection: "row",
+    gap: 15,
+    marginBottom: 10,
+    paddingHorizontal: 20,
+  },
+  typeButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#eee",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    gap: 8,
+  },
+  activeTypeButton: {
+    backgroundColor: "#98DB52",
+  },
+  typeText: {
     fontWeight: "600",
     fontSize: 16,
-    marginTop: 10,
   },
-  value: {
+  description: {
     fontSize: 16,
-    marginBottom: 5,
+    color: "#fff",
+    paddingHorizontal: 20,
   },
 });
 

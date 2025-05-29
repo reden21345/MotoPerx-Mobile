@@ -4,7 +4,8 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  Dimensions
 } from "react-native";
 
 const ProductCard = ({ item }) => {
@@ -52,6 +53,7 @@ const ProductCard = ({ item }) => {
 const styles = StyleSheet.create({
   serviceBox: {
    // backgroundColor: "#fff",
+    width: Dimensions.get("window").width - 60,
     padding: 15,
     borderRadius: 10,
     elevation: 2,
