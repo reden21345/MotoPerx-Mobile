@@ -22,6 +22,10 @@ const partnerSlice = createSlice({
       state.error = null;
       state.message = null;
     },
+    clearPartnerDetails: (state) => {
+      state.error = null;
+      state.partner = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -104,5 +108,5 @@ const partnerSlice = createSlice({
       });
   },
 });
-export const { clearPartnerState, clearMessage } = partnerSlice.actions;
+export const { clearPartnerState, clearMessage, clearPartnerDetails } = partnerSlice.actions;
 export default partnerSlice.reducer;

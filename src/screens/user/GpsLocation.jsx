@@ -25,7 +25,10 @@ const GpsLocation = () => {
 
   useEffect(() => {
     startTracking();
-    return () => stopTracking();
+    return () => {
+      stopTracking(); // 🔥 this MUST be called to clean up
+      console.log("GpsLocation unmounted and tracking stopped");
+    };
   }, []);
 
   useEffect(() => {

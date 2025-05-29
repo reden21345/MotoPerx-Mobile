@@ -14,6 +14,7 @@ const useLocation = () => {
         setErrorMsg("Permission to access location was not granted");
         return;
       }
+      console.log("Started tracking...");
 
       locationSubscription.current = await Location.watchPositionAsync(
         {
@@ -35,11 +36,14 @@ const useLocation = () => {
   };
 
   const stopTracking = () => {
-    if (locationSubscription.current) {
-      locationSubscription.current.remove();
-      locationSubscription.current = null;
-    }
-  };
+  if (locationSubscription.current) {
+    console.log("Removing location watcher...");
+    locationSubscription.current.remove();
+    locationSubscription.current = null;
+  } else {
+    console.log("No active location watcher to remove.");
+  }
+};
 
   return {
     latitude,

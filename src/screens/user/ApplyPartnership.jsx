@@ -16,10 +16,21 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
-import { apply, getPartner } from "../../redux/actions/partnerAction";
-import { clearMessage } from "../../redux/slices/partnerSlice";
+import {
+  apply,
+  getPartner,
+  updateStatus,
+} from "../../redux/actions/partnerAction";
+import {
+  clearMessage,
+  clearPartnerDetails,
+} from "../../redux/slices/partnerSlice";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { fetchCurrentLocation, handleMapSearch, pickAvatar } from "../../utils/helpers";
+import {
+  fetchCurrentLocation,
+  handleMapSearch,
+  pickAvatar,
+} from "../../utils/helpers";
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
@@ -92,6 +103,17 @@ const ApplyPartnership = () => {
     };
 
     dispatch(apply(data));
+  };
+
+  const handleCancel = () => {
+    const data = {
+      id: partner?._id,
+      status: "Canceled",
+    };
+    console.log(data);
+    dispatch(updateStatus(data)).then(() => {
+      dispatch(clearPartnerDetails());
+    });
   };
 
   const handleRegionChangeComplete = (newRegion) => {
@@ -209,16 +231,21 @@ const ApplyPartnership = () => {
         ) : partner && partner.status === "Pending" ? (
           <View style={styles.pendingContainer}>
             <Text style={styles.pendingText}>Waiting for approval...</Text>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleCancel}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? "Cancelling..." : "Cancel"}
+              </Text>
+            </TouchableOpacity>
           </View>
-        ) : partner && partner.status === "Disapproved" ? (
+        ) : (
           <View style={styles.pendingContainer}>
             <Text style={styles.pendingText}>
               Sorry your application has been declined
             </Text>
-          </View>
-        ) : (
-          <View style={styles.pendingContainer}>
-            <Text style={styles.pendingText}>Styled Partner</Text>
           </View>
         )}
       </ScrollView>
