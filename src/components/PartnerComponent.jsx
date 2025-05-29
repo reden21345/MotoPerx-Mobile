@@ -11,6 +11,8 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MapView, { Marker } from "react-native-maps";
 import ProductCard from "./ProductCard";
+import { Linking } from "react-native";
+
 
 const PartnerComponent = ({ item, setComp, setItem }) => {
   const handleBack = () => {
@@ -22,109 +24,165 @@ const PartnerComponent = ({ item, setComp, setItem }) => {
 
   return (
     <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Ionicons name="arrow-back" size={28} color="#333" />
-      </TouchableOpacity>
-
-      <Text style={styles.screenTitle}>Partner Details</Text>
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Avatar & Store Info */}
-        <View style={styles.avatarContainer}>
-          <Image source={{ uri: avatar.url }} style={styles.avatar} />
-          <Text style={styles.storeName}>{storeName}</Text>
-          <Text style={styles.conversion}>
-            Conversion Rate: ₱{conversion} = 1 point
-          </Text>
-        </View>
-
-        {/* Product/Service Info */}
-        <Text style={styles.label}>Products/Services:</Text>
-        {productService.length > 0 ? (
-          <FlatList
-            data={productService}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => <ProductCard item={item}/>}
-          />
-        ) : (<Text> No products or services yet </Text>)}
-
-        {/* Map */}
-        <Text style={[styles.label, { marginTop: 20 }]}>Store Location:</Text>
-        <MapView
-          style={styles.map}
-          initialRegion={{
+      {/* Map Background */}
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: location.coordinates[1],
+          longitude: location.coordinates[0],
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }}
+      >
+        <Marker
+          coordinate={{
             latitude: location.coordinates[1],
             longitude: location.coordinates[0],
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
           }}
-        >
-          <Marker
-            coordinate={{
-              latitude: location.coordinates[1],
-              longitude: location.coordinates[0],
-            }}
-            title={storeName}
-          />
-        </MapView>
-      </ScrollView>
+          title={storeName}
+          onPress={() => {
+            const lat = location.coordinates[1];
+            const lng = location.coordinates[0];
+            const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            Linking.openURL(url);
+          }}
+        />
+      </MapView>
+
+      {/* Floating Overlay Card */}
+      <View style={styles.overlay}>
+        <View style={styles.handleBar} />
+
+        {/* Store Info Section */}
+        <View style={styles.infoBox}>
+          <View style={styles.infoRow}>
+            <Image source={{ uri: avatar.url }} style={styles.avatar} />
+            <View style={styles.storeInfo}>
+              <Text style={styles.storeName}>{storeName}</Text>
+              <Text style={styles.conversion}>
+                Conversion: ₱{conversion} = 1 pt
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Products & Services */}
+        <Text style={styles.productsLabel}>PRODUCTS & SERVICES</Text>
+        <View style={styles.productBox}>
+          {productService.length > 0 ? (
+            <FlatList
+              data={productService}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => <ProductCard item={item} />}
+            />
+          ) : (
+            <Text style={{ color: "#fff" }}>No products or services yet</Text>
+          )}
+        </View>
+      </View>
+
+      {/* Back Button */}
+      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+        <Ionicons name="arrow-back" size={28} color="#000" />
+      </TouchableOpacity>
     </View>
   );
+
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 40,
-    paddingHorizontal: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  backButton: {
-    position: "absolute",
-    top: 40,
-    left: 20,
-    zIndex: 10,
-  },
-  screenTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  avatarContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-  },
-  storeName: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  conversion: {
-    fontSize: 16,
-    color: "#666",
-  },
-  label: {
-    fontWeight: "600",
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  value: {
-    fontSize: 15,
-    marginBottom: 3,
+    backgroundColor: "#000",
   },
   map: {
     width: "100%",
-    height: 200,
-    marginTop: 10,
+    height: 450,
+  },
+  overlay: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "#000",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    padding: 20,
+    paddingTop: 10,
+  },
+  handleBar: {
+    alignSelf: "center",
+    width: 60,
+    height: 6,
+    backgroundColor: "#ccc",
+    borderRadius: 3,
+    marginBottom: 20,
+  },
+  infoBox: {
+    backgroundColor: "#000000",
     borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+    borderWidth: 1,
+    shadowColor: "#FFFFFF",           
+    shadowOffset: { width: 2, height: 8 }, 
+    shadowOpacity: 0.75,             
+    shadowRadius: 12,             
+    elevation: 15,  
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginRight: 15,
+    backgroundColor: "#fff",
+  },
+  storeInfo: {
+    flex: 1,
+  },
+  storeName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  conversion: {
+    fontSize: 14,
+    color: "#fff",
+  },
+  productsLabel: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  productBox: {
+    backgroundColor: "#000000",
+    borderRadius: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+    borderWidth: 1,
+    shadowColor: "#FFFFFF",           
+    shadowOffset: { width: 2, height: 8 }, 
+    shadowOpacity: 0.75,             
+    shadowRadius: 12,             
+    elevation: 15,  
+  },
+  backButton: {
+    position: "absolute",
+    top: 50,
+    left: 20,
+    zIndex: 10,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 6,
   },
 });
+
 
 export default PartnerComponent;

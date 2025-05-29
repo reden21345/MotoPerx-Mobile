@@ -51,7 +51,7 @@ const ProductCard = ({ item }) => {
 
 const styles = StyleSheet.create({
   serviceBox: {
-    backgroundColor: "#fff",
+   // backgroundColor: "#fff",
     padding: 15,
     borderRadius: 10,
     elevation: 2,
@@ -85,6 +85,11 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 10,
     resizeMode: "cover",
+  },
+  value: {
+    fontSize: 16,
+    color: "#fff",
+    marginBottom: 5,
   },
 });
 
