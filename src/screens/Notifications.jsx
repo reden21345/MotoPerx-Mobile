@@ -10,12 +10,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserNotifications } from "../redux/actions/notifAction";
+import { deleteNotif, getUserNotifications, markAsSeen } from "../redux/actions/notifAction";
 
 const Notifications = ({ visible, onClose }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { notifications, unseen, loading, error } = useSelector(
+  const { notifications, message, loading, error } = useSelector(
     (state) => state.notifications
   );
   const [menuVisibleId, setMenuVisibleId] = React.useState(null);
@@ -28,7 +28,9 @@ const Notifications = ({ visible, onClose }) => {
     const seconds = Math.floor((now - date) / 1000);
 
     const pad = (n) => (n < 10 ? "0" + n : n);
-    const formattedDate = `${pad(date.getMonth() + 1)}/${pad(date.getDate())}/${date.getFullYear()}`;
+    const formattedDate = `${pad(date.getMonth() + 1)}/${pad(
+      date.getDate()
+    )}/${date.getFullYear()}`;
 
     let ago = "Just now";
     if (seconds >= 1) {
@@ -54,7 +56,6 @@ const Notifications = ({ visible, onClose }) => {
     return `${formattedDate} • ${ago}`;
   };
 
-
   useEffect(() => {
     if (user && visible) {
       dispatch(getUserNotifications());
@@ -79,10 +80,7 @@ const Notifications = ({ visible, onClose }) => {
 
     return (
       <View
-        style={[
-          styles.notificationItem,
-          isUnseen && styles.unseenNotification,
-        ]}
+        style={[styles.notificationItem, isUnseen && styles.unseenNotification]}
       >
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initials}</Text>
@@ -99,25 +97,33 @@ const Notifications = ({ visible, onClose }) => {
         </View>
 
         <TouchableOpacity
-          onPress={() =>
-            setMenuVisibleId(isMenuOpen ? null : item._id)
-          }
+          onPress={() => setMenuVisibleId(isMenuOpen ? null : item._id)}
         >
           <Text style={styles.menuDots}>⋮</Text>
         </TouchableOpacity>
 
         {isMenuOpen && (
           <View style={styles.menuOptions}>
-            <TouchableOpacity onPress={() => {
-              // Handle mark as read here
-              setMenuVisibleId(null);
-            }}>
-              <Text style={styles.menuText}>Mark as Read</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {
-              // Handle delete here
-              setMenuVisibleId(null);
-            }}>
+            {!item.seen && (
+              <TouchableOpacity
+                onPress={() => {
+                  dispatch(markAsSeen(item._id)).then(() => {
+                    setMenuVisibleId(null);
+                    dispatch(getUserNotifications());
+                  });
+                }}
+              >
+                <Text style={styles.menuText}>Mark as Read</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(deleteNotif(item._id)).then(() => {
+                  setMenuVisibleId(null);
+                  dispatch(getUserNotifications());
+                });
+              }}
+            >
               <Text style={styles.menuText}>Delete</Text>
             </TouchableOpacity>
           </View>
@@ -125,7 +131,6 @@ const Notifications = ({ visible, onClose }) => {
       </View>
     );
   };
-
 
   return (
     <Modal
@@ -141,14 +146,20 @@ const Notifications = ({ visible, onClose }) => {
           </TouchableOpacity>
 
           {loading ? (
-            <ActivityIndicator size="large" color="#007bff" style={styles.loader} />
+            <ActivityIndicator
+              size="large"
+              color="#007bff"
+              style={styles.loader}
+            />
           ) : (
             <FlatList
               data={notifications}
               keyExtractor={(_, index) => index.toString()}
               renderItem={renderItem}
               ListEmptyComponent={
-                <Text style={styles.emptyText}>No notifications available.</Text>
+                <Text style={styles.emptyText}>
+                  No notifications available.
+                </Text>
               }
             />
           )}
@@ -262,7 +273,6 @@ const styles = StyleSheet.create({
     color: "#333",
     paddingVertical: 4,
   },
-
 });
 
 export default Notifications;

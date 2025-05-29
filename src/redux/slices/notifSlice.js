@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserNotifications, notifChecker, sendNotifications } from "../actions/notifAction";
+import {
+  deleteNotif,
+  getUserNotifications,
+  markAsSeen,
+  notifChecker,
+  sendNotifications,
+} from "../actions/notifAction";
 
 const notifSlice = createSlice({
   name: "notifications",
@@ -15,8 +21,7 @@ const notifSlice = createSlice({
   reducers: {
     clearNotifs: (state) => {
       state.notifDetails = null;
-      state.notifications = [],
-      state.unseen = 0;
+      (state.notifications = []), (state.unseen = 0);
       state.count = 0;
       state.message = null;
       state.error = null;
@@ -36,7 +41,7 @@ const notifSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(getUserNotifications.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -51,7 +56,7 @@ const notifSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(sendNotifications.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -61,6 +66,32 @@ const notifSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(sendNotifications.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(markAsSeen.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(markAsSeen.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(markAsSeen.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(deleteNotif.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteNotif.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(deleteNotif.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
