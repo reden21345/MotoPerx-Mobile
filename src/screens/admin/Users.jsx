@@ -73,7 +73,6 @@ const Users = () => {
   };
 
   const handleEdit = (item) => {
-    console.log("Edit: ", item);
     navigation.navigate("EditUser", { user: item });
   };
 

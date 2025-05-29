@@ -14,7 +14,6 @@ import * as Clipboard from "expo-clipboard";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { getUserPoints } from "../../redux/actions/pointsAction";
-import { getQRCode } from "../../redux/actions/qrcodeAction";
 import { profile } from "../../redux/actions/authAction";
 import { MaterialIcons } from "@expo/vector-icons";
 import QRCode from "react-native-qrcode-svg";
@@ -215,16 +214,16 @@ const Profile = ({ navigation }) => {
 
           <TouchableOpacity
             style={styles.historyButton}
-            onPress={() => navigation.navigate("History")}
+            onPress={() => navigation.navigate("MyGears")}
             activeOpacity={0.8}
           >
             <Ionicons
-              name="time-outline"
+              name="build-outline"
               size={18}
               color="#fff"
               style={{ marginRight: 6 }}
             />
-            <Text style={styles.historyButtonText}>History</Text>
+            <Text style={styles.historyButtonText}>My Gears</Text>
           </TouchableOpacity>
 
           <TouchableOpacity

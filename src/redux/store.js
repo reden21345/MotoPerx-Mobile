@@ -8,6 +8,7 @@ import qrCodeReducer from './slices/qrSlice';
 import badgesReducer from './slices/badgeSlice';
 import partnerReducer from './slices/partnerSlice';
 import productReducer from './slices/producSlice';
+import gearReducer from './slices/gearSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     partners: partnerReducer,
     notifications: notifReducer,
     products: productReducer,
+    gears: gearReducer,
   },
 });
 
