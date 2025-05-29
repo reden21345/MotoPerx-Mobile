@@ -1,12 +1,14 @@
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import * as Location from "expo-location";
+import * as ImageManipulator from "expo-image-manipulator";
 import Geocoder from "react-native-geocoding";
+import { Alert } from "react-native";
 
 import { GOOGLE_MAPS_API } from "@env";
 Geocoder.init(`${GOOGLE_MAPS_API}`);
 
-// Pick Avatar
+// Pick and compress avatar image
 export const pickAvatar = async (setAvatar) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (status !== "granted") {
@@ -21,22 +23,42 @@ export const pickAvatar = async (setAvatar) => {
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     aspect: [1, 1],
-    quality: 0.6,
+    quality: 1, // pick highest quality before manual compression
   });
 
   if (!result.canceled && result.assets?.length > 0) {
-    const asset = result.assets[0];
+    try {
+      const asset = result.assets[0];
 
-    const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+      // 🗜 Resize & compress the image
+      const manipulated = await ImageManipulator.manipulateAsync(
+        asset.uri,
+        [{ resize: { width: 800 } }],
+        { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
+      );
 
-    const base64Image = `data:image/jpeg;base64,${base64}`;
-    setAvatar(base64Image);
+      // 📥 Convert to base64
+      const base64 = await FileSystem.readAsStringAsync(manipulated.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const base64Image = `data:image/jpeg;base64,${base64}`;
+
+      // Optional size warning
+      if (base64Image.length > 1500000) {
+        Alert.alert("Image too large", "Please choose a smaller image.");
+        return;
+      }
+
+      setAvatar(base64Image);
+    } catch (error) {
+      console.error("Avatar processing error:", error);
+      Alert.alert("Error", "Failed to process selected image.");
+    }
   }
 };
 
-// Pick multiple images
+// Pick and compress images
 export const handlePickImages = async (setImages) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (status !== "granted") {
@@ -50,19 +72,44 @@ export const handlePickImages = async (setImages) => {
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsMultipleSelection: true,
+    quality: 1,
   });
 
   if (!result.canceled && result.assets?.length > 0) {
     const base64Images = await Promise.all(
       result.assets.map(async (asset) => {
-        const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        return `data:image/jpeg;base64,${base64}`;
+        try {
+          // 🗜 Resize and compress image
+          const compressed = await ImageManipulator.manipulateAsync(
+            asset.uri,
+            [{ resize: { width: 800 } }],
+            { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
+          );
+
+          // 📥 Convert to base64
+          const base64 = await FileSystem.readAsStringAsync(compressed.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+
+          const dataUri = `data:image/jpeg;base64,${base64}`;
+
+          // Optional: warn if still too large
+          if (dataUri.length > 1500000) {
+            Alert.alert("Image too large", "Please choose a smaller image.");
+            return null;
+          }
+
+          return dataUri;
+        } catch (error) {
+          console.error("Image processing error:", error);
+          return null;
+        }
       })
     );
 
-    setImages((prevImages) => [...prevImages, ...base64Images]);
+    // Filter out failed/null uploads
+    const validImages = base64Images.filter(Boolean);
+    setImages((prevImages) => [...prevImages, ...validImages]);
   }
 };
 

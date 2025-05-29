@@ -131,7 +131,6 @@ const Notifications = ({ visible, onClose }) => {
       </View>
     );
   };
-  console.log(message);
 
   return (
     <Modal
