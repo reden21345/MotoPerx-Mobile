@@ -5,16 +5,33 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Dimensions
+  Dimensions,
 } from "react-native";
 
-const ProductCard = ({ item }) => {
+const ProductCard = ({ item, compact = false }) => {
   const [imageIndex, setImageIndex] = useState(0);
   const imageList = item.images || [];
 
   const nextImage = () => {
     setImageIndex((prevIndex) => (prevIndex + 1) % imageList.length);
   };
+
+  if (compact) {
+    return (
+      <View style={styles.gridCard}>
+        {imageList.length > 0 ? (
+          <Image
+            source={{ uri: imageList[0].url }}
+            style={styles.gridImage}
+          />
+        ) : (
+          <View style={styles.gridImagePlaceholder} />
+        )}
+        <Text style={styles.gridName} numberOfLines={1}>{item.name}</Text>
+        <Text style={styles.gridPrice}>₱{item.price}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.serviceBox}>
@@ -52,7 +69,6 @@ const ProductCard = ({ item }) => {
 
 const styles = StyleSheet.create({
   serviceBox: {
-   // backgroundColor: "#fff",
     width: Dimensions.get("window").width - 60,
     padding: 15,
     borderRadius: 10,
@@ -92,6 +108,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff",
     marginBottom: 5,
+  },
+
+  // Grid styles
+  gridCard: {
+    backgroundColor: "#0000",
+    width: "48%",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#98DB52",
+    paddingBottom: 30,
+  },
+  gridImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginBottom: 8,
+    resizeMode: "cover",
+    borderWidth: 1,
+    borderColor: "#98DB52",
+  },
+  gridImagePlaceholder: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    backgroundColor: "#ccc",
+    marginBottom: 8,
+  },
+  gridName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 4,
+    color: "#fff"
+  },
+  gridPrice: {
+    fontSize: 13,
+    color: "#fff",
   },
 });
 
