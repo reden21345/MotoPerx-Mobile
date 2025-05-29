@@ -56,3 +56,39 @@ export const sendNotifications = createAsyncThunk('notifications/sendNotificatio
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to send notification');
     }
 });
+
+// Mark as seen
+export const markAsSeen = createAsyncThunk('notifications/markAsSeen', async (id, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.put(`${API_BASE_URL}/notifications/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to mark as seen');
+    }
+});
+
+// Delete Notification
+export const deleteNotif = createAsyncThunk('notifications/deleteNotif', async (id, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.delete(`${API_BASE_URL}/notifications/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to delete notification');
+    }
+});

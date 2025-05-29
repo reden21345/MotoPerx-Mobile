@@ -24,7 +24,7 @@ const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { qrCode } = useSelector((state) => state.qrCode);
-  const { points, loyaltyTier,lifetimePoints,loading, error } = useSelector(
+  const { loyaltyTier,lifetimePoints,loading, error } = useSelector(
     (state) => state.points
   );
   const [modalVisible, setModalVisible] = useState(false);
@@ -143,22 +143,29 @@ const Profile = ({ navigation }) => {
           <View style={styles.profileContainer}>
               {/* Avatar */}
               <View style={styles.avatarContainer}>
-                <Image source={{ uri: user.avatar.url }} style={styles.avatar} />
+                <Image 
+                  source={{
+                    uri:
+                      user && user.avatar && user.avatar.url
+                        ? user.avatar.url
+                        : "https://via.placeholder.com/150",
+                  }} 
+                  style={styles.avatar} />
               </View>
 
               {/* User Info */}
               <View style={styles.infoContainer}>
-                {isBirthdayToday(user.birthday) && (
+                {isBirthdayToday(user?.birthday) && (
                     <View style={styles.confettiRow}>
                       <Text style={styles.happyBirthdayText}>Happy Birthday!🎂</Text>
                     </View>
                   )}
                 <Text style={styles.username}>{user?.name}</Text>
                 <Text style={styles.infoText}>{user?.email}</Text>
-                <Text style={styles.infoText}>{user.phone}</Text>
+                <Text style={styles.infoText}>{user?.phone}</Text>
                 <View style={styles.birthdayContainer}>
                   <Text style={styles.infoText}>
-                    {new Date(user.birthday).toLocaleDateString("en-US", {
+                    {new Date(user?.birthday).toLocaleDateString("en-US", {
                       month: "long",
                       day: "2-digit",
                       year: "numeric",
