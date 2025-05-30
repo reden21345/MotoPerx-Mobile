@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -18,49 +18,47 @@ const Header = ({ navigation }) => {
   const { user } = useSelector((state) => state.auth);
   const { unseen } = useSelector((state) => state.notifications);
   const [showNotifications, setShowNotifications] = useState(false);
-
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+  const hasFetched = useRef(false); // prevent redundant fetches
+
   useEffect(() => {
-    if (user) {
+    if (user && expoPushToken && !hasFetched.current) {
       const data = {
-        userId: user?._id,
+        userId: user._id,
         expoToken: expoPushToken,
       };
       dispatch(notifChecker(data));
       dispatch(getUserNotifications());
-    }
-  }, [user, expoPushToken, dispatch]);
-
-  useEffect(() => {
-    if (user) {
       dispatch(getQRCode());
       dispatch(getUserPoints());
       dispatch(getAllProducts());
       dispatch(getAllDeals());
+
+      hasFetched.current = true;
     }
-  }, [user, dispatch]);
+  }, [user, expoPushToken, dispatch]);
 
   return (
     <View>
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Image
-              source={{
-                        uri:
-                        user && user.avatar && user.avatar.url
-                          ? user.avatar.url
-                          : "https://via.placeholder.com/150",
-                      }}
-              style={styles.profileImage}
+            source={{
+              uri:
+                user?.avatar?.url ||
+                "https://via.placeholder.com/150",
+            }}
+            style={styles.profileImage}
           />
-    
           <Text style={styles.userName}>Hi {user?.name}!</Text>
         </View>
 
         <View style={styles.iconGroup}>
-          {/* Notification Icon with Badge */}
-          <TouchableOpacity onPress={() => setShowNotifications(true)} style={styles.notifContainer}>
+          <TouchableOpacity
+            onPress={() => setShowNotifications(true)}
+            style={styles.notifContainer}
+          >
             <Ionicons name="notifications-outline" size={28} color="#fff" />
             {unseen > 0 && (
               <View style={styles.badge}>
@@ -69,22 +67,25 @@ const Header = ({ navigation }) => {
             )}
           </TouchableOpacity>
 
-          {/* Sidebar Menu */}
-          <TouchableOpacity onPress={() => setSidebarOpen(true)} style={styles.menuIcon}>
+          <TouchableOpacity
+            onPress={() => setSidebarOpen(true)}
+            style={styles.menuIcon}
+          >
             <Ionicons name="menu" size={32} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Sidebar Overlay */}
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setSidebarOpen(false)}
         navigation={navigation}
       />
 
-      <Notifications visible={showNotifications} onClose={() => setShowNotifications(false)} />
-
+      <Notifications
+        visible={showNotifications}
+        onClose={() => setShowNotifications(false)}
+      />
     </View>
   );
 };

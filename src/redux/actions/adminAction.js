@@ -34,7 +34,7 @@ export const deleteUser = createAsyncThunk('admins/deleteUser', async (id, thunk
         return response.data;
     } catch (error) {
         
-        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get all users');
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to delete user');
     }
 });
 
@@ -70,5 +70,23 @@ export const getAllPartners = createAsyncThunk('partner/getAllPartners', async (
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get partners');
+    }
+});
+
+// Delete partner
+export const deletePartner = createAsyncThunk('admins/deletePartner', async (id, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.delete(`${API_BASE_URL}/partner/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed delete partner');
     }
 });

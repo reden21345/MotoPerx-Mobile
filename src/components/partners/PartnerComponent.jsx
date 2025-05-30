@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { updateStatus } from "../../redux/actions/partnerAction";
 import { getAddress } from "../../utils/helpers";
+import { deletePartner, getAllPartners } from "../../redux/actions/adminAction";
 
 const PartnerItem = ({ item, admin, setComp, setItem }) => {
   const dispatch = useDispatch();
@@ -29,18 +30,36 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
     navigation.navigate("EditPartner", { partner: item, admin: true });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     Alert.alert(
       "Confirm Deletion",
       "Are you sure you want to delete this user?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "", style: "cancel" },
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => {
-            console.log("Partner Deleted ", id);
+          onPress: async () => {
+            try {
+              const resultAction = await dispatch(deletePartner(id));
+
+              if (deletePartner.fulfilled.match(resultAction)) {
+                Alert.alert("Success", "Partner store deleted successfully");
+
+                // Optionally, re-fetch partner list
+                dispatch(getAllPartners());
+              } else {
+                Alert.alert(
+                  "Deletion Failed",
+                  resultAction.payload || "Something went wrong."
+                );
+              }
+            } catch (err) {
+              Alert.alert(
+                "Deletion Failed",
+                err.message || "Something went wrong."
+              );
+            }
           },
         },
       ]

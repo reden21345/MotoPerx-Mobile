@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteUser, editUser, getAllPartners, getAllUsers } from "../actions/adminAction";
+import { deletePartner, deleteUser, editUser, getAllPartners, getAllUsers } from "../actions/adminAction";
 
 const amdinSlice = createSlice({
   name: "admins",
@@ -8,6 +8,7 @@ const amdinSlice = createSlice({
     partners: [],
     count: 0,
     loading: false,
+    message: null,
     success: false,
     error: null,
   },
@@ -16,6 +17,7 @@ const amdinSlice = createSlice({
       state.users = [];
       state.partners = [],
       state.count = 0;
+      state.message = null,
       state.success = false,
       state.error = null;
     },
@@ -73,6 +75,19 @@ const amdinSlice = createSlice({
         state.partners = action.payload.partners;
       })
       .addCase(getAllPartners.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      .addCase(deletePartner.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePartner.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(deletePartner.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
