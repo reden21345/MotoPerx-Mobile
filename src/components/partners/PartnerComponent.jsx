@@ -14,7 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { updateStatus } from "../../redux/actions/partnerAction";
 import { getAddress } from "../../utils/helpers";
 
-const PartnerItem = ({ item, admin }) => {
+const PartnerItem = ({ item, admin, setComp, setItem }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const createdAt = new Date(item.createdAt).toLocaleDateString() || null;
@@ -49,15 +49,8 @@ const PartnerItem = ({ item, admin }) => {
   };
 
   const handleDetails = () => {
-    Alert.alert("See Details", "Do you want to see more details?", [
-      { text: "No", style: "cancel" },
-      { text: "", style: "cancel" },
-      {
-        text: "Yes",
-        style: "destructive",
-        onPress: () => navigation.navigate("PartnerDetails", { item, admin, address }),
-      },
-    ]);
+    setComp("PartnerDetails");
+    setItem(item);
   };
 
   const handleApproval = (id) => {
@@ -157,7 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#000",
     borderWidth: 2,
-    borderColor: '#98DB52',
+    borderColor: "#98DB52",
     padding: 15,
     borderRadius: 12,
     marginBottom: 15,
@@ -173,7 +166,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderWidth: 2,
-    borderColor: '#98DB52',
+    borderColor: "#98DB52",
     marginRight: 15,
   },
   avatarPlaceholder: {
@@ -196,11 +189,11 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "bold",
-    color: '#98DB52',
+    color: "#98DB52",
   },
   email: {
     fontSize: 10,
-    color: '#98DB52',
+    color: "#98DB52",
     marginTop: 2,
   },
   role: {

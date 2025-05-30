@@ -17,6 +17,7 @@ import { clearSuccess } from "../../redux/slices/adminSlice";
 import { clearMessage } from "../../redux/slices/partnerSlice";
 import DropDownPicker from "react-native-dropdown-picker";
 import PartnerItem from "../../components/partners/PartnerComponent";
+import PartnerComponent from "../../components/PartnerComponent";
 
 const Partners = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,9 @@ const Partners = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [items, setItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  const [item, setItem] = useState(null);
+  const [comp, setComp] = useState("Home");
 
   useEffect(() => {
     dispatch(getAllPartners());
@@ -72,47 +76,57 @@ const Partners = () => {
     dispatch(clearMessage());
   };
 
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={styles.container}
     >
-      <Text style={styles.screenTitle}>All Partners</Text>
+      {comp === "Home" ? (
+        <>
+          <Text style={styles.screenTitle}>All Partners</Text>
 
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search (owner, store name, location)"
-        value={searchTerm}
-        onChangeText={setSearchTerm}
-      />
-
-      <DropDownPicker
-        open={open}
-        value={selectedStatus}
-        items={items}
-        setOpen={setOpen}
-        setValue={setSelectedStatus}
-        setItems={setItems}
-        placeholder="Filter by status"
-        containerStyle={{ marginBottom: open ? 200 : 15, zIndex: 1000 }}
-        zIndex={1000}
-      />
-
-      <FlatList
-        data={filteredPartners}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <PartnerItem
-            item={item}
-            admin={true}
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search (owner, store name, location)"
+            value={searchTerm}
+            onChangeText={setSearchTerm}
           />
-        )}
-        contentContainerStyle={styles.list}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      />
+
+          <DropDownPicker
+            open={open}
+            value={selectedStatus}
+            items={items}
+            setOpen={setOpen}
+            setValue={setSelectedStatus}
+            setItems={setItems}
+            placeholder="Filter by status"
+            containerStyle={{ marginBottom: open ? 200 : 15, zIndex: 1000 }}
+            zIndex={1000}
+          />
+
+          <FlatList
+            data={filteredPartners}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+              <PartnerItem
+                item={item}
+                admin={true}
+                setComp={setComp}
+                setItem={setItem}
+              />
+            )}
+            contentContainerStyle={styles.list}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
+            }
+          />
+        </>
+      ) : (
+        <PartnerComponent item={item} setComp={setComp} setItem={setItem} />
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -120,14 +134,16 @@ const Partners = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
+    paddingTop: 40,
+    paddingHorizontal: 10,
+    backgroundColor: "#000",
   },
   screenTitle: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
+    color: "#98DB52",
   },
   loader: {
     flex: 1,
