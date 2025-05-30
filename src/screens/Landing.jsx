@@ -83,12 +83,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#98DB52', // White text on dark background
+    color: '#000', // White text on dark background
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: '#98DB52', // White text on dark background
+    color: '#000', // White text on dark background
     marginBottom: 20,
     textAlign: 'center',
     lineHeight: 20,

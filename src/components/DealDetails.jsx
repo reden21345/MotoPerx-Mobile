@@ -22,6 +22,20 @@ const DealDetails = ({ route, navigation }) => {
   const isService = item?.category === "Service";
   const isProduct = item?.category === "Product";
 
+  const getTierColor = (tier) => {
+    switch (tier?.toLowerCase()) {
+      case "bronze":
+        return "#cd7f32";
+      case "silver":
+        return "#c0c0c0";
+      case "gold":
+        return "#ffd700";
+      default:
+        return "#ccc";
+    }
+  };
+
+
   return (
     <View style={styles.container}>
       {/* Back Button */}
@@ -55,13 +69,21 @@ const DealDetails = ({ route, navigation }) => {
           ))}
         </View>
       </View>
+      {/* Points and Tier Badge */}
+        <View style={styles.pointsTierRow}>
+          <View style={styles.pointsTag}>
+            <Ionicons name="pricetag" size={14} color="#333" />
+            <Text style={styles.pointsText}>{item?.redemptionPoints} pts</Text>
+          </View>
 
-      {/* Name and Price */}
-      <View style={styles.rowBetween}>
+          <View style={[styles.tierBadge, { backgroundColor: getTierColor(item?.tier) }]}>
+            <Ionicons name="ribbon" size={16} color="#000" />
+            <Text style={styles.tierText}>{item?.tier}</Text>
+          </View>
+        </View>
+
         <Text style={styles.name}>{item?.title}</Text>
-      </View>
-      <Text style={styles.price}>{item?.redemptionPoints} points</Text>
-        <Text style={styles.price}>{item?.tier}</Text>
+
 
       {/* Type */}
       <Text style={styles.label}>Category:</Text>
@@ -143,6 +165,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     color: "#98DB52",
+    textAlign: "center",     
+    width: "100%",           
+    marginTop: 8, 
   },
   price: {
     fontSize: 25,
@@ -184,6 +209,45 @@ const styles = StyleSheet.create({
     color: "#fff",
     paddingHorizontal: 20,
   },
+  pointsTierRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+
+  pointsTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ccc",
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    gap: 6,
+  },
+
+  pointsText: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: "#000",
+  },
+
+  tierBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    gap: 6,
+  },
+
+  tierText: {
+    fontWeight: "bold",
+    fontSize: 14,
+    color: "#000",
+  },
+
 });
 
 export default DealDetails;

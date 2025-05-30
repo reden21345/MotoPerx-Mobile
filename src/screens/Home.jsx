@@ -231,7 +231,7 @@ const Home = ({ navigation }) => {
               </TouchableOpacity>
             </View>
             <FlatList
-              data={products}
+               data={products}
               keyExtractor={(item) => item._id}
               renderItem={renderStores}
               horizontal
@@ -252,7 +252,7 @@ const Home = ({ navigation }) => {
             </View>
             <View style={styles.productRow}>
               <FlatList
-                data={allProducts}
+                 data={allProducts.slice(0, 3)}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={renderProductServiceItem}
                 horizontal

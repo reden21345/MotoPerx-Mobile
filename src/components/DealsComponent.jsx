@@ -18,6 +18,14 @@ import { clearSuccess } from "../redux/slices/dealSlice";
 import { redeemPoints } from "../redux/actions/pointsAction";
 import { clearMessages } from "../redux/slices/pointSlice";
 
+const tierColors = {
+  Bronze: "#cd7f32",
+  Silver: "#c0c0c0",
+  Gold: "#ffd700",
+  Platinum: "#e5e4e2",
+};
+
+
 const DealCard = ({ item, partner, onRightActions, onRedeem }) => {
   const [imageIndex, setImageIndex] = useState(0);
   const imageList = item.images || [];
@@ -32,7 +40,14 @@ const DealCard = ({ item, partner, onRightActions, onRedeem }) => {
     <Swipeable
       renderRightActions={() => (!partner ? null : onRightActions(item))}
     >
-      <View style={styles.dealCard}>
+      <View
+        style={[
+          styles.dealCard,
+          {
+            borderLeftColor: tierColors[item.tier] || "#98DB52", // fallback color
+          },
+        ]}
+      >
         <View style={styles.topSection}>
           <View style={styles.textContainer}>
             <Text style={styles.dealTitle}>{item.title}</Text>

@@ -6,6 +6,7 @@ import {
   Alert,
   StyleSheet,
   TextInput,
+  TouchableOpacity,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useSelector } from "react-redux";
@@ -24,6 +25,37 @@ const Deals = () => {
     { label: 'Silver', value: 'Silver' },
     { label: 'Gold', value: 'Gold' },
   ]);
+
+  const getTierStyle = (tier) => {
+      const isSelected = selectedTier === tier;
+
+      const baseStyle = {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        marginHorizontal: 8,
+        backgroundColor: '#d3d3d3', // default gray
+      };
+
+      if (isSelected) {
+        switch (tier) {
+          case 'Gold':
+            baseStyle.backgroundColor = '#FFD700';
+            break;
+          case 'Silver':
+            baseStyle.backgroundColor = '#C0C0C0';
+            break;
+          case 'Bronze':
+            baseStyle.backgroundColor = '#CD7F32';
+            break;
+          default:
+            break;
+        }
+      }
+
+      return baseStyle;
+    };
+
 
 
   if (loading) {
@@ -61,17 +93,24 @@ const Deals = () => {
         onChangeText={setSearchTerm}
       />
 
-      <DropDownPicker
-        open={open}
-        value={selectedTier}
-        items={items}
-        setOpen={setOpen}
-        setValue={setSelectedTier}
-        setItems={setItems}
-        placeholder="Filter by tier"
-        containerStyle={{ marginBottom: open ? 200 : 15, zIndex: 1000 }}
-        zIndex={1000}
-      />
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+        <Text style={{ fontWeight: 'bold', marginRight: 10, color: "#fff" }}>TIER:</Text>
+        
+        {['Gold', 'Silver', 'Bronze'].map((tier) => (
+          <TouchableOpacity
+            key={tier}
+            onPress={() => {
+              setSelectedTier((prev) => (prev === tier ? "All" : tier));
+            }}
+          >
+            <View style={getTierStyle(tier)}>
+              <Text style={{ fontWeight: 'bold' }}>{tier.toUpperCase()}</Text>
+            </View>
+          </TouchableOpacity>
+
+        ))}
+      </View>
+
 
       <DealsComponent dealsData={filteredDeals} partner={false} />
     </View>
@@ -99,8 +138,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 10,
     borderRadius: 8,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    borderColor: "#98DB52",
+    borderWidth: 2,
     marginBottom: 10,
   },
 });

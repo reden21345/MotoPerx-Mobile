@@ -113,47 +113,52 @@ const EditProfile = ({ route, navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Edit Profile</Text>
 
-      <TouchableOpacity
-        onPress={() => pickAvatar(setAvatar)}
-        style={styles.avatarPicker}
-      >
-        {avatar ? (
-          <Image source={{ uri: avatar }} style={styles.avatarImage} />
-        ) : (
-          <Text style={styles.avatarText}>Add Avatar</Text>
-        )}
-      </TouchableOpacity>
+      <View style={styles.row}>
+  <TouchableOpacity
+    onPress={() => pickAvatar(setAvatar)}
+    style={styles.avatarPicker}
+  >
+    {avatar ? (
+      <Image source={{ uri: avatar }} style={styles.avatarImage} />
+    ) : (
+      <Text style={styles.avatarText}>Add Avatar</Text>
+    )}
+  </TouchableOpacity>
 
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={setName}
-        placeholder="Name"
-      />
-
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        keyboardType="email-address"
-      />
-
-      <TextInput
-        style={styles.input}
-        value={phone}
-        onChangeText={setPhone}
-        placeholder="Phone"
-        keyboardType="phone-pad"
-      />
+  <View style={styles.inputsContainer}>
+    <TextInput
+      style={styles.input}
+      value={name}
+      onChangeText={setName}
+      placeholder="Name"
+    />
+    <TextInput
+      style={styles.input}
+      value={email}
+      onChangeText={setEmail}
+      placeholder="Email"
+      keyboardType="email-address"
+    />
+    <TextInput
+      style={styles.input}
+      value={phone}
+      onChangeText={setPhone}
+      placeholder="Phone"
+      keyboardType="phone-pad"
+    />
+  </View>
+      </View>
 
       <TouchableOpacity
         onPress={() => setShowDatePicker(true)}
         style={styles.birthday}
       >
-        <Text style={styles.datePickerText}>
-          Birthday: {formatDate(birthday)}
-        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+          <Text style={styles.datePickerText}>
+            Birthday: {formatDate(birthday)}
+          </Text>
+          <Ionicons name="calendar" size={20} color="#fff" />
+        </View>
       </TouchableOpacity>
 
       {showDatePicker && (
@@ -165,14 +170,31 @@ const EditProfile = ({ route, navigation }) => {
         />
       )}
 
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-        <Text style={styles.subtext} numberOfLines={3} ellipsizeMode="tail">
+    <TouchableOpacity
+      style={styles.input}
+      onPress={() => setMapVisible(true)}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+          paddingHorizontal: 5,
+        }}
+      >
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={[styles.subtext, { maxWidth: "85%" }]} // set maxWidth to control layout
+        >
           {address}
         </Text>
-        <TouchableOpacity onPress={() => setMapVisible(true)}>
-          <Ionicons name="map" size={20} color="#000" />
-        </TouchableOpacity>
+        <Ionicons name="map" size={20} color="#fff" />
       </View>
+    </TouchableOpacity>
+
 
       <Modal visible={mapVisible} animationType="slide">
         <View style={styles.searchContainer}>
@@ -235,32 +257,29 @@ const EditProfile = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
-    padding: 20,
-    paddingBottom: 30, // ensures room to scroll
-  },
+  flex: 1, // take up the full height
+  backgroundColor: "#000",
+  paddingHorizontal: 20,
+  paddingTop: 20,
+  paddingBottom: 30,
+},
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
   },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 15,
-    borderWidth: 2,
-    borderColor: "#007bff",
+  row: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 20,
   },
   avatarPicker: {
-    alignSelf: "center",
-    marginBottom: 20,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    borderColor: "#98DB52",
+    borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
@@ -268,31 +287,53 @@ const styles = StyleSheet.create({
   avatarImage: {
     width: "100%",
     height: "100%",
+    borderRadius: 45,
   },
   avatarText: {
     color: "#888",
+    fontSize: 12,
     textAlign: "center",
+  },
+  inputsContainer: {
+    flex: 1,
+    marginLeft: 15,
   },
   input: {
     height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    borderColor: "#98DB52",
+    borderWidth: 2,
     borderRadius: 8,
     marginBottom: 15,
     paddingHorizontal: 15,
     fontSize: 16,
+    justifyContent: "center", 
+    color: "#fff"// helps ensure vertical centering
   },
   birthday: {
     height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    borderColor: "#98DB52",
+    borderWidth: 2,
     borderRadius: 8,
     marginBottom: 15,
     paddingHorizontal: 15,
     fontSize: 16,
+    justifyContent: "center",
+  },
+  datePickerText: {
+    color: "#fff",
+    alignSelf: "center",
+  },
+  subtext: {
+    fontSize: 14,
+    color: "#fff",
+    marginTop: 4,
+    flexWrap: "wrap",
+    maxWidth: 200,
   },
   button: {
     backgroundColor: "#000",
+    borderColor: "#98DB52",
+    borderWidth: 2,
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
@@ -301,13 +342,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 17,
     fontWeight: "600",
-  },
-  input2: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 8,
-    borderRadius: 5,
   },
   locBtn: {
     backgroundColor: "#424242",
@@ -318,13 +352,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "center",
   },
   saveButton: {
-    position: "absolute", // Position it over the map
-    bottom: 30, // Distance from the bottom of the screen
-    alignSelf: "center", // Center horizontally
+    position: "absolute",
+    bottom: 30,
+    alignSelf: "center",
     backgroundColor: "#424242",
     paddingVertical: 14,
     paddingHorizontal: 30,
@@ -342,29 +375,22 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "90%",
   },
-  searchContainer: { flexDirection: "row", padding: 10 },
+  miniMap: {
+    width: "100%",
+    height: 150,
+    marginVertical: 10,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    padding: 10,
+  },
   searchButton: {
     backgroundColor: "#424242",
     padding: 10,
     marginLeft: 5,
     borderRadius: 5,
   },
-  miniMap: {
-    width: "100%",
-    height: 150,
-    marginVertical: 10,
-  },
-  datePickerText: {
-    color: "#000",
-    alignSelf: "center",
-  },
-  subtext: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-    flexWrap: "wrap",
-    maxWidth: 200,
-  },
 });
+
 
 export default EditProfile;

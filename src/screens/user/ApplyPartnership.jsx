@@ -169,7 +169,7 @@ const ApplyPartnership = () => {
               <Ionicons
                 name="map"
                 size={20}
-                color="white"
+                color="#000"
                 style={{ marginLeft: 10 }}
               />
             </TouchableOpacity>
@@ -256,7 +256,7 @@ const ApplyPartnership = () => {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#000",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -273,12 +273,14 @@ const styles = StyleSheet.create({
   screenTitle: {
     fontSize: 26,
     fontWeight: "bold",
-    color: "#424242",
+    color: "#98DB52",
     marginBottom: 20,
   },
   card: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
+    borderColor: "#98DB52",
+    borderWidth: 1,
     borderRadius: 12,
     padding: 20,
     shadowColor: "#000",
@@ -291,8 +293,8 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     padding: 12,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    borderWidth: 2,
+    borderColor: "#98DB52",
     borderRadius: 10,
     marginBottom: 15,
     fontSize: 16,
@@ -300,7 +302,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fafafa",
   },
   submitButton: {
-    backgroundColor: "#424242",
+    backgroundColor: "#98DB52",
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -309,7 +311,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   locBtn: {
-    backgroundColor: "#424242",
+    backgroundColor: "#98DB52",
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -338,7 +340,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   buttonText: {
-    color: "#fff",
+    color: "#000",
     fontSize: 17,
     fontWeight: "600",
   },
@@ -358,8 +360,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    borderColor: "#98DB52",
+    borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
@@ -369,7 +371,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   avatarText: {
-    color: "#888",
+    color: "#fff",
     textAlign: "center",
   },
   map: {

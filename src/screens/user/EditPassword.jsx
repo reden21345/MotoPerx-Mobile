@@ -62,7 +62,7 @@ const EditProfile = ({ navigation }) => {
           <Ionicons
             name={showOldPassword ? "eye-off" : "eye"}
             size={22}
-            color="#888"
+            color="#fff"
           />
         </TouchableOpacity>
       </View>
@@ -82,7 +82,7 @@ const EditProfile = ({ navigation }) => {
           <Ionicons
             name={showNewPassword ? "eye-off" : "eye"}
             size={22}
-            color="#888"
+            color="#fff"
           />
         </TouchableOpacity>
       </View>
@@ -97,7 +97,7 @@ const EditProfile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     padding: 20,
     justifyContent: "center",
   },
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#98DB52"
   },
   inputWrapper: {
     position: "relative",
@@ -113,12 +114,14 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    borderColor: "#98DB52",
+    borderWidth: 2,
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
     paddingRight: 45,
+    //color: "#fff"
+    backgroundColor: "#fff",
   },
   eyeIcon: {
     position: "absolute",
@@ -131,6 +134,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     marginTop: 10,
+    borderColor: "#98DB52",
+    borderWidth: 2,
   },
   buttonText: {
     color: "#fff",
