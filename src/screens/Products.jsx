@@ -72,9 +72,9 @@ const Products = ({ navigation }) => {
 
       {/* Search Bar */}
       <View style={styles.searchWrapper}>
-        <Ionicons name="search" size={20} color="#fff" style={{ marginRight: 8 }} />
+        <Ionicons name="search" size={20} color="#000" style={{ marginRight: 8 }} />
         <TextInput
-          style={[styles.searchInput, { color: "#fff" }]}
+          style={[styles.searchInput, { color: "#FFF" }]}
           placeholder="Search by name"
           value={searchTerm}
           onChangeText={setSearchTerm}
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   searchWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
     borderRadius: 30,
     paddingHorizontal: 15,
     borderColor: "#98DB52",
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     paddingVertical: 10,
+    color: "#fff"
   },
   filterWrapper: {
     flexDirection: "row",

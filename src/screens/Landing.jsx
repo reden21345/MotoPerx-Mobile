@@ -51,11 +51,11 @@ const Landing = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Occupies the full device screen
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   topSection: {
     flex: 1, // Takes up remaining vertical space
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   bottomSection: {
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     padding: 24,
     alignItems: 'center',
     height: height * 0.3, // Adjust this value to make the container taller or shorter
@@ -83,26 +83,27 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff', // White text on dark background
+    color: '#98DB52', // White text on dark background
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
-    color: '#fff', // White text on dark background
+    color: '#98DB52', // White text on dark background
     marginBottom: 20,
     textAlign: 'center',
     lineHeight: 20,
   },
   button: {
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     paddingVertical: 14,
     paddingHorizontal: 80,
-    borderRadius: 20,
+    borderRadius: 60,
   },
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#98DB52', // White text on dark background
+    textAlign: 'center'
   },
 });
 

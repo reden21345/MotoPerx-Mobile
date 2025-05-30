@@ -365,17 +365,19 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
   },
   topBar: {
     width: "100%",
     paddingVertical: 15,
     paddingHorizontal: width * 0.05,
     alignItems: "flex-start",
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
   },
   arrowButton: {
     padding: 5,
+    backgroundColor: "#98DB52",
+    borderRadius: 5,
   },
   body: {
     paddingHorizontal: width * 0.08,
@@ -386,7 +388,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "600",
     marginBottom: 30,
-    color: "#000",
+    color: '#98DB52',
   },
   error: {
     color: "red",
@@ -433,6 +435,8 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     backgroundColor: "#000",
+    borderColor: '#98DB52',
+    borderWidth: 1,
     borderRadius: 6,
     paddingVertical: 15,
     alignItems: "center",

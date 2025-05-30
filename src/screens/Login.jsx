@@ -131,7 +131,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     paddingHorizontal: width * 0.08, // Responsive horizontal padding
     justifyContent: 'center',
   },
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 30,
-    color: '#000',
+    color: '#98DB52',
   },
   error: {
     color: 'red',
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#ccc',
-    borderWidth: 1,
+    borderColor: '#98DB52',
+    borderWidth: 2,
     marginBottom: 15,
     borderRadius: 6,
     paddingHorizontal: 10,
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   loginButton: {
-    backgroundColor: '#000',
+    backgroundColor: '#98DB52',
     paddingVertical: 15,
     borderRadius: 6,
     marginTop: 10,
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     alignSelf: 'left',
   },
   registerText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 14,
   },
   registerLink: {

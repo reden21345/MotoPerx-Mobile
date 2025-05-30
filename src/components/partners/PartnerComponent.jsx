@@ -155,7 +155,9 @@ const PartnerItem = ({ item, admin }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
+    borderWidth: 2,
+    borderColor: '#98DB52',
     padding: 15,
     borderRadius: 12,
     marginBottom: 15,
@@ -170,6 +172,8 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#98DB52',
     marginRight: 15,
   },
   avatarPlaceholder: {
@@ -192,11 +196,11 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: '#98DB52',
   },
   email: {
-    fontSize: 14,
-    color: "#666",
+    fontSize: 10,
+    color: '#98DB52',
     marginTop: 2,
   },
   role: {
