@@ -105,3 +105,21 @@ export const getNearbyPartners = createAsyncThunk('partner/getNearbyPartners', a
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Error getting nearby partners');
     }
 });
+
+// Edit partner
+export const editPartner = createAsyncThunk('admins/editPartner', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const {_id} = data;
+
+        const response = await axios.put(`${API_BASE_URL}/partner/${_id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to update partner');
+    }
+});

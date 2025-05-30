@@ -26,8 +26,7 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
   }, [item.location.coordinates]);
 
   const handleEdit = () => {
-    console.log("Partner Edit ", item);
-    // navigation.navigate("EditUser", { user: item });
+    navigation.navigate("EditPartner", { partner: item, admin: true });
   };
 
   const handleDelete = (id) => {

@@ -87,6 +87,12 @@ const PartnerDashboard = () => {
             {address}
           </Text>
         </View>
+        <TouchableOpacity
+          style={styles.editIcon}
+          onPress={() => navigation.navigate("EditPartner", { partner, admin: false })}
+        >
+          <Icon name="pencil" size={20} color="#007bff" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.infoCard}>
@@ -223,6 +229,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#222",
+  },
+  editIcon: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 5,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    elevation: 3,
   },
   manageCard: {
     backgroundColor: "#e6f0ff",
