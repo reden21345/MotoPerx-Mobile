@@ -8,6 +8,7 @@ import { getUserNotifications, notifChecker } from "../redux/actions/notifAction
 import { getQRCode } from "../redux/actions/qrcodeAction";
 import { getUserPoints } from "../redux/actions/pointsAction";
 import { getAllProducts } from "../redux/actions/productAction";
+import { getAllDeals } from "../redux/actions/dealsAction";
 import Notifications from "./Notifications";
 
 const Header = ({ navigation }) => {
@@ -36,6 +37,7 @@ const Header = ({ navigation }) => {
       dispatch(getQRCode());
       dispatch(getUserPoints());
       dispatch(getAllProducts());
+      dispatch(getAllDeals());
     }
   }, [user, dispatch]);
 

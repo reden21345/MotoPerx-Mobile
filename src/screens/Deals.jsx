@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, Alert, StyleSheet } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllDeals } from "../redux/actions/dealsAction";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  TextInput,
+} from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
+import { useSelector } from "react-redux";
 import DealsComponent from "../components/DealsComponent";
 
 const Deals = () => {
-  const dispatch = useDispatch();
   const { deals, loading } = useSelector((state) => state.deals);
   const { error, message } = useSelector((state) => state.points);
 
-  useEffect(() => {
-    dispatch(getAllDeals());
-  }, [dispatch]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [open, setOpen] = useState(false);
+  const [selectedTier, setSelectedTier] = useState("All");
+  const [items, setItems] = useState([
+    { label: 'All', value: 'All' },
+    { label: 'Bronze', value: 'Bronze' },
+    { label: 'Silver', value: 'Silver' },
+    { label: 'Gold', value: 'Gold' },
+  ]);
+
 
   if (loading) {
     return (
@@ -27,13 +40,39 @@ const Deals = () => {
     Alert.alert("Success", message);
   }
 
-  const filteredDeals = deals.filter(
-    (deal) => deal.status === 'Available'
-  );
+  const filteredDeals = deals
+    .filter((deal) => deal.status === "Available")
+    .filter((d) => {
+      const matchesSearch =
+        d.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        d.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesTier = selectedTier === "All" || d.tier === selectedTier;
+      return matchesSearch && matchesTier;
+    });
 
   return (
     <View style={styles.container}>
       <Text style={styles.screenTitle}>Available Deals</Text>
+
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search..."
+        value={searchTerm}
+        onChangeText={setSearchTerm}
+      />
+
+      <DropDownPicker
+        open={open}
+        value={selectedTier}
+        items={items}
+        setOpen={setOpen}
+        setValue={setSelectedTier}
+        setItems={setItems}
+        placeholder="Filter by tier"
+        containerStyle={{ marginBottom: open ? 200 : 15, zIndex: 1000 }}
+        zIndex={1000}
+      />
+
       <DealsComponent dealsData={filteredDeals} partner={false} />
     </View>
   );
@@ -55,6 +94,14 @@ const styles = StyleSheet.create({
   loader: {
     flex: 1,
     justifyContent: "center",
+  },
+  searchInput: {
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 8,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    marginBottom: 10,
   },
 });
 

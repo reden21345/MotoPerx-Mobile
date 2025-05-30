@@ -14,29 +14,34 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import ProductComponent from "../components/ProductComponent";
 import PartnerComponent from "../components/PartnerComponent";
-import motor1 from "../../assets/motor1.jpg"
-import motor2 from "../../assets/motor2.jpg"
-import motor3 from "../../assets/motor3.jpg"
+import motor1 from "../../assets/motor1.jpg";
+import motor2 from "../../assets/motor2.jpg";
+import motor3 from "../../assets/motor3.jpg";
 
 const { width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { deals } = useSelector((state) => state.deals);
   const { products } = useSelector((state) => state.products);
-  const { points, loyaltyTier} = useSelector((state) => state.points);
-  const expiresAt = useSelector(
-  (state) => state.points?.transactions?.length > 0 ? state.points.transactions[0].expiresAt : null
+  const { points, loyaltyTier } = useSelector((state) => state.points);
+  const expiresAt = useSelector((state) =>
+    state.points?.transactions?.length > 0
+      ? state.points.transactions[0].expiresAt
+      : null
   );
   const [posts, setPosts] = useState([]);
   const [comp, setComp] = useState("Home");
-  const [item, setItem] = useState(null)
+  const [item, setItem] = useState(null);
   const carouselImages = [motor1, motor2, motor3];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("https://jabbre.shop/wp-json/wp/v2/posts?_embed");
+        const response = await fetch(
+          "https://jabbre.shop/wp-json/wp/v2/posts?_embed"
+        );
         const data = await response.json();
         setPosts(data);
       } catch (error) {
@@ -48,14 +53,14 @@ const Home = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
-    );
-  }, 3000); // change slide every 3 seconds
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 3000); // change slide every 3 seconds
 
-  return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
 
   const openPost = (link) => {
     Linking.openURL(link);
@@ -63,11 +68,11 @@ const Home = ({ navigation }) => {
 
   // Renders each blog post item
   const renderPostItem = ({ item }) => {
-  const title = item?.title?.rendered || "No Title";
-  const link = item?.link || "#";
-  const imageUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+    const title = item?.title?.rendered || "No Title";
+    const link = item?.link || "#";
+    const imageUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
 
-  return (
+    return (
       <TouchableOpacity
         style={styles.postContainer}
         onPress={() => openPost(link)}
@@ -98,6 +103,31 @@ const Home = ({ navigation }) => {
     );
   };
 
+  const renderDeals = ({ item }) => {
+    const imageUrl = item.images?.[0]?.url || "https://via.placeholder.com/60";
+
+    return (
+      <TouchableOpacity
+        style={styles.productBox}
+        onPress={() => navigation.navigate("DealDetails", { item })}
+      >
+        <Image
+          source={{ uri: imageUrl }}
+          style={{ width: 100, height: 60, borderRadius: 8, marginBottom: 10 }}
+        />
+        <Text style={styles.productValue}>{item.title}</Text>
+        <Text style={styles.productLabel}>{item.redemptionPoints} pts</Text>
+        <Text style={styles.productLabel}>{item.tier}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const allProducts = products.flatMap((store) =>
+    store.productService.map((service) => ({
+      ...service,
+    }))
+  );
+
   const renderProductServiceItem = ({ item }) => {
     const imageUrl = item.images?.[0]?.url || "https://via.placeholder.com/60";
 
@@ -106,7 +136,7 @@ const Home = ({ navigation }) => {
         style={styles.productBox}
         onPress={() => {
           setItem(item);
-          setComp("ProductDetails")
+          setComp("ProductDetails");
         }}
       >
         <Image
@@ -120,12 +150,6 @@ const Home = ({ navigation }) => {
     );
   };
 
-  const allProducts = products.flatMap((store) =>
-    store.productService.map((service) => ({
-      ...service,
-    }))
-  );
-
   return (
     <View style={styles.container}>
       {comp === "Home" ? (
@@ -137,18 +161,25 @@ const Home = ({ navigation }) => {
             style={styles.bannerScrollContainer}
           >
             <View style={styles.carouselWrapper}>
-              <Image source={carouselImages[currentIndex]} style={styles.carouselImage} />
+              <Image
+                source={carouselImages[currentIndex]}
+                style={styles.carouselImage}
+              />
             </View>
           </ScrollView>
-          
+
           {/* Points + QR Container */}
           <View style={styles.rewardsCard}>
             <View style={styles.rewardsLeft}>
               <Text style={styles.rewardsTitle}>REWARDS POINTS</Text>
-              <Text style={styles.rewardsPoints}>{(points || 0).toFixed(2)}PTS</Text>
+              <Text style={styles.rewardsPoints}>
+                {(points || 0).toFixed(2)}PTS
+              </Text>
               <Text style={styles.rewardsExpiry}>
-                {expiresAt ? new Date(expiresAt).toLocaleDateString('en-US') : 'No Points Yet'}
-              </Text> 
+                {expiresAt
+                  ? new Date(expiresAt).toLocaleDateString("en-US")
+                  : "No Points Yet"}
+              </Text>
             </View>
 
             <View style={styles.rewardsRight}>
@@ -169,11 +200,53 @@ const Home = ({ navigation }) => {
             </View>
           </View>
 
-          {/* POINTS PER SERVICES */}
+          {/* DEALS */}
           <View style={styles.productContainer}>
             <View style={styles.storeHeader}>
               <Text style={styles.productTitle}>DEALS</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("AllProducts")}>
+              <TouchableOpacity onPress={() => navigation.navigate("Deals")}>
+                <Text style={styles.viewAllText}>VIEW ALL</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.productRow}>
+              <FlatList
+                data={deals}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={renderDeals}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingVertical: 10 }}
+              />
+            </View>
+          </View>
+
+          {/* SERVICES SECTION */}
+          <View style={styles.storeContainer}>
+            <View style={styles.storeHeader}>
+              <Text style={styles.storeTitle}>PARTNER MERCHANT</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("AllStores")}
+              >
+                <Text style={styles.viewAllText}>VIEW ALL</Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={products}
+              keyExtractor={(item) => item._id}
+              renderItem={renderStores}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.horizontalStoreRow}
+            />
+          </View>
+
+          {/* PRODUCTS */}
+          <View style={styles.productContainer}>
+            <View style={styles.storeHeader}>
+              <Text style={styles.productTitle}>PRODUCTS & SERVICES</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("AllProducts")}
+              >
                 <Text style={styles.viewAllText}>VIEW ALL</Text>
               </TouchableOpacity>
             </View>
@@ -187,25 +260,6 @@ const Home = ({ navigation }) => {
                 contentContainerStyle={{ paddingVertical: 10 }}
               />
             </View>
-          </View>
-
-          {/* SERVICES SECTION */}
-          <View style={styles.storeContainer}>
-            <View style={styles.storeHeader}>
-              <Text style={styles.storeTitle}>PARTNER MERCHANT</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("AllStores")}>
-                <Text style={styles.viewAllText}>VIEW ALL</Text>
-              </TouchableOpacity>
-            </View>
-           <FlatList
-              data={products}
-              keyExtractor={(item) => item._id}
-              renderItem={renderStores}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalStoreRow}
-            />
-
           </View>
 
           {/* LATEST BLOGS (Horizontally scrollable) */}
@@ -223,9 +277,9 @@ const Home = ({ navigation }) => {
           </View>
         </ScrollView>
       ) : comp === "ProductDetails" ? (
-        <ProductComponent item={item} setComp={setComp} setItem={setItem}/>
+        <ProductComponent item={item} setComp={setComp} setItem={setItem} />
       ) : (
-        <PartnerComponent item={item} setComp={setComp} setItem={setItem}/>
+        <PartnerComponent item={item} setComp={setComp} setItem={setItem} />
       )}
     </View>
   );
@@ -320,7 +374,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#98DB52"
+    color: "#98DB52",
   },
   productRow: {
     flexDirection: "row",
@@ -335,11 +389,11 @@ const styles = StyleSheet.create({
     padding: 15,
     borderColor: "#FFFFFF",
     borderWidth: 1,
-    shadowColor: "#FFFFFF",           
-    shadowOffset: { width: 2, height: 8 }, 
-    shadowOpacity: 0.75,             
-    shadowRadius: 12,             
-    elevation: 15,                  
+    shadowColor: "#FFFFFF",
+    shadowOffset: { width: 2, height: 8 },
+    shadowOpacity: 0.75,
+    shadowRadius: 12,
+    elevation: 15,
   },
   productValue: {
     fontSize: 18,
@@ -365,7 +419,7 @@ const styles = StyleSheet.create({
   storeTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#98DB52"
+    color: "#98DB52",
   },
   viewAllText: {
     fontSize: 14,
@@ -387,11 +441,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FFFFFF",
     borderWidth: 1,
-    shadowColor: "#FFFFFF",           
-    shadowOffset: { width: 2, height: 8 }, 
-    shadowOpacity: 0.75,             
-    shadowRadius: 12,             
-    elevation: 15,     
+    shadowColor: "#FFFFFF",
+    shadowOffset: { width: 2, height: 8 },
+    shadowOpacity: 0.75,
+    shadowRadius: 12,
+    elevation: 15,
   },
 
   storeImage: {
@@ -417,7 +471,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#98DB52"
+    color: "#98DB52",
   },
   blogList: {},
   postContainer: {
@@ -430,11 +484,11 @@ const styles = StyleSheet.create({
     width: width * 0.8,
     borderColor: "#FFFFFF",
     borderWidth: 1,
-    shadowColor: "#FFFFFF",           
-    shadowOffset: { width: 2, height: 8 }, 
-    shadowOpacity: 0.75,             
-    shadowRadius: 12,             
-    elevation: 15,     
+    shadowColor: "#FFFFFF",
+    shadowOffset: { width: 2, height: 8 },
+    shadowOpacity: 0.75,
+    shadowRadius: 12,
+    elevation: 15,
   },
   postImage: {
     width: "100%",
@@ -462,6 +516,4 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 5,
   },
-
 });
-
