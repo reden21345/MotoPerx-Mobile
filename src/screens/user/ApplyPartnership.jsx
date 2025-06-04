@@ -31,6 +31,7 @@ import {
   handleMapSearch,
   pickAvatar,
 } from "../../utils/helpers";
+import { sendNotifications } from "../../redux/actions/notifAction";
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
@@ -102,7 +103,15 @@ const ApplyPartnership = () => {
       avatar,
     };
 
-    dispatch(apply(data));
+    const notifData = {
+        title: "New Partnership!",
+        body: `${user?.name} applied for partnership in MotoPerx. Please see the motoperx for more details`,
+        role: 'admin'
+    };
+
+    dispatch(apply(data)).then(() => {
+      dispatch((sendNotifications(notifData)));
+    });
   };
 
   const handleCancel = () => {

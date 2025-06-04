@@ -43,7 +43,7 @@ const EditProfile = ({ route, navigation }) => {
   const [editLoc, setEditLoc] = useState(false);
 
   const [birthday, setBirthday] = useState(
-    user?.birthday ? new Date(user.birthday) : new Date()
+    user?.birthday ? new Date(user.birthday) : null
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -84,11 +84,6 @@ const EditProfile = ({ route, navigation }) => {
       birthday,
       location,
     };
-
-    if (!user.avatar?.url && !avatar) {
-      Alert.alert("Required", "Required to upload avatar!");
-      return;
-    }
 
     try {
       setIsSubmitting(true);
@@ -152,13 +147,15 @@ const EditProfile = ({ route, navigation }) => {
         style={styles.birthday}
       >
         <Text style={styles.datePickerText}>
-          Birthday: {formatDate(birthday)}
+          {birthday
+            ? `Birthday: ${formatDate(birthday)}`
+            : "Select your birthday"}
         </Text>
       </TouchableOpacity>
 
       {showDatePicker && (
         <DateTimePicker
-          value={birthday}
+          value={birthday || new Date()}
           mode="date"
           display="default"
           onChange={handleDateChange}

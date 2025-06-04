@@ -36,22 +36,16 @@ const RegisterScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
-  const [location, setLocation] = useState([0, 0]);
+  const [location, setLocation] = useState(null);
   const [step, setStep] = useState(1);
   const [code, setCode] = useState(null);
   const [region, setRegion] = useState(null);
 
-  const [birthday, setBirthday] = useState(new Date());
+  const [birthday, setBirthday] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [mapVisible, setMapVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    if (region) {
-      setLocation([region.longitude, region.latitude]);
-    }
-  }, [region]);
 
   useEffect(() => {
     fetchCurrentLocation(setRegion);
@@ -67,7 +61,20 @@ const RegisterScreen = ({ navigation }) => {
     }));
   };
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleRegister = async () => {
+    if (!name.trim() || !email.trim() || !phone.trim() || !password) {
+      return Alert.alert("Validation Error", "Please fill up required fields.");
+    }
+
+    if (!isValidEmail(email)) {
+      return Alert.alert("Validation Error", "Please enter a valid email.");
+    }
+
     const data = {
       name,
       email,
@@ -224,48 +231,6 @@ const RegisterScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <TouchableOpacity
-                onPress={() => setShowDatePicker(true)}
-                style={styles.input}
-              >
-                <Text style={styles.datePickerText}>
-                  Birthday: {formatDate(birthday)}
-                </Text>
-              </TouchableOpacity>
-              <Ionicons
-                name="balloon"
-                size={24}
-                color="#999"
-                style={styles.icon}
-              />
-            </View>
-            {showDatePicker && (
-              <DateTimePicker
-                value={birthday}
-                mode="date"
-                display="default"
-                onChange={handleDateChange}
-              />
-            )}
-
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="PHONE"
-                placeholderTextColor="#888"
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad"
-                style={styles.input}
-              />
-              <Ionicons
-                name="call"
-                size={24}
-                color="#999"
-                style={styles.icon}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
               <TextInput
                 placeholder="PASSWORD"
                 placeholderTextColor="#888"
@@ -284,6 +249,49 @@ const RegisterScreen = ({ navigation }) => {
                   color="#999"
                 />
               </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <TouchableOpacity
+                onPress={() => setShowDatePicker(true)}
+                style={styles.input}
+              >
+                <Text style={styles.datePickerText}>
+                  {birthday
+                    ? `Birthday: ${formatDate(birthday)}`
+                    : "Select your birthday"}
+                </Text>
+              </TouchableOpacity>
+              <Ionicons
+                name="balloon"
+                size={24}
+                color="#999"
+                style={styles.icon}
+              />
+            </View>
+            {showDatePicker && (
+              <DateTimePicker
+                value={birthday || new Date()}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
+              />
+            )}
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="PHONE"
+                placeholderTextColor="#888"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                style={styles.input}
+              />
+              <Ionicons
+                name="call"
+                size={24}
+                color="#999"
+                style={styles.icon}
+              />
             </View>
 
             <TouchableOpacity
@@ -308,7 +316,9 @@ const RegisterScreen = ({ navigation }) => {
                   onChangeText={setSearchQuery}
                 />
                 <TouchableOpacity
-                  onPress={() => handleMapSearch(searchQuery, setLocation, setRegion)}
+                  onPress={() =>
+                    handleMapSearch(searchQuery, setLocation, setRegion)
+                  }
                   style={styles.searchButton}
                 >
                   <Ionicons name="search" size={20} color="white" />
@@ -327,19 +337,22 @@ const RegisterScreen = ({ navigation }) => {
               )}
 
               <TouchableOpacity
-                onPress={() => setMapVisible(false)}
+                onPress={() => {
+                  if (region) {
+                    setLocation([region.longitude, region.latitude]);
+                  }
+                  setMapVisible(false);
+                }}
                 style={styles.saveButton}
               >
                 <Text style={styles.saveButtonText}>Save</Text>
               </TouchableOpacity>
             </Modal>
 
-            {region ? (
+            {location && (
               <MapView style={styles.miniMap} region={region}>
                 <Marker coordinate={region} />
               </MapView>
-            ) : (
-              <ActivityIndicator size="large" color="#424242" />
             )}
 
             <TouchableOpacity
@@ -388,7 +401,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "600",
     marginBottom: 30,
-    color: '#98DB52',
+    color: "#98DB52",
   },
   error: {
     color: "red",
@@ -435,7 +448,7 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     backgroundColor: "#000",
-    borderColor: '#98DB52',
+    borderColor: "#98DB52",
     borderWidth: 1,
     borderRadius: 6,
     paddingVertical: 15,
