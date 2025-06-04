@@ -57,6 +57,24 @@ export const sendNotifications = createAsyncThunk('notifications/sendNotificatio
     }
 });
 
+// Send push notification
+export const sendSingleUserNotif = createAsyncThunk('notifications/sendSingleUserNotif', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.post(`${API_BASE_URL}/notifications/send/single`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to send notification');
+    }
+});
+
 // Mark as seen
 export const markAsSeen = createAsyncThunk('notifications/markAsSeen', async (id, thunkAPI) => {
     try {

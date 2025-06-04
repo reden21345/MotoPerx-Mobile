@@ -5,6 +5,7 @@ import {
   markAsSeen,
   notifChecker,
   sendNotifications,
+  sendSingleUserNotif,
 } from "../actions/notifAction";
 
 const notifSlice = createSlice({
@@ -66,6 +67,19 @@ const notifSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(sendNotifications.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(sendSingleUserNotif.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(sendSingleUserNotif.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(sendSingleUserNotif.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
