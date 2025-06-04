@@ -12,6 +12,7 @@ import {
   Platform,
   Image,
   Modal,
+  RefreshControl,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +33,7 @@ import {
   pickAvatar,
 } from "../../utils/helpers";
 import { sendNotifications } from "../../redux/actions/notifAction";
+import { profile } from "../../redux/actions/authAction";
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
@@ -40,6 +42,7 @@ const ApplyPartnership = () => {
     (state) => state.partners
   );
 
+  const [refreshing, setRefreshing] = useState(false);
   const [storeName, setStoreName] = useState("");
   const [location, setLocation] = useState([0, 0]);
   const [conversion, setConversion] = useState("");
@@ -83,6 +86,22 @@ const ApplyPartnership = () => {
     }, [dispatch])
   );
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(profile()).then((res) => {
+      const u = res.payload.user;
+      if (
+        u?.role === "partner" ||
+        u?.role === "employee" ||
+        u?.role === "pendingPartner"
+      ) {
+        dispatch(getPartner()).finally(() => setRefreshing(false));
+      } else {
+        setRefreshing(false);
+      }
+    });
+  };
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -104,13 +123,13 @@ const ApplyPartnership = () => {
     };
 
     const notifData = {
-        title: "New Partnership!",
-        body: `${user?.name} applied for partnership in MotoPerx. Please see the motoperx for more details`,
-        role: 'admin'
+      title: "New Partnership!",
+      body: `${user?.name} applied for partnership in MotoPerx. Please see the motoperx for more details`,
+      role: "admin",
     };
 
     dispatch(apply(data)).then(() => {
-      dispatch((sendNotifications(notifData)));
+      dispatch(sendNotifications(notifData));
     });
   };
 
@@ -119,7 +138,6 @@ const ApplyPartnership = () => {
       id: partner?._id,
       status: "Canceled",
     };
-    console.log(data);
     dispatch(updateStatus(data)).then(() => {
       dispatch(clearPartnerDetails());
     });
@@ -140,7 +158,12 @@ const ApplyPartnership = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={styles.outerContainer}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <Text style={styles.screenTitle}>Partner Application</Text>
 
         {!partner ? (
@@ -255,6 +278,15 @@ const ApplyPartnership = () => {
             <Text style={styles.pendingText}>
               Sorry your application has been declined
             </Text>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleCancel}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? "Loading..." : "Reapply"}
+              </Text>
+            </TouchableOpacity>
           </View>
         )}
       </ScrollView>

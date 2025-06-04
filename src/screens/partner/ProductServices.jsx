@@ -43,7 +43,7 @@ const ProductServices = ({ navigation }) => {
     return matchesSearch;
   });
 
-  const handleRefresh = async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     dispatch(getPartner()).finally(() => setRefreshing(false));
   };
@@ -144,7 +144,7 @@ const ProductServices = ({ navigation }) => {
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
     </KeyboardAvoidingView>

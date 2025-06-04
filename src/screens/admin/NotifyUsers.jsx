@@ -12,7 +12,7 @@ const NotifyUsers = ({ navigation }) => {
     const data = {
         title,
         body,
-        role: 'admin'
+        role: 'user'
     }
 
     dispatch(sendNotifications(data)).then(()=>{

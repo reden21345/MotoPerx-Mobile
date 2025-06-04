@@ -42,7 +42,7 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
       body: stat
         ? "Congratulations! Your application of partnership is approved"
         : "We are sorry to inform you that your application of partnership is disapproved",
-        userId: item.owner?._id
+      userId: item.owner?._id,
     };
     dispatch(updateStatus(data)).then(() => {
       dispatch(sendSingleUserNotif(notifData));
@@ -113,17 +113,19 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
 
   const renderRightActions = () => (
     <View style={styles.actionsContainer}>
-      <TouchableOpacity
-        style={[styles.actionButton, styles.editButton]}
-        onPress={() => (pending ? handleApproval(item._id) : handleEdit())}
-      >
-        <Ionicons
-          name={pending ? "checkmark" : "pencil"}
-          size={20}
-          color="white"
-        />
-      </TouchableOpacity>
-      {item.status === "Approved" && (
+      {item.status !== "Disapproved" && (
+        <TouchableOpacity
+          style={[styles.actionButton, styles.editButton]}
+          onPress={() => (pending ? handleApproval(item._id) : handleEdit())}
+        >
+          <Ionicons
+            name={pending ? "checkmark" : "pencil"}
+            size={20}
+            color="white"
+          />
+        </TouchableOpacity>
+      )}
+      {(item.status === "Approved" || item.status === "Disapproved") && (
         <TouchableOpacity
           style={[styles.actionButton, styles.deleteButton]}
           onPress={() => handleDelete(item._id)}
@@ -146,7 +148,7 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
         )}
         <View style={styles.info}>
           {admin && <Text style={styles.name}>Owner: {item.owner.name}</Text>}
-          <Text style={styles.name}>Store: {item.storeName}</Text>
+          <Text style={styles.name}>{item.storeName}</Text>
           <Text style={styles.email}>Address: {address || "Loading..."}</Text>
           {admin && (
             <>

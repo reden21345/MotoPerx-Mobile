@@ -66,7 +66,7 @@ const Users = () => {
       return matchesSearch && matchesRole;
     });
 
-  const handleRefresh = async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     dispatch(getAllUsers()).finally(() => setRefreshing(false));
     dispatch(clearSuccess())
@@ -168,7 +168,7 @@ const Users = () => {
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
     </KeyboardAvoidingView>

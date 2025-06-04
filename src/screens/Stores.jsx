@@ -42,7 +42,7 @@ const AllPartners = ({ navigation }) => {
     return matchesSearch;
   });
 
-  const handleRefresh = async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     dispatch(getAllProducts()).finally(() => setRefreshing(false));
   };
@@ -84,7 +84,7 @@ const AllPartners = ({ navigation }) => {
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={handleRefresh}
+                onRefresh={onRefresh}
               />
             }
           />
