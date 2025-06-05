@@ -65,6 +65,7 @@ const PartnerComponent = ({ item, setComp, setItem }) => {
               <Image source={{ uri: avatar.url }} style={styles.avatar} />
               <View style={styles.storeInfo}>
                 <Text style={styles.storeName}>{storeName}</Text>
+                <Text style={styles.conversion}>Conversion Value: {conversion}</Text>
                 <Text style={styles.conversion}>
                   Tap to {detailsVisible ? "hide" : "view"} details
                 </Text>

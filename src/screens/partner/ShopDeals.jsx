@@ -85,13 +85,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#000",
   },
   screenTitle: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
+    color: "#98DB52",
   },
   loader: {
     flex: 1,
@@ -114,6 +115,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 5,
     marginRight: 10,
+    shadowColor: "#98DB52",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 8,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: "#98DB52",
   },
   buttonText: {
     color: "white",

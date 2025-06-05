@@ -219,8 +219,9 @@ const styles = StyleSheet.create({
     elevation: 8,
     borderLeftWidth: 6,
     borderLeftColor: "#98DB52",
+    borderRightColor: "#98DB52",
+    borderRightWidth: 2,
   },
-
   dealTitle: {
     fontSize: 18,
     fontWeight: "bold",
