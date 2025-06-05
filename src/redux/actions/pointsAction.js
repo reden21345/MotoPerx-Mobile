@@ -12,7 +12,7 @@ export const getUserPoints = createAsyncThunk('points/getPoints', async (_, thun
                 Authorization: `Bearer ${token}`,
             },
         });
-console.log(`${API_BASE_URL}/points/me`)
+
         return response.data;
     } catch (error) {
         

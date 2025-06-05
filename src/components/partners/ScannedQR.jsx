@@ -15,7 +15,6 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
 
   useEffect(() => {
     if (scannedQR) {
-      console.log("Dispatching getUserFromQr with:", scannedQR);
       dispatch(getUserFromQr(scannedQR));
     }
   }, [dispatch, scannedQR]);
