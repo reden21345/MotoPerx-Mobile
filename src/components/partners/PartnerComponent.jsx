@@ -14,6 +14,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { updateStatus } from "../../redux/actions/partnerAction";
 import { getAddress } from "../../utils/helpers";
 import { deletePartner, getAllPartners } from "../../redux/actions/adminAction";
+import { sendSingleUserNotif } from "../../redux/actions/notifAction";
 
 const PartnerItem = ({ item, admin, setComp, setItem }) => {
   const dispatch = useDispatch();
@@ -28,6 +29,25 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
 
   const handleEdit = () => {
     navigation.navigate("EditPartner", { partner: item, admin: true });
+  };
+
+  const handlePartnerStatus = (stat) => {
+    const data = {
+      id: item._id,
+      status: stat ? "Approved" : "Disapproved",
+    };
+
+    const notifData = {
+      title: "Partnership update",
+      body: stat
+        ? "Congratulations! Your application of partnership is approved"
+        : "We are sorry to inform you that your application of partnership is disapproved",
+      userId: item.owner?._id,
+    };
+    dispatch(updateStatus(data)).then(() => {
+      dispatch(sendSingleUserNotif(notifData));
+      dispatch(getAllPartners());
+    });
   };
 
   const handleDelete = async (id) => {
@@ -80,24 +100,12 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
         {
           text: "No",
           style: "destructive",
-          onPress: () => {
-            const data = {
-              id,
-              status: "Disapproved",
-            };
-            dispatch(updateStatus(data));
-          },
+          onPress: () => handlePartnerStatus(false),
         },
         {
           text: "Yes",
           style: "default",
-          onPress: () => {
-            const data = {
-              id,
-              status: "Approved",
-            };
-            dispatch(updateStatus(data));
-          },
+          onPress: () => handlePartnerStatus(true),
         },
       ]
     );
@@ -105,35 +113,32 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
 
   const renderRightActions = () => (
     <View style={styles.actionsContainer}>
-      {item.status === "Approved" && (
+      {item.status !== "Disapproved" && (
         <TouchableOpacity
           style={[styles.actionButton, styles.editButton]}
-          onPress={() => handleEdit()}
+          onPress={() => (pending ? handleApproval(item._id) : handleEdit())}
         >
-          <Ionicons name="pencil" size={20} color="white" />
+          <Ionicons
+            name={pending ? "checkmark" : "pencil"}
+            size={20}
+            color="white"
+          />
         </TouchableOpacity>
       )}
-      <TouchableOpacity
-        style={[styles.actionButton, styles.deleteButton]}
-        onPress={() => handleDelete(item._id)}
-      >
-        <Ionicons name="trash" size={20} color="white" />
-      </TouchableOpacity>
+      {(item.status === "Approved" || item.status === "Disapproved") && (
+        <TouchableOpacity
+          style={[styles.actionButton, styles.deleteButton]}
+          onPress={() => handleDelete(item._id)}
+        >
+          <Ionicons name="trash" size={20} color="white" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 
   return (
-    <Swipeable
-      renderRightActions={() =>
-        !pending && admin ? renderRightActions() : null
-      }
-    >
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => {
-          pending && admin ? handleApproval(item._id) : handleDetails();
-        }}
-      >
+    <Swipeable renderRightActions={() => (admin ? renderRightActions() : null)}>
+      <TouchableOpacity style={styles.card} onPress={() => handleDetails()}>
         {item.avatar?.url ? (
           <Image source={{ uri: item.avatar.url }} style={styles.avatar} />
         ) : (
@@ -143,7 +148,7 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
         )}
         <View style={styles.info}>
           {admin && <Text style={styles.name}>Owner: {item.owner.name}</Text>}
-          <Text style={styles.name}>Store: {item.storeName}</Text>
+          <Text style={styles.name}>{item.storeName}</Text>
           <Text style={styles.email}>Address: {address || "Loading..."}</Text>
           {admin && (
             <>

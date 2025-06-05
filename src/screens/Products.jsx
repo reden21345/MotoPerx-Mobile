@@ -54,7 +54,7 @@ const Products = ({ navigation }) => {
   });
 
 
-  const handleRefresh = async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     dispatch(getAllProducts()).finally(() => setRefreshing(false));
   };
@@ -121,7 +121,7 @@ const Products = ({ navigation }) => {
         renderItem={({ item }) => <ProductCard item={item} compact />}
         contentContainerStyle={styles.list}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
 

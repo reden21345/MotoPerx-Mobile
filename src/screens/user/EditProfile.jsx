@@ -43,7 +43,7 @@ const EditProfile = ({ route, navigation }) => {
   const [editLoc, setEditLoc] = useState(false);
 
   const [birthday, setBirthday] = useState(
-    user?.birthday ? new Date(user.birthday) : new Date()
+    user?.birthday ? new Date(user.birthday) : null
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -85,11 +85,6 @@ const EditProfile = ({ route, navigation }) => {
       location,
     };
 
-    if (!user.avatar?.url && !avatar) {
-      Alert.alert("Required", "Required to upload avatar!");
-      return;
-    }
-
     try {
       setIsSubmitting(true);
       await dispatch(editProfile(data)).unwrap();
@@ -114,48 +109,56 @@ const EditProfile = ({ route, navigation }) => {
       <Text style={styles.title}>Edit Profile</Text>
 
       <View style={styles.row}>
-  <TouchableOpacity
-    onPress={() => pickAvatar(setAvatar)}
-    style={styles.avatarPicker}
-  >
-    {avatar ? (
-      <Image source={{ uri: avatar }} style={styles.avatarImage} />
-    ) : (
-      <Text style={styles.avatarText}>Add Avatar</Text>
-    )}
-  </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => pickAvatar(setAvatar)}
+          style={styles.avatarPicker}
+        >
+          {avatar ? (
+            <Image source={{ uri: avatar }} style={styles.avatarImage} />
+          ) : (
+            <Text style={styles.avatarText}>Add Avatar</Text>
+          )}
+        </TouchableOpacity>
 
-  <View style={styles.inputsContainer}>
-    <TextInput
-      style={styles.input}
-      value={name}
-      onChangeText={setName}
-      placeholder="Name"
-    />
-    <TextInput
-      style={styles.input}
-      value={email}
-      onChangeText={setEmail}
-      placeholder="Email"
-      keyboardType="email-address"
-    />
-    <TextInput
-      style={styles.input}
-      value={phone}
-      onChangeText={setPhone}
-      placeholder="Phone"
-      keyboardType="phone-pad"
-    />
-  </View>
+        <View style={styles.inputsContainer}>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            placeholder="Name"
+          />
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            value={phone}
+            onChangeText={setPhone}
+            placeholder="Phone"
+            keyboardType="phone-pad"
+          />
+        </View>
       </View>
 
       <TouchableOpacity
         onPress={() => setShowDatePicker(true)}
         style={styles.birthday}
       >
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Text style={styles.datePickerText}>
-            Birthday: {formatDate(birthday)}
+            {birthday
+              ? `Birthday: ${formatDate(birthday)}`
+              : "Select your birthday"}
           </Text>
           <Ionicons name="calendar" size={20} color="#fff" />
         </View>
@@ -163,38 +166,37 @@ const EditProfile = ({ route, navigation }) => {
 
       {showDatePicker && (
         <DateTimePicker
-          value={birthday}
+          value={birthday || new Date()}
           mode="date"
           display="default"
           onChange={handleDateChange}
         />
       )}
 
-    <TouchableOpacity
-      style={styles.input}
-      onPress={() => setMapVisible(true)}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          height: "100%",
-          width: "100%",
-          paddingHorizontal: 5,
-        }}
+      <TouchableOpacity
+        style={styles.input}
+        onPress={() => setMapVisible(true)}
       >
-        <Text
-          numberOfLines={1}
-          ellipsizeMode="tail"
-          style={[styles.subtext, { maxWidth: "85%" }]} // set maxWidth to control layout
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+            paddingHorizontal: 5,
+          }}
         >
-          {address}
-        </Text>
-        <Ionicons name="map" size={20} color="#fff" />
-      </View>
-    </TouchableOpacity>
-
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={[styles.subtext, { maxWidth: "85%" }]} // set maxWidth to control layout
+          >
+            {address}
+          </Text>
+          <Ionicons name="map" size={20} color="#fff" />
+        </View>
+      </TouchableOpacity>
 
       <Modal visible={mapVisible} animationType="slide">
         <View style={styles.searchContainer}>
@@ -257,12 +259,12 @@ const EditProfile = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-  flex: 1, // take up the full height
-  backgroundColor: "#000",
-  paddingHorizontal: 20,
-  paddingTop: 20,
-  paddingBottom: 30,
-},
+    flex: 1, // take up the full height
+    backgroundColor: "#000",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 30,
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -306,8 +308,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingHorizontal: 15,
     fontSize: 16,
-    justifyContent: "center", 
-    color: "#fff"// helps ensure vertical centering
+    justifyContent: "center",
+    color: "#fff", // helps ensure vertical centering
   },
   birthday: {
     height: 50,
@@ -391,6 +393,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
-
 
 export default EditProfile;

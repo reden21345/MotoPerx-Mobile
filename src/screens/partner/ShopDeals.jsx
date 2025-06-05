@@ -25,7 +25,7 @@ const Deals = ({ navigation }) => {
     dispatch(getAllDeals());
   }, [dispatch]);
 
-  const handleRefresh = async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     dispatch(getAllDeals()).finally(() => setRefreshing(false));
   };
@@ -71,7 +71,7 @@ const Deals = ({ navigation }) => {
         <ScrollView
           style={styles.noDealContainer}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
           <Text style={styles.noDealText}>No deals created yet</Text>

@@ -12,6 +12,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 import { getAllPartners } from "../../redux/actions/adminAction";
 import { clearSuccess } from "../../redux/slices/adminSlice";
 import { clearMessage } from "../../redux/slices/partnerSlice";
@@ -46,6 +47,15 @@ const Partners = () => {
     }
   }, [partners]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        dispatch(clearMessage());
+        dispatch(clearSuccess());
+      };
+    }, [dispatch])
+  );
+
   if (loading) {
     return (
       <ActivityIndicator size="large" color="#007bff" style={styles.loader} />
@@ -69,7 +79,7 @@ const Partners = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const handleRefresh = async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     dispatch(getAllPartners()).finally(() => setRefreshing(false));
     dispatch(clearSuccess());
@@ -119,7 +129,7 @@ const Partners = () => {
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={handleRefresh}
+                onRefresh={onRefresh}
               />
             }
           />
