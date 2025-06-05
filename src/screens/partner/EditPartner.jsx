@@ -102,7 +102,7 @@ const EditPartner = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={[styles.container, { flexGrow: 1 }]}>
       <Text style={styles.title}>Edit Partner Shop</Text>
 
       <TouchableOpacity
@@ -133,14 +133,26 @@ const EditPartner = ({ route, navigation }) => {
       />
 
       {!admin && (
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Text style={styles.subtext} numberOfLines={3} ellipsizeMode="tail">
-            {address}
+        <View style={{ 
+          flexDirection: "row", 
+          alignItems: "center", 
+          backgroundColor: "#D9D9D9", 
+          borderColor: "#98DB52",
+          borderWidth: 3,
+          borderRadius: 10,
+          paddingHorizontal: 15,
+          height: 50,
+          width: "100%",
+          marginBottom: 20
+        }}>
+          <Text style={styles.subtext} numberOfLines={1} ellipsizeMode="tail">
+            {address || "Pick Location"}
           </Text>
           <TouchableOpacity onPress={() => setMapVisible(true)}>
-            <Ionicons name="map" size={20} color="#000" />
+            <Ionicons name="map" size={20} color="#98DB52" />
           </TouchableOpacity>
         </View>
+
       )}
 
       <Modal visible={mapVisible} animationType="slide">
@@ -204,63 +216,84 @@ const EditPartner = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
     padding: 20,
-    paddingBottom: 30, // ensures room to scroll
+    alignItems: "center", // Center the content
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+    display: "none", // Hide the "Edit Partner Shop" title
   },
-  profileImage: {
+  avatarPicker: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    marginBottom: 15,
-    borderWidth: 2,
-    borderColor: "#007bff",
-  },
-  avatarPicker: {
-    alignSelf: "center",
-    marginBottom: 20,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    borderWidth: 3,
+    borderColor: "#98DB52", // Blue border
+    backgroundColor: "#D9D9D9",
     justifyContent: "center",
     alignItems: "center",
-    overflow: "hidden",
+    marginBottom: 30,
   },
   avatarImage: {
     width: "100%",
     height: "100%",
+    borderRadius: 60,
   },
   avatarText: {
-    color: "#888",
-    textAlign: "center",
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#000",
   },
   input: {
+    width: "100%",
     height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 15,
+    backgroundColor: "#D9D9D9",
+    borderRadius: 10,
+    borderColor: "#98DB52",
+    borderWidth: 3,
     paddingHorizontal: 15,
-    fontSize: 16,
+    fontSize: 14,
+    paddingHorizontal: 15,
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 20,
+  },
+  subtext: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#000",
+    flex: 1,
+  },
+  miniMap: {
+    width: "100%",
+    height: 200,
+    marginBottom: 20,
+    borderRadius: 10,
   },
   button: {
+    width: "100%",
     backgroundColor: "#000",
-    padding: 15,
-    borderRadius: 8,
+    paddingVertical: 15,
+    borderRadius: 20,
     alignItems: "center",
+    marginTop: 20,
+    borderColor: "#98DB52",
+    borderWidth: 3,
+    borderRadius: 20,
   },
   buttonText: {
     color: "#fff",
-    fontSize: 17,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  map: {
+    width: "100%",
+    height: "90%",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    padding: 10,
   },
   input2: {
     flex: 1,
@@ -269,27 +302,20 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 5,
   },
-  locBtn: {
+  searchButton: {
     backgroundColor: "#424242",
-    paddingVertical: 14,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    width: "50%",
-    alignItems: "center",
-    marginVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 10,
+    marginLeft: 5,
+    borderRadius: 5,
   },
   saveButton: {
-    position: "absolute", // Position it over the map
-    bottom: 30, // Distance from the bottom of the screen
-    alignSelf: "center", // Center horizontally
+    position: "absolute",
+    bottom: 30,
+    alignSelf: "center",
     backgroundColor: "#424242",
     paddingVertical: 14,
     paddingHorizontal: 30,
-    borderRadius: 10,
-    width: "50%",
+    borderRadius: 20,
     alignItems: "center",
     zIndex: 10,
   },
@@ -298,33 +324,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "600",
   },
-  map: {
-    width: "100%",
-    height: "90%",
-  },
-  searchContainer: { flexDirection: "row", padding: 10 },
-  searchButton: {
-    backgroundColor: "#424242",
-    padding: 10,
-    marginLeft: 5,
-    borderRadius: 5,
-  },
-  miniMap: {
-    width: "100%",
-    height: 150,
-    marginVertical: 10,
-  },
-  datePickerText: {
-    color: "#000",
-    alignSelf: "center",
-  },
-  subtext: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-    flexWrap: "wrap",
-    maxWidth: 200,
-  },
 });
+
 
 export default EditPartner;

@@ -24,66 +24,59 @@ const ProductComponent = ({ item, setComp, setItem }) => {
 
   return (
     <View style={styles.container}>
-      {/* Back Button */}
+      {/* Back Button (Fixed Position) */}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <View style={styles.backIconWrapper}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </View>
       </TouchableOpacity>
 
-      {/* Avatar & Carousel */}
-      <View style={styles.card}>
-        <ScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          style={styles.carousel}
-        >
-          {item.images.map((img) => (
-            <Image key={img._id} source={{ uri: img.url }} style={styles.image} />
-          ))}
-        </ScrollView>
+      {/* Scrollable Content */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Avatar & Carousel */}
+        <View style={styles.card}>
+          <ScrollView
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            style={styles.carousel}
+          >
+            {item.images.map((img) => (
+              <Image key={img._id} source={{ uri: img.url }} style={styles.image} />
+            ))}
+          </ScrollView>
 
-        {/* Carousel Dots */}
-        <View style={styles.dotsContainer}>
-          {item.images.map((_, index) => (
-            <View key={index} style={styles.dot} />
-          ))}
+          {/* Carousel Dots */}
+          <View style={styles.dotsContainer}>
+            {item.images.map((_, index) => (
+              <View key={index} style={styles.dot} />
+            ))}
+          </View>
         </View>
-      </View>
 
-      {/* Name and Price */}
-      <View style={styles.rowBetween}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.price}>₱{item.price}</Text>
-      </View>
-
-      {/* Type */}
-      <Text style={styles.label}>Type:</Text>
-      <View style={styles.typeRow}>
-        <View
-          style={[
-            styles.typeButton,
-            isService && styles.activeTypeButton,
-          ]}
-        >
-          <FontAwesome5 name="tools" size={16} color="#333" />
-          <Text style={styles.typeText}>Services</Text>
+        {/* Name and Price */}
+        <View style={styles.rowBetween}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.price}>₱{item.price}</Text>
         </View>
-        <View
-          style={[
-            styles.typeButton,
-            isProduct && styles.activeTypeButton,
-          ]}
-        >
-          <MaterialCommunityIcons name="cube" size={18} color="#333" />
-          <Text style={styles.typeText}>Products</Text>
-        </View>
-      </View>
 
-      {/* Description */}
-      <Text style={styles.label}>Description:</Text>
-      <Text style={styles.description}>{item.description}</Text>
+        {/* Type */}
+        <Text style={styles.label}>Type:</Text>
+        <View style={styles.typeRow}>
+          <View style={[styles.typeButton, isService && styles.activeTypeButton]}>
+            <FontAwesome5 name="tools" size={16} color="#333" />
+            <Text style={styles.typeText}>Services</Text>
+          </View>
+          <View style={[styles.typeButton, isProduct && styles.activeTypeButton]}>
+            <MaterialCommunityIcons name="cube" size={18} color="#333" />
+            <Text style={styles.typeText}>Products</Text>
+          </View>
+        </View>
+
+        {/* Description */}
+        <Text style={styles.label}>Description:</Text>
+        <Text style={styles.description}>{item.description}</Text>
+      </ScrollView>
     </View>
   );
 };
@@ -93,6 +86,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000",
   },
+  scrollContent: {
+    paddingBottom: 40,
+  },
   backButton: {
     position: "absolute",
     top: 40,
@@ -100,12 +96,12 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backIconWrapper: {
-    backgroundColor: "#98DB52", // Semi-transparent white
+    backgroundColor: "#98DB52",
     padding: 8,
     borderRadius: 50,
   },
   card: {
-    height: 300, // taller for more emphasis
+    height: 300,
     backgroundColor: "#ddd",
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -141,22 +137,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   name: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: "bold",
-    color: "#98DB52"
+    color: "#98DB52",
   },
   price: {
     fontSize: 25,
     fontWeight: "bold",
-    color: "#98DB52"
+    color: "#98DB52",
   },
   label: {
     fontSize: 15,
-    //fontWeight: "800",
     marginTop: 10,
     marginBottom: 5,
     paddingHorizontal: 20,
-    color: "#98DB52"
+    color: "#98DB52",
   },
   typeRow: {
     flexDirection: "row",
@@ -184,6 +179,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#fff",
     paddingHorizontal: 20,
+    marginBottom: 20,
   },
 });
 

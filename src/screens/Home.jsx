@@ -287,9 +287,7 @@ const Home = ({ navigation }) => {
 
 export default Home;
 
-/* ======================
-   STYLES
-   ====================== */
+//Dark Version
 const styles = StyleSheet.create({
   container: {
     flex: 1,

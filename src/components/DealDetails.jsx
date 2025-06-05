@@ -35,48 +35,55 @@ const DealDetails = ({ route, navigation }) => {
     }
   };
 
-
   return (
     <View style={styles.container}>
-      {/* Back Button */}
+      {/* Back Button - stays fixed */}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <View style={styles.backIconWrapper}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </View>
       </TouchableOpacity>
 
-      {/* Avatar & Carousel */}
-      <View style={styles.card}>
-        <ScrollView
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          style={styles.carousel}
-        >
-          {item?.images.map((img) => (
-            <Image
-              key={img._id}
-              source={{ uri: img.url }}
-              style={styles.image}
-            />
-          ))}
-        </ScrollView>
+      {/* Scrollable Content */}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Avatar & Carousel */}
+        <View style={styles.card}>
+          <ScrollView
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            style={styles.carousel}
+          >
+            {item?.images.map((img) => (
+              <Image
+                key={img._id}
+                source={{ uri: img.url }}
+                style={styles.image}
+              />
+            ))}
+          </ScrollView>
 
-        {/* Carousel Dots */}
-        <View style={styles.dotsContainer}>
-          {item?.images.map((_, index) => (
-            <View key={index} style={styles.dot} />
-          ))}
+          {/* Carousel Dots */}
+          <View style={styles.dotsContainer}>
+            {item?.images.map((_, index) => (
+              <View key={index} style={styles.dot} />
+            ))}
+          </View>
         </View>
-      </View>
-      {/* Points and Tier Badge */}
+
+        {/* Points and Tier Badge */}
         <View style={styles.pointsTierRow}>
           <View style={styles.pointsTag}>
             <Ionicons name="pricetag" size={14} color="#333" />
             <Text style={styles.pointsText}>{item?.redemptionPoints} pts</Text>
           </View>
 
-          <View style={[styles.tierBadge, { backgroundColor: getTierColor(item?.tier) }]}>
+          <View
+            style={[
+              styles.tierBadge,
+              { backgroundColor: getTierColor(item?.tier) },
+            ]}
+          >
             <Ionicons name="ribbon" size={16} color="#000" />
             <Text style={styles.tierText}>{item?.tier}</Text>
           </View>
@@ -84,27 +91,31 @@ const DealDetails = ({ route, navigation }) => {
 
         <Text style={styles.name}>{item?.title}</Text>
 
-
-      {/* Type */}
-      <Text style={styles.label}>Category:</Text>
-      <View style={styles.typeRow}>
-        <View style={[styles.typeButton, isService && styles.activeTypeButton]}>
-          <FontAwesome5 name="tools" size={16} color="#333" />
-          <Text style={styles.typeText}>Services</Text>
+        {/* Type */}
+        <Text style={styles.label}>Category:</Text>
+        <View style={styles.typeRow}>
+          <View
+            style={[styles.typeButton, isService && styles.activeTypeButton]}
+          >
+            <FontAwesome5 name="tools" size={16} color="#333" />
+            <Text style={styles.typeText}>Services</Text>
+          </View>
+          <View
+            style={[styles.typeButton, isProduct && styles.activeTypeButton]}
+          >
+            <MaterialCommunityIcons name="cube" size={18} color="#333" />
+            <Text style={styles.typeText}>Products</Text>
+          </View>
         </View>
-        <View style={[styles.typeButton, isProduct && styles.activeTypeButton]}>
-          <MaterialCommunityIcons name="cube" size={18} color="#333" />
-          <Text style={styles.typeText}>Products</Text>
-        </View>
-      </View>
 
-      {/* Discount */}
-      <Text style={styles.label}>Discount:</Text>
-      <Text style={styles.description}>{item?.discount}%</Text>
+        {/* Discount */}
+        <Text style={styles.label}>Discount:</Text>
+        <Text style={styles.description}>{item?.discount}%</Text>
 
-      {/* Description */}
-      <Text style={styles.label}>Description:</Text>
-      <Text style={styles.description}>{item?.description}</Text>
+        {/* Description */}
+        <Text style={styles.label}>Description:</Text>
+        <Text style={styles.description}>{item?.description}</Text>
+      </ScrollView>
     </View>
   );
 };
@@ -114,6 +125,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000",
   },
+  scrollContainer: {
+    paddingBottom: 40, 
+  },
   backButton: {
     position: "absolute",
     top: 40,
@@ -121,12 +135,12 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backIconWrapper: {
-    backgroundColor: "#98DB52", // Semi-transparent white
+    backgroundColor: "#98DB52",
     padding: 8,
     borderRadius: 50,
   },
   card: {
-    height: 300, // taller for more emphasis
+    height: 300,
     backgroundColor: "#ddd",
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
@@ -165,18 +179,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     color: "#98DB52",
-    textAlign: "center",     
-    width: "100%",           
-    marginTop: 8, 
-  },
-  price: {
-    fontSize: 25,
-    fontWeight: "bold",
-    color: "#98DB52",
+    textAlign: "center",
+    width: "100%",
+    marginTop: 8,
   },
   label: {
     fontSize: 15,
-    //fontWeight: "800",
     marginTop: 10,
     marginBottom: 5,
     paddingHorizontal: 20,
@@ -216,7 +224,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
   },
-
   pointsTag: {
     flexDirection: "row",
     alignItems: "center",
@@ -226,13 +233,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 6,
   },
-
   pointsText: {
     fontWeight: "600",
     fontSize: 14,
     color: "#000",
   },
-
   tierBadge: {
     flexDirection: "row",
     alignItems: "center",
@@ -241,13 +246,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 6,
   },
-
   tierText: {
     fontWeight: "bold",
     fontSize: 14,
     color: "#000",
   },
-
 });
 
 export default DealDetails;

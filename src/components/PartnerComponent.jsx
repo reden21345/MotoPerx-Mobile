@@ -13,11 +13,16 @@ import MapView, { Marker } from "react-native-maps";
 import ProductCard from "./ProductCard";
 import { Linking } from "react-native";
 
-
 const PartnerComponent = ({ item, setComp, setItem }) => {
+  const [detailsVisible, setDetailsVisible] = useState(false);
+
   const handleBack = () => {
     setComp("Home");
     setItem(null);
+  };
+
+  const toggleDetails = () => {
+    setDetailsVisible(!detailsVisible);
   };
 
   const { storeName, avatar, conversion, location, productService } = item;
@@ -53,38 +58,45 @@ const PartnerComponent = ({ item, setComp, setItem }) => {
       <View style={styles.overlay}>
         <View style={styles.handleBar} />
 
-        {/* Store Info Section */}
-        <View style={styles.infoBox}>
-          <View style={styles.infoRow}>
-            <Image source={{ uri: avatar.url }} style={styles.avatar} />
-            <View style={styles.storeInfo}>
-              <Text style={styles.storeName}>{storeName}</Text>
-              <Text style={styles.conversion}>
-                Conversion: ₱{conversion} = 1 pt
-              </Text>
+        <ScrollView style={{ maxHeight: 350 }}>
+          {/* Store Info Section */}
+          <TouchableOpacity style={styles.infoBox} onPress={toggleDetails}>
+            <View style={styles.infoRow}>
+              <Image source={{ uri: avatar.url }} style={styles.avatar} />
+              <View style={styles.storeInfo}>
+                <Text style={styles.storeName}>{storeName}</Text>
+                <Text style={styles.conversion}>
+                  Tap to {detailsVisible ? "hide" : "view"} details
+                </Text>
+              </View>
             </View>
-          </View>
-        </View>
+          </TouchableOpacity>
 
-        {/* Products & Services */}
-        <Text style={styles.productsLabel}>PRODUCTS & SERVICES</Text>
-        <View style={styles.productBox}>
-          {productService.length > 0 ? (
-            <FlatList
-              data={productService}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => <ProductCard item={item} />}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              snapToAlignment="center"
-              decelerationRate="fast"
-            />
-
-          ) : (
-            <Text style={{ color: "#fff" }}>No products or services yet</Text>
+          {/* Conditionally Render Details */}
+          {detailsVisible && (
+            <>
+              <Text style={styles.productsLabel}>PRODUCTS & SERVICES</Text>
+              <View style={styles.productBox}>
+                {productService.length > 0 ? (
+                  <FlatList
+                    data={productService}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => <ProductCard item={item} />}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    decelerationRate="fast"
+                  />
+                ) : (
+                  <Text style={{ color: "#fff" }}>
+                    No products or services yet
+                  </Text>
+                )}
+              </View>
+            </>
           )}
-        </View>
+        </ScrollView>
       </View>
 
       {/* Back Button */}
@@ -93,8 +105,8 @@ const PartnerComponent = ({ item, setComp, setItem }) => {
       </TouchableOpacity>
     </View>
   );
-
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -114,6 +126,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     padding: 20,
     paddingTop: 10,
+    maxHeight: 400, // Optional cap to prevent full-screen overflow
   },
   handleBar: {
     alignSelf: "center",

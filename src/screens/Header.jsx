@@ -143,7 +143,9 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginRight: 8,
-    backgroundColor: "#ccc", // fallback background color
+    backgroundColor: "#ccc",
+    borderColor: "#98DB52", // green
+    borderWidth: 1,
   },
   userName: {
     color: "#98DB52", // green
