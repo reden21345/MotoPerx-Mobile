@@ -13,11 +13,8 @@ import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 
 const screenWidth = Dimensions.get("window").width;
 
-const ProductComponent = ({ item, setComp, setItem }) => {
-  const handleBack = () => {
-    setComp("Home");
-    setItem(null);
-  };
+const ProductComponent = ({ route, navigation}) => {
+  const { item } = route.params;
 
   const isService = item.types === "Services";
   const isProduct = item.types === "Products";
@@ -25,7 +22,7 @@ const ProductComponent = ({ item, setComp, setItem }) => {
   return (
     <View style={styles.container}>
       {/* Back Button (Fixed Position) */}
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+      <TouchableOpacity style={styles.backButton} onPress={()=> navigation.goBack()}>
         <View style={styles.backIconWrapper}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </View>

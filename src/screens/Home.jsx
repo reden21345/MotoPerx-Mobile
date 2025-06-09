@@ -134,10 +134,7 @@ const Home = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.productBox}
-        onPress={() => {
-          setItem(item);
-          setComp("ProductDetails");
-        }}
+        onPress={() => navigation.navigate("ProductDetails", { item })}
       >
         <Image
           source={{ uri: imageUrl }}
@@ -276,8 +273,6 @@ const Home = ({ navigation }) => {
             />
           </View>
         </ScrollView>
-      ) : comp === "ProductDetails" ? (
-        <ProductComponent item={item} setComp={setComp} setItem={setItem} />
       ) : (
         <PartnerComponent item={item} setComp={setComp} setItem={setItem} />
       )}

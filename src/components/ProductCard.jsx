@@ -1,87 +1,47 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const ProductCard = ({ item, compact = false }) => {
+const ProductCard = ({ item }) => {
   const [imageIndex, setImageIndex] = useState(0);
   const imageList = item.images || [];
+  const navigation = useNavigation();
 
-  const nextImage = () => {
-    setImageIndex((prevIndex) => (prevIndex + 1) % imageList.length);
-  };
+  useEffect(() => {
+    if (imageList.length > 1) {
+      const interval = setInterval(() => {
+        setImageIndex((prevIndex) => (prevIndex + 1) % imageList.length);
+      }, 3000);
 
-  if (compact) {
-    return (
-      <View style={styles.gridCard}>
-        {imageList.length > 0 ? (
-          <Image
-            source={{ uri: imageList[0].url }}
-            style={styles.gridImage}
-          />
-        ) : (
-          <View style={styles.gridImagePlaceholder} />
-        )}
-        <Text style={styles.gridName} numberOfLines={1}>{item.name}</Text>
-        <Text style={styles.gridPrice}>₱{item.price}</Text>
-      </View>
-    );
-  }
+      return () => clearInterval(interval);
+    }
+  }, [imageList]);
 
   return (
-    <View style={styles.serviceBox}>
-      <View style={styles.topSection}>
-        <View style={styles.textContainer}>
-          <Text style={styles.value}>{item.name}</Text>
-          <Text style={styles.value}>Type: {item.types}</Text>
-          <Text style={styles.value}>Price: ₱{item.price}</Text>
-          <Text style={styles.value}>
-            Description: {item.description}
-          </Text>
+    <TouchableOpacity
+      style={styles.gridCard}
+      onPress={() => navigation.navigate("ProductDetails", { item })}
+    >
+      {imageList.length > 0 ? (
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: imageList[imageIndex].url }}
+            style={styles.gridImage}
+          />
         </View>
+      ) : (
+        <View style={styles.gridImagePlaceholder} />
+      )}
 
-        {imageList.length > 0 && (
-          <TouchableOpacity
-            style={styles.imageContainer}
-            onPress={nextImage}
-            activeOpacity={0.8}
-          >
-            <Image
-              source={{ uri: imageList[imageIndex].url }}
-              style={styles.dealImage}
-            />
-            {imageList.length > 1 && (
-              <Text style={styles.imageIndex}>
-                {imageIndex + 1}/{imageList.length}
-              </Text>
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
+      <Text style={styles.gridName} numberOfLines={1}>
+        {item.name}
+      </Text>
+      <Text style={styles.gridPrice}>₱{item.price}</Text>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  serviceBox: {
-    width: Dimensions.get("window").width - 60,
-    padding: 15,
-    borderRadius: 10,
-    elevation: 2,
-  },
-  topSection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  textContainer: {
-    flex: 2,
-    paddingRight: 10,
-  },
   imageIndex: {
     position: "absolute",
     bottom: 4,
@@ -98,19 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  dealImage: {
-    width: 90,
-    height: 90,
-    borderRadius: 10,
-    resizeMode: "cover",
-  },
-  value: {
-    fontSize: 16,
-    color: "#fff",
-    marginBottom: 5,
-  },
-
-  // Grid styles
   gridCard: {
     backgroundColor: "#0000",
     width: "48%",
@@ -142,7 +89,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 4,
-    color: "#fff"
+    color: "#fff",
   },
   gridPrice: {
     fontSize: 13,

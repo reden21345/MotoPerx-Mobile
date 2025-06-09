@@ -36,7 +36,7 @@ const ProductServices = ({ navigation }) => {
     Alert.alert("Error", error);
   }
 
-  const filteredProducts = partner.productService.filter((prod) => {
+  const filteredProducts = partner.productService?.filter((prod) => {
     const matchesSearch = prod.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
@@ -78,7 +78,7 @@ const ProductServices = ({ navigation }) => {
     <View style={styles.actionsContainer}>
       <TouchableOpacity
         style={[styles.actionButton, styles.editButton]}
-        onPress={() => navigation.navigate('EditProduct', { product: item })}
+        onPress={() => navigation.navigate("EditProduct", { product: item })}
       >
         <Ionicons name="pencil" size={20} color="white" />
       </TouchableOpacity>
@@ -94,7 +94,10 @@ const ProductServices = ({ navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <Swipeable renderRightActions={() => renderRightActions(item)}>
-        <View style={styles.card}>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => navigation.navigate("ProductDetails", { item })}
+        >
           {item.images.length > 0 ? (
             <Image source={{ uri: item.images[0].url }} style={styles.avatar} />
           ) : (
@@ -108,7 +111,7 @@ const ProductServices = ({ navigation }) => {
             <Text style={styles.subText}>{item.price} PHP</Text>
             <Text style={styles.subText}>{item.description}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </Swipeable>
     );
   };
@@ -130,7 +133,7 @@ const ProductServices = ({ navigation }) => {
       <View style={styles.buttonRow}>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => navigation.navigate('AddProduct')}
+          onPress={() => navigation.navigate("AddProduct")}
         >
           <Text style={styles.buttonText}>
             <Ionicons name="add-circle" size={16} color="white" /> Add

@@ -26,6 +26,8 @@ import AllProducts from './src/screens/Products';
 import AllStores from './src/screens/Stores';
 import MyGears from './src/screens/user/MyGears';
 
+import ProductDetails from './src/components/ProductComponent'
+
 // Admin Import
 import EditUser from './src/screens/admin/EditUser';
 import PartnerDetails from './src/screens/admin/PartnerDetails';
@@ -90,6 +92,8 @@ const AppContent = () => {
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="MyDeals" component={MyDeals} />
           <Stack.Screen name="MyGears" component={MyGears} />
+
+          <Stack.Screen name="ProductDetails" component={ProductDetails} />
 
           {/* Admin Screens */}
           <Stack.Screen name="EditUser" component={EditUser} />
