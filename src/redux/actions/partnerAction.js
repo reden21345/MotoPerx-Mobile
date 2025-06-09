@@ -60,7 +60,7 @@ export const addEmployee = createAsyncThunk('partner/addEmployee', async (data, 
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.put(`${API_BASE_URL}/partner/employee`, data, {
+        const response = await axios.put(`${API_BASE_URL}/partners/employee`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -77,7 +77,7 @@ export const removeEmployee = createAsyncThunk('partner/removeEmployee', async (
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.patch(`${API_BASE_URL}/partner/employee`, data, {
+        const response = await axios.patch(`${API_BASE_URL}/partners/employee`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

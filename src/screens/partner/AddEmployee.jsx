@@ -14,7 +14,6 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { addEmployee } from "../../redux/actions/partnerAction";
-import { pickAvatar } from "../../utils/helpers";
 
 const { width } = Dimensions.get("window");
 
@@ -29,17 +28,16 @@ const AddEmployee = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [newUser, setNewUser] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [avatar, setAvatar] = useState(null);
 
   const handleAddEmployee = async () => {
-    const data = { name, email, phone, password, avatar };
+    const data = { name, email, phone, password };
     const result = await dispatch(addEmployee(data));
     if (addEmployee.fulfilled.match(result)) {
       Alert.alert("Employee Added", `Employee ${name} added!`);
-      navigation.replace("Main");
+      navigation.goBack();
     } else {
       Alert.alert(
-        "Adding Employee Failed",
+        "Adding Failed",
         result.payload || "Something went wrong"
       );
     }
@@ -145,18 +143,6 @@ const AddEmployee = ({ navigation }) => {
                 />
               </TouchableOpacity>
             </View>
-
-            {/* Avatar Picker */}
-            <TouchableOpacity
-              onPress={() => pickAvatar(setAvatar)}
-              style={styles.avatarPicker}
-            >
-              {avatar ? (
-                <Image source={{ uri: avatar }} style={styles.avatarImage} />
-              ) : (
-                <Text style={styles.avatarText}>Add Avatar</Text>
-              )}
-            </TouchableOpacity>
           </>
         )}
 
@@ -227,26 +213,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingLeft: 10,
-  },
-  avatarPicker: {
-    alignSelf: "center",
-    marginBottom: 20,
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
-  },
-  avatarImage: {
-    width: "100%",
-    height: "100%",
-  },
-  avatarText: {
-    color: "#888",
-    textAlign: "center",
   },
   addEmpButton: {
     backgroundColor: "#000",
