@@ -14,15 +14,12 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import PartnerItem from "../components/partners/PartnerComponent";
-import PartnerComponent from "../components/PartnerComponent";
 
 const AllPartners = ({ navigation }) => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [item, setItem] = useState(null);
-  const [comp, setComp] = useState("Home");
   const [refreshing, setRefreshing] = useState(false);
 
   if (loading) {
@@ -52,46 +49,35 @@ const AllPartners = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={styles.container}
     >
-      {comp === "Home" ? (
-        <>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="arrow-back" size={28} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.screenTitle}>PARTNER SHOPS</Text>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <Ionicons name="arrow-back" size={28} color="#333" />
+      </TouchableOpacity>
+      <Text style={styles.screenTitle}>PARTNER SHOPS</Text>
 
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search by store name"
-            value={searchTerm}
-            onChangeText={setSearchTerm}
-          />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search by store name"
+        value={searchTerm}
+        onChangeText={setSearchTerm}
+      />
 
-          <FlatList
-            data={filteredProducts}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <PartnerItem
-                item={item}
-                admin={false}
-                setComp={setComp}
-                setItem={setItem}
-              />
-            )}
-            contentContainerStyle={styles.list}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-              />
-            }
+      <FlatList
+        data={filteredProducts}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <PartnerItem
+            item={item}
+            admin={false}
           />
-        </>
-      ) : (
-        <PartnerComponent item={item} setComp={setComp} setItem={setItem} />
-      )}
+        )}
+        contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      />
     </KeyboardAvoidingView>
   );
 };

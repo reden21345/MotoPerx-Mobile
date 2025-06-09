@@ -13,7 +13,7 @@ import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 
 const screenWidth = Dimensions.get("window").width;
 
-const ProductComponent = ({ route, navigation}) => {
+const ProductComponent = ({ route, navigation }) => {
   const { item } = route.params;
 
   const isService = item.types === "Services";

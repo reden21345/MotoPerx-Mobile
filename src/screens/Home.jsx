@@ -12,8 +12,6 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import ProductComponent from "../components/ProductComponent";
-import PartnerComponent from "../components/PartnerComponent";
 import motor1 from "../../assets/motor1.jpg";
 import motor2 from "../../assets/motor2.jpg";
 import motor3 from "../../assets/motor3.jpg";
@@ -31,8 +29,6 @@ const Home = ({ navigation }) => {
       : null
   );
   const [posts, setPosts] = useState([]);
-  const [comp, setComp] = useState("Home");
-  const [item, setItem] = useState(null);
   const carouselImages = [motor1, motor2, motor3];
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -90,10 +86,7 @@ const Home = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.storeBox}
-        onPress={() => {
-          setItem(item);
-          setComp("Partner");
-        }}
+        onPress={() => navigation.navigate("PartnerDetails", { item })}
       >
         {item.avatar?.url && (
           <Image source={{ uri: item.avatar.url }} style={styles.storeImage} />
@@ -149,133 +142,127 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {comp === "Home" ? (
-        <ScrollView contentContainerStyle={styles.bodyContainer}>
-          {/* Horizontal Banners */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.bannerScrollContainer}
-          >
-            <View style={styles.carouselWrapper}>
-              <Image
-                source={carouselImages[currentIndex]}
-                style={styles.carouselImage}
-              />
-            </View>
-          </ScrollView>
-
-          {/* Points + QR Container */}
-          <View style={styles.rewardsCard}>
-            <View style={styles.rewardsLeft}>
-              <Text style={styles.rewardsTitle}>REWARDS POINTS</Text>
-              <Text style={styles.rewardsPoints}>
-                {(points || 0).toFixed(2)}PTS
-              </Text>
-              <Text style={styles.rewardsExpiry}>
-                {expiresAt
-                  ? new Date(expiresAt).toLocaleDateString("en-US")
-                  : "No Points Yet"}
-              </Text>
-            </View>
-
-            <View style={styles.rewardsRight}>
-              <TouchableOpacity
-                style={styles.viewHistoryButton}
-                onPress={() => navigation.navigate("History")}
-              >
-                <Text style={styles.viewHistoryText}>VIEW REWARDS HISTORY</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Deals")}
-                style={styles.redeemContainer}
-              >
-                <Ionicons name="gift-outline" size={30} color="#000" />
-                <Text style={styles.redeemLabel}>REDEEM POINTS</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* DEALS */}
-          <View style={styles.productContainer}>
-            <View style={styles.storeHeader}>
-              <Text style={styles.productTitle}>DEALS</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("Deals")}>
-                <Text style={styles.viewAllText}>VIEW ALL</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.productRow}>
-              <FlatList
-                data={deals}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderDeals}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingVertical: 10 }}
-              />
-            </View>
-          </View>
-
-          {/* SERVICES SECTION */}
-          <View style={styles.storeContainer}>
-            <View style={styles.storeHeader}>
-              <Text style={styles.storeTitle}>PARTNER MERCHANT</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("AllStores")}
-              >
-                <Text style={styles.viewAllText}>VIEW ALL</Text>
-              </TouchableOpacity>
-            </View>
-            <FlatList
-               data={products}
-              keyExtractor={(item) => item._id}
-              renderItem={renderStores}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalStoreRow}
-            />
-          </View>
-
-          {/* PRODUCTS */}
-          <View style={styles.productContainer}>
-            <View style={styles.storeHeader}>
-              <Text style={styles.productTitle}>PRODUCTS & SERVICES</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("AllProducts")}
-              >
-                <Text style={styles.viewAllText}>VIEW ALL</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.productRow}>
-              <FlatList
-                 data={allProducts.slice(0, 3)}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderProductServiceItem}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingVertical: 10 }}
-              />
-            </View>
-          </View>
-
-          {/* LATEST BLOGS (Horizontally scrollable) */}
-          <View style={styles.blogContainer}>
-            <Text style={styles.blogTitle}>LATEST BLOGS</Text>
-            <FlatList
-              data={posts}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={renderPostItem}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.blogList}
-              contentContainerStyle={{ paddingHorizontal: 10 }}
+      <ScrollView contentContainerStyle={styles.bodyContainer}>
+        {/* Horizontal Banners */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.bannerScrollContainer}
+        >
+          <View style={styles.carouselWrapper}>
+            <Image
+              source={carouselImages[currentIndex]}
+              style={styles.carouselImage}
             />
           </View>
         </ScrollView>
-      ) : (
-        <PartnerComponent item={item} setComp={setComp} setItem={setItem} />
-      )}
+
+        {/* Points + QR Container */}
+        <View style={styles.rewardsCard}>
+          <View style={styles.rewardsLeft}>
+            <Text style={styles.rewardsTitle}>REWARDS POINTS</Text>
+            <Text style={styles.rewardsPoints}>
+              {(points || 0).toFixed(2)}PTS
+            </Text>
+            <Text style={styles.rewardsExpiry}>
+              {expiresAt
+                ? new Date(expiresAt).toLocaleDateString("en-US")
+                : "No Points Yet"}
+            </Text>
+          </View>
+
+          <View style={styles.rewardsRight}>
+            <TouchableOpacity
+              style={styles.viewHistoryButton}
+              onPress={() => navigation.navigate("History")}
+            >
+              <Text style={styles.viewHistoryText}>VIEW REWARDS HISTORY</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Deals")}
+              style={styles.redeemContainer}
+            >
+              <Ionicons name="gift-outline" size={30} color="#000" />
+              <Text style={styles.redeemLabel}>REDEEM POINTS</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* DEALS */}
+        <View style={styles.productContainer}>
+          <View style={styles.storeHeader}>
+            <Text style={styles.productTitle}>DEALS</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Deals")}>
+              <Text style={styles.viewAllText}>VIEW ALL</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.productRow}>
+            <FlatList
+              data={deals}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderDeals}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingVertical: 10 }}
+            />
+          </View>
+        </View>
+
+        {/* SERVICES SECTION */}
+        <View style={styles.storeContainer}>
+          <View style={styles.storeHeader}>
+            <Text style={styles.storeTitle}>PARTNER MERCHANT</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("AllStores")}>
+              <Text style={styles.viewAllText}>VIEW ALL</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={products}
+            keyExtractor={(item) => item._id}
+            renderItem={renderStores}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalStoreRow}
+          />
+        </View>
+
+        {/* PRODUCTS */}
+        <View style={styles.productContainer}>
+          <View style={styles.storeHeader}>
+            <Text style={styles.productTitle}>PRODUCTS & SERVICES</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("AllProducts")}
+            >
+              <Text style={styles.viewAllText}>VIEW ALL</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.productRow}>
+            <FlatList
+              data={allProducts.slice(0, 3)}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderProductServiceItem}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingVertical: 10 }}
+            />
+          </View>
+        </View>
+
+        {/* LATEST BLOGS (Horizontally scrollable) */}
+        <View style={styles.blogContainer}>
+          <Text style={styles.blogTitle}>LATEST BLOGS</Text>
+          <FlatList
+            data={posts}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderPostItem}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.blogList}
+            contentContainerStyle={{ paddingHorizontal: 10 }}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };

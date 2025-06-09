@@ -16,7 +16,7 @@ import { getAddress } from "../../utils/helpers";
 import { deletePartner, getAllPartners } from "../../redux/actions/adminAction";
 import { sendSingleUserNotif } from "../../redux/actions/notifAction";
 
-const PartnerItem = ({ item, admin, setComp, setItem }) => {
+const PartnerItem = ({ item, admin }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const createdAt = new Date(item.createdAt).toLocaleDateString() || null;
@@ -86,12 +86,7 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
     );
   };
 
-  const handleDetails = () => {
-    setComp("PartnerDetails");
-    setItem(item);
-  };
-
-  const handleApproval = (id) => {
+  const handleApproval = () => {
     Alert.alert(
       "Approval",
       "Do you want to approve this application for partnership?",
@@ -116,7 +111,7 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
       {item.status !== "Disapproved" && (
         <TouchableOpacity
           style={[styles.actionButton, styles.editButton]}
-          onPress={() => (pending ? handleApproval(item._id) : handleEdit())}
+          onPress={() => (pending ? handleApproval() : handleEdit())}
         >
           <Ionicons
             name={pending ? "checkmark" : "pencil"}
@@ -138,7 +133,10 @@ const PartnerItem = ({ item, admin, setComp, setItem }) => {
 
   return (
     <Swipeable renderRightActions={() => (admin ? renderRightActions() : null)}>
-      <TouchableOpacity style={styles.card} onPress={() => handleDetails()}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate("PartnerDetails", { item })}
+      >
         {item.avatar?.url ? (
           <Image source={{ uri: item.avatar.url }} style={styles.avatar} />
         ) : (

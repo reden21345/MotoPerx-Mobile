@@ -1,141 +1,204 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import MapView, { Marker } from "react-native-maps";
+import ProductCard from "../../components/ProductCard";
+import { Linking } from "react-native";
 
-const PartnerDetails = ({ route }) => {
-  const { item, admin, address } = route.params;
-  const {
-    storeName,
-    avatar,
-    owner,
-    location,
-    status,
-    totalCustomers,
-    totalPointsGiven,
-    totalRedemptions,
-    conversion,
-  } = item;
+const PartnerDetails = ({ route, navigation }) => {
+  const { item } = route.params;
+  const [detailsVisible, setDetailsVisible] = useState(false);
 
-  const [longitude, latitude] = location.coordinates;
+  const toggleDetails = () => {
+    setDetailsVisible(!detailsVisible);
+  };
+
+  const { storeName, avatar, conversion, location, productService } = item;
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Partner Details</Text>
-
-      <View style={styles.card}>
-        <Image source={{ uri: avatar.url }} style={styles.avatar} />
-
-        <Text style={styles.label}>Store Name:</Text>
-        <Text style={styles.value}>{storeName}</Text>
-
-        {admin && (
-          <>
-            <Text style={styles.label}>Owner:</Text>
-            <Text style={styles.value}>{owner.name}</Text>
-
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{owner.email}</Text>
-
-            <Text style={styles.label}>Phone:</Text>
-            <Text style={styles.value}>{owner.phone}</Text>
-
-            <Text style={styles.label}>Status:</Text>
-            <Text style={styles.value}>{status}</Text>
-
-            <Text style={styles.label}>Total Customers:</Text>
-            <Text style={styles.value}>{totalCustomers}</Text>
-
-            <Text style={styles.label}>Total Points Given:</Text>
-            <Text style={styles.value}>{totalPointsGiven.toFixed(2)}</Text>
-
-            <Text style={styles.label}>Total Redemptions:</Text>
-            <Text style={styles.value}>{totalRedemptions}</Text>
-          </>
-        )}
-
-        <Text style={styles.label}>Conversion Rate:</Text>
-        <Text style={styles.value}>{conversion} pts = 1 PHP</Text>
-      </View>
-
-      <Text style={styles.sectionTitle}>📍 Store Location</Text>
-
+    <View style={styles.container}>
+      {/* Map Background */}
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude,
-          longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitude: location.coordinates[1],
+          longitude: location.coordinates[0],
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
         }}
       >
         <Marker
-          coordinate={{ latitude, longitude }}
+          coordinate={{
+            latitude: location.coordinates[1],
+            longitude: location.coordinates[0],
+          }}
           title={storeName}
-          description={address}
+          onPress={() => {
+            const lat = location.coordinates[1];
+            const lng = location.coordinates[0];
+            const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            Linking.openURL(url);
+          }}
         />
       </MapView>
-    </ScrollView>
+
+      {/* Floating Overlay Card */}
+      <View style={styles.overlay}>
+        <View style={styles.handleBar} />
+
+        <ScrollView style={{ maxHeight: 350 }}>
+          {/* Store Info Section */}
+          <TouchableOpacity style={styles.infoBox} onPress={toggleDetails}>
+            <View style={styles.infoRow}>
+              <Image source={{ uri: avatar.url }} style={styles.avatar} />
+              <View style={styles.storeInfo}>
+                <Text style={styles.storeName}>{storeName}</Text>
+                <Text style={styles.conversion}>Conversion Value: {conversion}</Text>
+                <Text style={styles.conversion}>
+                  Tap to {detailsVisible ? "hide" : "view"} details
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* Conditionally Render Details */}
+          {detailsVisible && (
+            <>
+              <Text style={styles.productsLabel}>PRODUCTS & SERVICES</Text>
+              <View style={styles.productBox}>
+                {productService.length > 0 ? (
+                  <FlatList
+                    data={productService}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => <ProductCard item={item} />}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    decelerationRate="fast"
+                  />
+                ) : (
+                  <Text style={{ color: "#fff" }}>
+                    No products or services yet
+                  </Text>
+                )}
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </View>
+
+      {/* Back Button */}
+      <TouchableOpacity style={styles.backButton} onPress={()=> navigation.goBack()}>
+        <Ionicons name="arrow-back" size={28} color="#000" />
+      </TouchableOpacity>
+    </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eef3f7",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 20,
-    color: "#2c3e50",
-  },
-  card: {
-    backgroundColor: "#fff",
-    marginHorizontal: 20,
-    padding: 15,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    backgroundColor: "#dff0fd",
-    color: "#1a73e8",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginHorizontal: 20,
-    marginTop: 30,
-    borderRadius: 10,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  avatar: {
-    width: "100%",
-    height: 200,
-    borderRadius: 12,
-    marginBottom: 15,
-  },
-  label: {
-    fontWeight: "600",
-    color: "#555",
-    marginTop: 10,
-  },
-  value: {
-    fontSize: 16,
-    color: "#222",
+    backgroundColor: "#000",
   },
   map: {
-    height: 300,
-    margin: 20,
-    borderRadius: 12,
+    width: "100%",
+    height: 450,
+  },
+  overlay: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "#000",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    padding: 20,
+    paddingTop: 10,
+    maxHeight: 400, // Optional cap to prevent full-screen overflow
+  },
+  handleBar: {
+    alignSelf: "center",
+    width: 60,
+    height: 6,
+    backgroundColor: "#ccc",
+    borderRadius: 3,
+    marginBottom: 20,
+  },
+  infoBox: {
+    backgroundColor: "#000000",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#98DB52",
+    borderWidth: 1,
+    shadowColor: "#98DB52",           
+    shadowOffset: { width: 2, height: 8 }, 
+    shadowOpacity: 0.75,             
+    shadowRadius: 12,             
+    elevation: 15,  
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginRight: 15,
+    backgroundColor: "#fff",
+  },
+  storeInfo: {
+    flex: 1,
+  },
+  storeName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  conversion: {
+    fontSize: 14,
+    color: "#fff",
+  },
+  productsLabel: {
+    color: "#98DB52",
+    fontWeight: "bold",
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  productBox: {
+    backgroundColor: "#000000",
+    borderRadius: 10,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: "#98DB52",
+    borderWidth: 1,
+    shadowColor: "#98DB52",           
+    shadowOffset: { width: 2, height: 8 }, 
+    shadowOpacity: 0.75,             
+    shadowRadius: 12,             
+    elevation: 15,  
+  },
+  backButton: {
+    position: "absolute",
+    top: 50,
+    left: 20,
+    zIndex: 10,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 6,
   },
 });
+
 
 export default PartnerDetails;
