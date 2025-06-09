@@ -4,7 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Sidebar from "../navigation/Sidebar";
 import { useNotification } from "../hooks/NotificationContext";
-import { getUserNotifications, notifChecker } from "../redux/actions/notifAction";
+import {
+  getUserNotifications,
+  notifChecker,
+} from "../redux/actions/notifAction";
 import { getQRCode } from "../redux/actions/qrcodeAction";
 import { getUserPoints } from "../redux/actions/pointsAction";
 import { getAllProducts } from "../redux/actions/productAction";
@@ -42,18 +45,23 @@ const Header = ({ navigation }) => {
   return (
     <View>
       <View style={styles.header}>
+        {/* Left: User Info */}
         <View style={styles.userInfo}>
           <Image
             source={{
-              uri:
-                user?.avatar?.url ||
-                "https://via.placeholder.com/150",
+              uri: user?.avatar?.url || "https://via.placeholder.com/150",
             }}
             style={styles.profileImage}
           />
           <Text style={styles.userName}>Hi {user?.name}!</Text>
         </View>
 
+        {/* Center: Logo */}
+        <View style={styles.logoContainer}>
+          <Image source={require("../../assets/motoperx-logo.jpeg")} style={styles.logo} />
+        </View>
+
+        {/* Right: Notifications and Menu */}
         <View style={styles.iconGroup}>
           <TouchableOpacity
             onPress={() => setShowNotifications(true)}
@@ -101,6 +109,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
+  logoContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1, // center alignment
+  },
   logo: {
     width: 60,
     height: 40,
@@ -109,6 +122,8 @@ const styles = StyleSheet.create({
   iconGroup: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-end",
+    flex: 1, // aligns icons to the end
   },
   notifContainer: {
     marginRight: 16,
@@ -137,6 +152,7 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1, // so it takes available space
   },
   profileImage: {
     width: 40,
