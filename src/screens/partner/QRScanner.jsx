@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Button, Animated, Easing, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Animated,
+  Easing,
+  Dimensions,
+} from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import ScannedQR from "../../components/partners/ScannedQR"; 
+import ScannedQR from "../../components/partners/ScannedQR";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -15,6 +23,8 @@ const QRScanner = () => {
   // Animated value for the moving scanning line
   const moveAnim = useRef(new Animated.Value(0)).current;
 
+  const timeoutRef = useRef(null); // Holds reference to the timeout
+
   useEffect(() => {
     askForCameraPermission();
   }, []);
@@ -23,10 +33,39 @@ const QRScanner = () => {
     if (!scanned) {
       startAnimation();
     } else {
-      moveAnim.stopAnimation(); 
+      moveAnim.stopAnimation();
     }
   }, [scanned]);
-  
+
+  // Call this when starting scan
+  useEffect(() => {
+    if (hasPermission && !scanned) {
+      startTimeout();
+    }
+    return () => clearTimeout(timeoutRef.current); // Clean up on unmount
+  }, [hasPermission, scanned]);
+
+  // Reset function - can be reused
+  const resetScanner = () => {
+    setScanned(false);
+    setScannedQR(null);
+    moveAnim.stopAnimation(); // Stop animation before restart
+    startAnimation(); // Restart animation
+    startTimeout(); // Start the timeout again
+  };
+
+  // Start the 5-second timeout
+  const startTimeout = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      if (!scanned) {
+        resetScanner(); // Retry scanning
+      }
+    }, 5000); // 5 seconds
+  };
+
   const startAnimation = () => {
     moveAnim.setValue(0); // Reset to top
     Animated.loop(
@@ -52,7 +91,9 @@ const QRScanner = () => {
     setHasPermission(status === "granted");
   };
 
+  // When scanned, clear timeout
   const handleBarCodeScanned = ({ data }) => {
+    clearTimeout(timeoutRef.current); // Stop timeout
     setScanned(true);
     setScannedQR(data);
   };
