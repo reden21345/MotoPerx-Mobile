@@ -18,7 +18,7 @@ import { profile } from "../../redux/actions/authAction";
 import { MaterialIcons } from "@expo/vector-icons";
 import QRCode from "react-native-qrcode-svg";
 import { Animated, Dimensions } from "react-native";
-import { formatDate } from "../../utils/helpers";
+import { generateQRCode, getQRCode } from "../../redux/actions/qrcodeAction";
 
 const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -39,10 +39,11 @@ const Profile = ({ navigation }) => {
       today.getDate() === bday.getDate() && today.getMonth() === bday.getMonth()
     );
   };
-
+console.log(qrCode)
   const onRefresh = () => {
     setRefreshing(true);
     dispatch(profile());
+    dispatch(getQRCode());
     dispatch(getUserPoints()).finally(() => setRefreshing(false));
   };
 
@@ -231,7 +232,7 @@ const Profile = ({ navigation }) => {
           </View>
 
           <TouchableOpacity
-            style={styles.historyButton}
+            style={styles.actionButton}
             onPress={() => navigation.navigate("MyGears")}
             activeOpacity={0.8}
           >
@@ -241,11 +242,11 @@ const Profile = ({ navigation }) => {
               color="#fff"
               style={{ marginRight: 6 }}
             />
-            <Text style={styles.historyButtonText}>My Gears</Text>
+            <Text style={styles.actionButtonText}>My Gears</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.historyButton}
+            style={styles.actionButton}
             onPress={() => navigation.navigate("MyDeals")}
             activeOpacity={0.8}
           >
@@ -255,7 +256,7 @@ const Profile = ({ navigation }) => {
               color="#fff"
               style={{ marginRight: 6 }}
             />
-            <Text style={styles.historyButtonText}>Redeemed Deals</Text>
+            <Text style={styles.actionButtonText}>Redeemed Deals</Text>
           </TouchableOpacity>
 
           {modalVisible && (
@@ -296,7 +297,21 @@ const Profile = ({ navigation }) => {
               backgroundColor="transparent"
             />
           ) : (
-            <Text>No QR Code available</Text>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => dispatch(generateQRCode()).then(()=>{
+                Alert.alert("Success!", "QR code generated")
+              })}
+              activeOpacity={0.8}
+            >
+              <Ionicons
+                name="qr-code-outline"
+                size={18}
+                color="#fff"
+                style={{ marginRight: 6 }}
+              />
+              <Text style={styles.actionButtonText}>Generate QR</Text>
+            </TouchableOpacity>
           )}
         </>
       )}
@@ -429,7 +444,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#98DB52",
   },
-  historyButton: {
+  actionButton: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#000",
@@ -446,7 +461,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 15,
   },
-  historyButtonText: {
+  actionButtonText: {
     color: "#76A51D",
     fontSize: 14,
     fontWeight: "600",

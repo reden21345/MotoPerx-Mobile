@@ -35,3 +35,20 @@ export const getUserFromQr = createAsyncThunk('QRCode/getUserFromQr', async (qrC
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get user from qr code');
     }
 });
+
+// Get QR Code
+export const generateQRCode = createAsyncThunk('QRCode/generateQRCode', async (_, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.post(`${API_BASE_URL}/qr/generate`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to generate qr code');
+    }
+});

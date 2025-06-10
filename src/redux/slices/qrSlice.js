@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getQRCode, getUserFromQr } from "../actions/qrcodeAction";
+import { generateQRCode, getQRCode, getUserFromQr } from "../actions/qrcodeAction";
 
 const qrCodeSlice = createSlice({
   name: "qrCode",
@@ -39,6 +39,19 @@ const qrCodeSlice = createSlice({
         state.data = action.payload.data;
       })
       .addCase(getUserFromQr.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      .addCase(generateQRCode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(generateQRCode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.qrCode = action.payload.qrCode;
+      })
+      .addCase(generateQRCode.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
