@@ -6,11 +6,13 @@ import { getUserFromQr } from "../../redux/actions/qrcodeAction";
 import { resetData } from "../../redux/slices/qrSlice";
 import { earnPoints } from "../../redux/actions/pointsAction";
 import { resetGivenPoints } from "../../redux/slices/pointSlice";
+import { sendSingleUserNotif } from "../../redux/actions/notifAction";
 
 const ScannedQR = ({ scannedQR, setScanned }) => {
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.qrCode);
-  const { message, givenPoints } = useSelector((state) => state.points);
+  const { message, givenPoints, error } = useSelector((state) => state.points);
+  const { partner } = useSelector((state) => state.partners);
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
@@ -25,6 +27,12 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
     }
   }, [message, givenPoints]);
 
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Failed", "Failed to give points to the user");
+    }
+  }, [error]);
+
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -35,12 +43,19 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
   );
 
   const handleRewardSubmit = () => {
-    const data = {
+    const pointsData = {
       qrCode: scannedQR,
       amount: Number(amount)
     }
 
-    dispatch(earnPoints(data))
+    dispatch(earnPoints(pointsData)).then((res)=> {
+      const notifData ={
+        userId: data?.user?._id,
+        title: "Gained Points",
+        body: `You have gained ${res.payload.points} points from ${partner?.storeName}`
+      }
+      dispatch(sendSingleUserNotif(notifData));
+    });
   };
 
   return (

@@ -21,6 +21,7 @@ const pointsSlice = createSlice({
     resetGivenPoints: (state) => {
       state.givenPoints = 0;
       state.message = "";
+      state.error = null;
     },
     clearMessages: (state) => {
       state.error = null;
