@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width - 60,
     padding: 15,
     borderRadius: 10,
-    elevation: 2,
+  
   },
   topSection: {
     flexDirection: "row",
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     marginBottom: 5,
   },
 
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     paddingBottom: 30,
   },
   gridImage: {
@@ -136,24 +136,24 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     resizeMode: "cover",
     borderWidth: 1,
-    borderColor: "#98DB52",
+    borderColor: "#000",
   },
   gridImagePlaceholder: {
     width: 60,
     height: 60,
     borderRadius: 8,
-    backgroundColor: "#ccc",
+    backgroundColor: "#000",
     marginBottom: 8,
   },
   gridName: {
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 4,
-    color: "#fff",
+    color: "#000",
   },
   gridPrice: {
     fontSize: 13,
-    color: "#fff",
+    color: "#000",
   },
 });
 

@@ -74,7 +74,7 @@ const Products = ({ navigation }) => {
       <View style={styles.searchWrapper}>
         <Ionicons name="search" size={20} color="#000" style={{ marginRight: 8 }} />
         <TextInput
-          style={[styles.searchInput, { color: "#FFF" }]}
+          style={[styles.searchInput, { color: "#000" }]}
           placeholder="Search by name"
           value={searchTerm}
           onChangeText={setSearchTerm}
@@ -134,20 +134,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 40,
     paddingHorizontal: 20,
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
   },
   backButton: {
     position: "absolute",
     top: 40,
     left: 20,
     zIndex: 10,
+    backgroundColor: "#000",
+    borderRadius: 5,
   },
   screenTitle: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 10,
-    color: "#98DB52",
+    color: "#000",
   },
   searchWrapper: {
     flexDirection: "row",
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 30,
     paddingHorizontal: 15,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 1,
     marginBottom: 10,
   },
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
   filterLabel: {
     marginRight: 10,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
   },
   filterButton: {
     flexDirection: "row",
@@ -184,7 +186,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginRight: 10,
     backgroundColor: "#fff",
-    borderColor: "#ccc",
+    borderColor: "#000",
   },
   activeFilter: {
     backgroundColor: "#98DB52",

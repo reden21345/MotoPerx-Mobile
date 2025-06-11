@@ -123,7 +123,7 @@ const DealDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
   },
   scrollContainer: {
     paddingBottom: 40, 
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 30,
     fontWeight: "bold",
-    color: "#98DB52",
+    color: "#000",
     textAlign: "center",
     width: "100%",
     marginTop: 8,
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5,
     paddingHorizontal: 20,
-    color: "#98DB52",
+    color: "#ff2400",
   },
   typeRow: {
     flexDirection: "row",
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     paddingHorizontal: 20,
   },
   pointsTierRow: {

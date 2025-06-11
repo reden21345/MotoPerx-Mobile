@@ -81,7 +81,7 @@ const ProductComponent = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
   },
   scrollContent: {
     paddingBottom: 40,
@@ -136,19 +136,19 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#98DB52",
+    color: "#000",
   },
   price: {
     fontSize: 25,
     fontWeight: "bold",
-    color: "#98DB52",
+    color: "#000",
   },
   label: {
     fontSize: 15,
     marginTop: 10,
     marginBottom: 5,
     paddingHorizontal: 20,
-    color: "#98DB52",
+    color: "#ff2400",
   },
   typeRow: {
     flexDirection: "row",
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     paddingHorizontal: 20,
     marginBottom: 20,
   },

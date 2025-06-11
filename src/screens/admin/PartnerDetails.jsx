@@ -86,7 +86,7 @@ const PartnerDetails = ({ route, navigation }) => {
                     decelerationRate="fast"
                   />
                 ) : (
-                  <Text style={{ color: "#fff" }}>
+                  <Text style={{ color: "#000" }}>
                     No products or services yet
                   </Text>
                 )}
@@ -108,17 +108,17 @@ const PartnerDetails = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
   },
   map: {
     width: "100%",
-    height: 450,
+    height: 600,
   },
   overlay: {
     position: "absolute",
     bottom: 0,
     width: "100%",
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     padding: 20,
@@ -129,19 +129,19 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 60,
     height: 6,
-    backgroundColor: "#ccc",
+    backgroundColor: "#000",
     borderRadius: 3,
     marginBottom: 20,
   },
   infoBox: {
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 15,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 1,
-    shadowColor: "#98DB52",           
+    shadowColor: "#000",           
     shadowOffset: { width: 2, height: 8 }, 
     shadowOpacity: 0.75,             
     shadowRadius: 12,             
@@ -164,26 +164,26 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
   },
   conversion: {
     fontSize: 14,
-    color: "#fff",
+    color: "#000",
   },
   productsLabel: {
-    color: "#98DB52",
+    color: "#000",
     fontWeight: "bold",
     fontSize: 14,
     marginBottom: 8,
   },
   productBox: {
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 15,
     borderWidth: 1,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 1,
-    shadowColor: "#98DB52",           
+    shadowColor: "#000",           
     shadowOffset: { width: 2, height: 8 }, 
     shadowOpacity: 0.75,             
     shadowRadius: 12,             
