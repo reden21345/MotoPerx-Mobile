@@ -4,51 +4,54 @@ import * as Location from "expo-location";
 const useLocation = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const locationSubscription = useRef(null);
+  const locationSubscription = useRef(null); // 💡 persist this for entire app session
+  const [isTracking, setIsTracking] = useState(false);
 
   const startTracking = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was not granted");
-        return;
-      }
-      console.log("Started tracking...");
-
-      locationSubscription.current = await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 5000,       // every 5 seconds
-          distanceInterval: 0,      // report even if not moved
-        },
-        (location) => {
-          const { latitude, longitude } = location.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
-          // console.log(`[Location Log] Lat: ${latitude}, Long: ${longitude}`);
-        }
-      );
-    } catch (error) {
-      setErrorMsg("Error starting location tracking");
-      console.error(error);
+    if (locationSubscription.current) {
+      console.log("Already tracking, skipping new watcher.");
+      return;
     }
+
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.warn("Permission to access location was not granted");
+      return;
+    }
+
+    locationSubscription.current = await Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 5000,
+        distanceInterval: 0,
+      },
+      (location) => {
+        const { latitude, longitude } = location.coords;
+        setLatitude(latitude);
+        setLongitude(longitude);
+        console.log(`[Tracking] Location updated: ${latitude}, ${longitude}`);
+      }
+    );
+    setIsTracking(true);
+    console.log("Started tracking...");
   };
 
   const stopTracking = () => {
-  if (locationSubscription.current) {
     console.log("Removing location watcher...");
-    locationSubscription.current.remove();
-    locationSubscription.current = null;
-  } else {
-    console.log("No active location watcher to remove.");
-  }
-};
+    if (locationSubscription.current) {
+      locationSubscription.current.remove();
+      locationSubscription.current = null;
+      setIsTracking(false);
+      console.log("Location tracking stopped.");
+    } else {
+      console.log("No active location watcher to remove.");
+    }
+  };
 
   return {
     latitude,
     longitude,
-    errorMsg,
+    isTracking,
     startTracking,
     stopTracking,
   };

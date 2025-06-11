@@ -93,18 +93,10 @@ const partnerSlice = createSlice({
         state.error = action.payload;
       })
       
-      .addCase(getNearbyPartners.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(getNearbyPartners.fulfilled, (state, action) => {
         state.loading = false;
         state.count = action.payload.count;
         state.nearby = action.payload.partners;
-      })
-      .addCase(getNearbyPartners.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       })
       
       .addCase(editPartner.pending, (state) => {

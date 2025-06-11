@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,32 +10,43 @@ import {
 } from "react-native";
 import useLocation from "../../hooks/useLocation";
 import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 import { getNearbyPartners } from "../../redux/actions/partnerAction";
+import { getAddress } from "../../utils/helpers";
 
 const GpsLocation = () => {
-  const { latitude, longitude, startTracking, stopTracking } = useLocation();
+  const { latitude, longitude, isTracking, startTracking, stopTracking } =
+    useLocation();
   const mapRef = useRef(null);
   const dispatch = useDispatch();
   const { nearby } = useSelector((state) => state.partners);
 
-  const [isTracking, setIsTracking] = useState(true);
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [address, setAddress] = useState(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isTracking) {
+        startTracking();
+      }
+
+      return () => {
+        if (isTracking) {
+          stopTracking();
+          console.log("GpsLocation screen blurred, tracking stopped");
+        }
+      };
+    }, [isTracking])
+  );
 
   useEffect(() => {
-    startTracking();
-    return () => {
-      stopTracking(); // 🔥 this MUST be called to clean up
-      console.log("GpsLocation unmounted and tracking stopped");
-    };
-  }, []);
-
-  useEffect(() => {
-    if (latitude && longitude) {
+    if (isTracking && latitude && longitude) {
       dispatch(getNearbyPartners({ latitude, longitude }));
+      getAddress([longitude, latitude], setAddress);
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, isTracking]);
 
   const handleMarkerPress = (partner) => {
     setSelectedPartner(partner);
@@ -93,14 +104,14 @@ const GpsLocation = () => {
             ))}
           </MapView>
 
-          <Text style={styles.coords}>
-            Latitude: {latitude.toFixed(6)} | Longitude: {longitude.toFixed(6)}
-          </Text>
+          <Text style={styles.coords}>{address}</Text>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.stopBtn} onPress={() => {
-            stopTracking();
-            setIsTracking(false);
-            }}>
+            <TouchableOpacity
+              style={styles.stopBtn}
+              onPress={() => {
+                stopTracking();
+              }}
+            >
               <Text style={styles.stopBtnText}>Stop Tracking</Text>
             </TouchableOpacity>
 
@@ -110,10 +121,12 @@ const GpsLocation = () => {
           </View>
         </>
       ) : (
-        <TouchableOpacity style={styles.startBtn} onPress={() => {
-          startTracking();
-          setIsTracking(true);
-        }}>
+        <TouchableOpacity
+          style={styles.startBtn}
+          onPress={() => {
+            startTracking();
+          }}
+        >
           <Text style={styles.startBtnText}>Start Tracking</Text>
         </TouchableOpacity>
       )}
@@ -135,7 +148,9 @@ const GpsLocation = () => {
                 />
               )}
               <View style={styles.nameStatusRow}>
-                <Text style={styles.storeName}>{selectedPartner.storeName}</Text>
+                <Text style={styles.storeName}>
+                  {selectedPartner.storeName}
+                </Text>
                 <View
                   style={[
                     styles.statusDot,
@@ -204,7 +219,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     shadowColor: "#98DB52",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.10,
+    shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 10,
     marginHorizontal: 5,
