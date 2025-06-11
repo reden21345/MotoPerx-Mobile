@@ -34,7 +34,9 @@ const Deals = () => {
         paddingVertical: 8,
         borderRadius: 20,
         marginHorizontal: 8,
-        backgroundColor: '#d3d3d3', // default gray
+        backgroundColor: '#fff', // default gray
+        borderWidth: 1,
+        borderColor: '#000', // black border
       };
 
       if (isSelected) {
@@ -94,7 +96,7 @@ const Deals = () => {
       />
 
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-        <Text style={{ fontWeight: 'bold', marginRight: 10, color: "#fff" }}>TIER:</Text>
+        <Text style={{ fontWeight: 'bold', marginRight: 10, color: "#000" }}>TIER:</Text>
         
         {['Gold', 'Silver', 'Bronze'].map((tier) => (
           <TouchableOpacity
@@ -121,27 +123,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
   },
   screenTitle: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
-    color: "#98DB52",
+    color: "#000",
   },
   loader: {
     flex: 1,
     justifyContent: "center",
   },
   searchInput: {
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 8,
-    borderColor: "#98DB52",
-    borderWidth: 2,
+    backgroundColor: "#ffffff",
+    padding: 12,
+    borderRadius: 15,
+    borderColor: "#000",
+    borderWidth: 1,
     marginBottom: 10,
-  },
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
+  }
+
 });
 
 export default Deals;

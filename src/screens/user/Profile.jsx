@@ -130,13 +130,6 @@ console.log(qrCode)
         />
       ) : (
         <>
-          <TouchableOpacity
-            style={styles.gearIcon}
-            onPress={() => setModalVisible(true)}
-          >
-            <Ionicons name="settings-outline" size={28} color="#98DB52" />
-          </TouchableOpacity>
-
           <View style={styles.profileContainer}>
             {/* Avatar */}
             <View style={styles.avatarContainer}>
@@ -206,7 +199,7 @@ console.log(qrCode)
             <Text style={styles.userTier}>{loyaltyTier || "N/A"}</Text>
 
             <View style={styles.progressContainer}>
-              <Text style={{ color: "#fff" }}>0</Text>
+              <Text style={{ color: "#000" }}>0</Text>
               <View style={styles.progressBar}>
                 <View
                   style={[
@@ -220,7 +213,7 @@ console.log(qrCode)
                   <Text style={styles.progressText}>{currentPoints} pts</Text>
                 </View>
               </View>
-              <Text style={{ color: "#fff" }}>{maxPoints}</Text>
+              <Text style={{ color: "#000" }}>{maxPoints}</Text>
             </View>
 
             <MaterialIcons
@@ -239,7 +232,7 @@ console.log(qrCode)
             <Ionicons
               name="build-outline"
               size={18}
-              color="#fff"
+              color="#000"
               style={{ marginRight: 6 }}
             />
             <Text style={styles.actionButtonText}>My Gears</Text>
@@ -253,7 +246,7 @@ console.log(qrCode)
             <Ionicons
               name="pricetag-outline"
               size={18}
-              color="#fff"
+              color="#000"
               style={{ marginRight: 6 }}
             />
             <Text style={styles.actionButtonText}>Redeemed Deals</Text>
@@ -348,7 +341,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
     padding: 20,
   },
   screenTitle: {
@@ -368,16 +361,16 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
   },
   userEmail: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     marginBottom: 5,
   },
   userRole: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     marginBottom: 5,
   },
   userPoints: {
@@ -435,7 +428,7 @@ const styles = StyleSheet.create({
   },
   referralLabel: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     fontWeight: "500",
     marginRight: 6,
   },
@@ -453,13 +446,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10,
     marginBottom: 15,
-    borderColor: "#FFFFFF",
+    borderColor: "#000",
     borderWidth: 1,
-    shadowColor: "#FFFFFF",
+    shadowColor: "#000",
     shadowOffset: { width: 2, height: 8 },
     shadowOpacity: 0.75,
     shadowRadius: 12,
     elevation: 15,
+    backgroundColor: "#fff",
   },
   actionButtonText: {
     color: "#76A51D",
@@ -468,7 +462,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "100%",
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 12,
     marginVertical: 20,
@@ -483,7 +477,7 @@ const styles = StyleSheet.create({
   },
   userTier: {
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
     fontWeight: "600",
     marginBottom: 10,
   },
@@ -494,7 +488,11 @@ const styles = StyleSheet.create({
   progressBar: {
     flex: 1,
     height: 20,
-    backgroundColor: "#333",
+    backgroundColor: "#fff",
+    borderColor: "#000",
+    borderWidth: 2,
+    borderRadius: 10,
+    marginHorizontal: 10,
     borderRadius: 10,
     marginHorizontal: 10,
     overflow: "hidden",
@@ -508,9 +506,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -15,
     right: -15,
-    backgroundColor: "#000",
-    borderRadius: 20,
-    padding: 5,
+    backgroundColor: "#fff",
+
   },
   progressText: {
     color: "#000",
@@ -530,14 +527,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    backgroundColor: "rgba(195, 195, 195, 0.7)",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 100,
   },
 
   modalContainer: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
     width: "80%",
@@ -547,7 +544,9 @@ const styles = StyleSheet.create({
   modalButton: {
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: "#98DB52",
+    backgroundColor: "#fff",
+    borderColor: "#000",
+    borderWidth: 2,
     borderRadius: 8,
     marginVertical: 8,
     width: "100%",
@@ -561,7 +560,7 @@ const styles = StyleSheet.create({
   },
 
   closeText: {
-    color: "#fff",
+    color: "#000",
     marginTop: 10,
     textDecorationLine: "underline",
   },
@@ -596,13 +595,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 6,
-    color: "#fff",
+    color: "#000",
   },
 
   infoText: {
     fontSize: 14,
     marginBottom: 2,
-    color: "#fff",
+    color: "#000",
   },
   happyBirthdayText: {
     fontSize: 15,

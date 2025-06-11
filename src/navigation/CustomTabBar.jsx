@@ -75,7 +75,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
               style={styles.centerButton}
               onPress={handleShowQR}
             >
-              <Ionicons name="qr-code-outline" size={30} color="#fff" />
+              <Ionicons name="qr-code-outline" size={30} color="#000" />
             </TouchableOpacity>
           </View>
         )}
@@ -156,9 +156,9 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <Ionicons name={iconName} size={24} color={isFocused ? "#fff" : "#999"} />
+      <Ionicons name={iconName} size={24} color={isFocused ? "#98DB52" : "#000"} />
       <Text
-        style={[styles.tabItemText, { color: isFocused ? "#fff" : "#999" }]}
+        style={[styles.tabItemText, { color: isFocused ? "#000" : "#000" }]}
       >
         {label}
       </Text>
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   tabBarContainer: {
     marginHorizontal: 0,
     height: 60,
-    backgroundColor: "#000000", // black
+    backgroundColor: "#fff", // black
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
@@ -181,6 +181,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 5,
+    borderTopColor: "#000",
+    borderTopWidth: 1,
   },
   tabItem: {
     flex: 1,
@@ -190,17 +192,17 @@ const styles = StyleSheet.create({
   tabItemText: {
     fontSize: 10,
     marginTop: 2,
-    color: "#FFFFFF", // white text
+    color: "#000", // white text
   },
   centerButtonWrapper: {
     width: 60,
     alignItems: "center",
   },
   centerButton: {
-    marginTop: -15,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    marginBottom: 40,
+    width: 60,
+    height: 60,
+    borderRadius: 90,
     backgroundColor: "#98DB52", // green
     alignItems: "center",
     justifyContent: "center",

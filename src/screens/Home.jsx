@@ -273,7 +273,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
   },
 
   bodyContainer: {
@@ -292,14 +292,18 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   rewardsCard: {
-    backgroundColor: "#98DB52", // green
+    backgroundColor: "#ffffff",
     borderRadius: 20,
     flexDirection: "row",
-    padding: 10,
+    padding: 16,
     marginHorizontal: 10,
     marginTop: -80,
     justifyContent: "space-between",
     alignItems: "center",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 6,
   },
   rewardsLeft: {
     flex: 1,
@@ -354,7 +358,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#98DB52",
+    color: "#000",
   },
   productRow: {
     flexDirection: "row",
@@ -362,28 +366,28 @@ const styles = StyleSheet.create({
   },
   productBox: {
     flex: 1,
-    backgroundColor: "#000000", // black background
+    backgroundColor: "#fff",
     marginHorizontal: 5,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
-    padding: 15,
-    borderColor: "#FFFFFF",
+    padding: 20,
+    borderColor: "#000",
     borderWidth: 1,
-    shadowColor: "#FFFFFF",
-    shadowOffset: { width: 2, height: 8 },
-    shadowOpacity: 0.75,
-    shadowRadius: 12,
-    elevation: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   productValue: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#000",
   },
   productLabel: {
     marginTop: 4,
     fontSize: 12,
-    color: "#FFFFFF",
+    color: "#000",
     textAlign: "center",
   },
 
@@ -399,11 +403,11 @@ const styles = StyleSheet.create({
   storeTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#98DB52",
+    color: "#000",
   },
   viewAllText: {
     fontSize: 14,
-    color: "#98DB52", // green for links
+    color: "#000", // green for links
   },
   storeIconRow: {
     flexDirection: "row",
@@ -412,20 +416,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   storeBox: {
-    flexDirection: "row", // <-- horizontal layout
+    flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#000000",
-    borderRadius: 10,
-    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 12,
     marginHorizontal: 8,
     borderWidth: 1,
-    borderColor: "#FFFFFF",
-    borderWidth: 1,
-    shadowColor: "#FFFFFF",
-    shadowOffset: { width: 2, height: 8 },
-    shadowOpacity: 0.75,
-    shadowRadius: 12,
-    elevation: 15,
+    borderColor: "#000",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 8,
   },
 
   storeImage: {
@@ -439,7 +442,7 @@ const styles = StyleSheet.create({
 
   storeLabel: {
     fontSize: 16,
-    color: "#FFFFFF",
+    color: "#000",
     fontWeight: "600",
   },
 
@@ -451,24 +454,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#98DB52",
+    color: "#000",
   },
   blogList: {},
   postContainer: {
     marginRight: 16,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#FFFFFF", // green border
+    borderColor: "#DBE2E9",
     width: width * 0.8,
-    borderColor: "#FFFFFF",
-    borderWidth: 1,
-    shadowColor: "#FFFFFF",
-    shadowOffset: { width: 2, height: 8 },
-    shadowOpacity: 0.75,
-    shadowRadius: 12,
-    elevation: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 6,
   },
   postImage: {
     width: "100%",

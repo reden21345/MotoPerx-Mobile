@@ -58,7 +58,7 @@ const Header = ({ navigation }) => {
 
         {/* Center: Logo */}
         <View style={styles.logoContainer}>
-          <Image source={require("../../assets/motoperx-logo.jpeg")} style={styles.logo} />
+          <Image source={require("../../assets/motoperx-logo-final.png")} style={styles.logo} />
         </View>
 
         {/* Right: Notifications and Menu */}
@@ -67,7 +67,7 @@ const Header = ({ navigation }) => {
             onPress={() => setShowNotifications(true)}
             style={styles.notifContainer}
           >
-            <Ionicons name="notifications-outline" size={28} color="#fff" />
+            <Ionicons name="notifications-outline" size={28} color="#000" />
             {unseen > 0 && (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{unseen}</Text>
@@ -79,7 +79,7 @@ const Header = ({ navigation }) => {
             onPress={() => setSidebarOpen(true)}
             style={styles.menuIcon}
           >
-            <Ionicons name="menu" size={32} color="#fff" />
+            <Ionicons name="menu" size={32} color="#000" />
           </TouchableOpacity>
         </View>
       </View>
@@ -105,18 +105,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#000000", // black
+    backgroundColor: "#fff", // black
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   logoContainer: {
     justifyContent: "center",
     alignItems: "center",
+    height: 40,
     flex: 1, // center alignment
   },
   logo: {
-    width: 60,
-    height: 40,
+    width: 80,
+    height: 60,
+    marginLeft: 20,
+    marginBottom: 15, 
     resizeMode: "contain",
   },
   iconGroup: {

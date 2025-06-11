@@ -7,7 +7,8 @@ import {
   Alert,
   ActivityIndicator,
   StyleSheet,
-  Dimensions
+  Dimensions,
+  Image
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useFocusEffect } from '@react-navigation/native'
@@ -44,82 +45,90 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Title */}
-      <Text style={styles.title}>LOGIN YOUR ACCOUNT</Text>
-
-      {/* Error Message */}
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-
-      {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="EMAIL"
-          placeholderTextColor="#888"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          style={styles.input}
-          autoCapitalize="none"
+      <View style={styles.container}>
+        {/* Logo */}
+        <Image 
+          source={require("../../assets/motoperx-logo-final.png")} 
+          style={styles.logo} 
         />
-        <Ionicons
-          name="mail"
-          size={24}
-          color="#999"
-          style={styles.icon}
-        />
+
+        {/* Title */}
+        <Text style={styles.title}>LOGIN YOUR ACCOUNT</Text>
+
+        {/* Error Message */}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        {/* Email Input */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="EMAIL"
+            placeholderTextColor="#888"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            style={styles.input}
+            autoCapitalize="none"
+          />
+          <Ionicons
+            name="mail"
+            size={24}
+            color="#999"
+            style={styles.icon}
+          />
+        </View>
+
+        {/* Password Input */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="PASSWORD"
+            placeholderTextColor="#888"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            style={styles.input}
+          />
+          <Ionicons
+            name="lock-closed"
+            size={24}
+            color="#999"
+            style={styles.icon}
+          />
+        </View>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ForgotPassword')}
+          style={styles.forgotContainer}
+        >
+          <Text style={styles.registerText}>
+            &nbsp;<Text style={styles.registerLink}>Forgot password</Text>
+          </Text>
+        </TouchableOpacity>
+
+        {/* Login Button */}
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.loginButtonText}>LOGIN</Text>
+          )}
+        </TouchableOpacity>
+
+        {/* Register Link */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Register')}
+          style={styles.registerContainer}
+        >
+          <Text style={styles.registerText}>
+            Don't have an account?&nbsp;
+            <Text style={styles.registerLink}>Register</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Password Input */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="PASSWORD"
-          placeholderTextColor="#888"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          style={styles.input}
-        />
-        <Ionicons
-          name="lock-closed"
-          size={24}
-          color="#999"
-          style={styles.icon}
-        />
-      </View>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('ForgotPassword')}
-        style={styles.forgotContainer}
-      >
-        <Text style={styles.registerText}>
-          &nbsp;<Text style={styles.registerLink}>Forgot password</Text>
-        </Text>
-      </TouchableOpacity>
-
-      {/* Login Button */}
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={handleLogin}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.loginButtonText}>LOGIN</Text>
-        )}
-      </TouchableOpacity>
-
-      {/* Register Link */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Register')}
-        style={styles.registerContainer}
-      >
-        <Text style={styles.registerText}>
-          Don't have an account?&nbsp;
-          <Text style={styles.registerLink}>Register</Text>
-        </Text>
-      </TouchableOpacity>
-    </View>
   );
 };
 
@@ -131,7 +140,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     paddingHorizontal: width * 0.08, // Responsive horizontal padding
     justifyContent: 'center',
   },
@@ -188,10 +197,18 @@ const styles = StyleSheet.create({
     alignSelf: 'left',
   },
   registerText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 14,
   },
   registerLink: {
-    color: '#007bff',
+    color: '#98DB52',
   },
+  logo: {
+    width: 200,
+    height: 60,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+
 });

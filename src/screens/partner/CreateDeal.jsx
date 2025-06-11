@@ -94,18 +94,50 @@ const CreateDeal = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <SafeAreaView style={styles.form}>
-          <Text style={styles.screenTitle}>Add Deal</Text>
+    <ScrollView style={styles.container}>
+      <SafeAreaView style={styles.innerContainer}>
+        <Text style={styles.header}>ADD DEAL</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Deal title"
-            value={title}
-            onChangeText={setTitle}
-          />
+        <View style={styles.topSection}>
+          <TouchableOpacity
+            style={styles.avatarBox}
+            onPress={() => handlePickImages(setImages)}
+          >
+            {images[0] ? (
+              <Image source={{ uri: images[0] }} style={styles.avatarImage} />
+            ) : (
+              <Text style={styles.avatarText}>AVATAR</Text>
+            )}
+          </TouchableOpacity>
 
+          <View style={styles.rightSection}>
+            <TextInput
+              style={styles.input}
+              placeholder="DEAL TITLE"
+              placeholderTextColor="#000"
+              value={title}
+              onChangeText={setTitle}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="DISCOUNT"
+              placeholderTextColor="#000"
+              keyboardType="numeric"
+              value={discount}
+              onChangeText={setDiscount}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="REDEMPTION POINTS"
+              placeholderTextColor="#000"
+              keyboardType="numeric"
+              value={redemptionPoints}
+              onChangeText={setRedemptionPoints}
+            />
+          </View>
+        </View>
+
+        <View style={{ zIndex: 3000, marginBottom: open ? 160 : 12 }}>
           <DropDownPicker
             open={open}
             value={category}
@@ -113,218 +145,179 @@ const CreateDeal = ({ navigation }) => {
             setOpen={setOpen}
             setValue={setCategory}
             setItems={setItems}
-            placeholder="Select category type"
+            placeholder="SELECT CATEGORY TYPE"
             style={styles.dropdown}
             dropDownContainerStyle={styles.dropdownContainer}
           />
+        </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            value={description}
-            multiline={true}
-            onChangeText={setDescription}
+
+        <TextInput
+          style={styles.descriptionInput}
+          placeholder="DESCRIPTION"
+          placeholderTextColor="#000"
+          multiline
+          numberOfLines={4}
+          value={description}
+          onChangeText={setDescription}
+        />
+
+      <View style={{ zIndex: 2000, marginBottom: open2 ? 160 : 16 }}>
+        <DropDownPicker
+          open={open2}
+          value={tier}
+          items={items2}
+          setOpen={setOpen2}
+          setValue={setTier}
+          setItems={setItems2}
+          placeholder="SELECT FOR AVAILABILITY"
+          style={styles.dropdown}
+          dropDownContainerStyle={styles.dropdownContainer}
+        />
+      </View>
+
+      <View style={{ zIndex: 1000, marginBottom: 16 }}>
+        <TouchableOpacity
+          onPress={() => setShowDatePicker(true)}
+          style={styles.datePickerButton}
+        >
+          <Text style={styles.datePickerText}>{formatDate(expiryDate)}</Text>
+          <Ionicons name="calendar-outline" size={18} />
+        </TouchableOpacity>
+      </View>
+
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={expiryDate}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
           />
+        )}
 
-          <TextInput
-            style={styles.input}
-            placeholder="Discount (%)"
-            keyboardType="numeric"
-            value={discount}
-            onChangeText={setDiscount}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Redemption points"
-            keyboardType="numeric"
-            value={redemptionPoints}
-            onChangeText={setRedemptionPoints}
-          />
-
-          <DropDownPicker
-            open={open2}
-            value={tier}
-            items={items2}
-            setOpen={setOpen2}
-            setValue={setTier}
-            setItems={setItems2}
-            placeholder="Select tier availability"
-            style={styles.dropdown}
-            dropDownContainerStyle={styles.dropdownContainer}
-          />
-
-          {/* Expiry Date Picker */}
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
-            style={styles.datePickerButton}
-          >
-            <Text style={styles.datePickerText}>
-              Expiry Date: {formatDate(expiryDate)}
-            </Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              value={expiryDate}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-              minimumDate={new Date()}
-            />
-          )}
-
-          {/* Image Upload Button */}
-          <TouchableOpacity
-            style={styles.imageButton}
-            onPress={() => handlePickImages(setImages)}
-          >
-            <Text style={styles.imageButtonText}>
-              <Ionicons name="images-sharp" size={30} color={"#000"} />
-            </Text>
-          </TouchableOpacity>
-
-          {/* Display Selected Images */}
-          {images.length > 0 && (
-            <View style={styles.imagePreviewContainer}>
-              {images.map((uri, index) => (
-                <View key={index} style={styles.imageWrapper}>
-                  <Image
-                    key={index}
-                    source={{ uri }}
-                    style={styles.imagePreview}
-                  />
-                  <TouchableOpacity
-                    style={styles.removeImageButton}
-                    onPress={() => handleRemoveImage(index, setImages)}
-                  >
-                    <Text style={styles.removeImageText}>X</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          )}
-
-          <TouchableOpacity
-            style={[styles.submitButton, isSubmitting && { opacity: 0.6 }]}
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <Text style={styles.submitButtonText}>Creating...</Text>
-            ) : (
-              <Text style={styles.submitButtonText}>Add Deal</Text>
-            )}
-          </TouchableOpacity>
-        </SafeAreaView>
-      </ScrollView>
-    </View>
+        <TouchableOpacity
+          style={[styles.submitButton, isSubmitting && { opacity: 0.5 }]}
+          onPress={handleSubmit}
+          disabled={isSubmitting}
+        >
+          <Text style={styles.submitButtonText}>ADD DEAL</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </ScrollView>
   );
+
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#000",
+    padding: 16,
   },
-  screenTitle: {
-    fontSize: 24,
+  innerContainer: {
+    paddingBottom: 40,
+  },
+  header: {
+    fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
-    marginVertical: 16,
+    marginBottom: 20,
+    color: "#98DB52",
   },
-  form: {
+  topSection: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  avatarBox: {
+    width: 150,
+    height: 190,
+    borderRadius: 16,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+    borderColor: "#98DB52",
+    borderWidth: 2,
+  },
+  avatarText: {
+    fontWeight: "bold",
+    color: "#000",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 16,
+  },
+  rightSection: {
     flex: 1,
-    paddingHorizontal: 16,
+    justifyContent: "space-between",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
+    backgroundColor: "#fff",
     padding: 12,
+    borderRadius: 8,
     marginBottom: 12,
+    color: "#000",
+    borderColor: "#98DB52",
+    borderWidth: 2,
   },
-  imageButton: {
-    alignSelf: "center",
-    marginBottom: 20,
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    borderColor: "#000",
-    borderWidth: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
-  },
-  imageButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  imagePreviewContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginVertical: 8,
-  },
-  imagePreview: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    margin: 4,
-  },
-  imageWrapper: {
-    position: "relative",
-    margin: 4,
-  },
-  removeImageButton: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    backgroundColor: "rgb(255, 255, 255)",
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  removeImageText: {
-    color: "red",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  submitButton: {
-    backgroundColor: "#000",
+  descriptionInput: {
+    backgroundColor: "#fff",
     padding: 12,
     borderRadius: 8,
-    alignItems: "center",
-    marginVertical: 16,
+    marginBottom: 12,
+    color: "#000",
+    textAlignVertical: "top",
+    borderColor: "#98DB52",
+    borderWidth: 2,
   },
-  submitButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  halfInput: {
+    flex: 1,
+    marginRight: 8,
   },
   dropdown: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
+    backgroundColor: "#fff",
+    borderWidth: 0,
     marginBottom: 12,
+    borderColor: "#98DB52",
+    borderWidth: 2,
   },
   dropdownContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
+    backgroundColor: "#dcdcdc",
+    borderWidth: 0,
   },
   datePickerButton: {
-    borderWidth: 1,
-    borderColor: "#ccc",
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 12,
-    marginBottom: 12,
-    backgroundColor: "#fff",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderColor: "#98DB52",
+    borderWidth: 2,
   },
   datePickerText: {
     color: "#000",
+  },
+  submitButton: {
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 24,
+    alignItems: "center",
+    marginTop: 20,
+    borderColor: "#98DB52",
+    borderWidth: 2,
+  },
+  submitButtonText: {
+    color: "#000",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });
 

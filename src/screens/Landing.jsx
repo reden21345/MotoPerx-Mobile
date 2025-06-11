@@ -25,7 +25,7 @@ const Landing = () => {
       <View style={styles.topSection}>
         <View style={styles.circleBackground}>
           <Image 
-            source={require('../../assets/motor-landing.png')} 
+            source={require('../../assets/motoperx-logo.png')} 
             style={styles.illustration} 
           />
         </View>
@@ -51,19 +51,11 @@ const Landing = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Occupies the full device screen
-    backgroundColor: '#000000',
+    backgroundColor: '#fff',
   },
   topSection: {
     flex: 1, // Takes up remaining vertical space
-    backgroundColor: '#000000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  circleBackground: {
-    width: width * 0.6,      // 60% of the device's screen width
-    height: width * 0.6,     // Keeping it square
-    borderRadius: (width * 0.6) / 2, // Half of width to make it circular
-    backgroundColor: '#e0e0e0', // A subtle grey background; adjust as needed
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -73,7 +65,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   bottomSection: {
-    backgroundColor: '#fff',
+    backgroundColor: '#98DB52',
     padding: 24,
     alignItems: 'center',
     height: height * 0.3, // Adjust this value to make the container taller or shorter

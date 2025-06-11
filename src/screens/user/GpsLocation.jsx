@@ -167,13 +167,13 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#121212",
+    backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 60,
   },
   title: {
     fontSize: 24,
-    color: "#98DB52",
+    color: "#000",
     fontWeight: "bold",
     marginBottom: 15,
   },
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   stopBtn: {
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 30,
@@ -212,12 +212,12 @@ const styles = StyleSheet.create({
     borderColor: "#98DB52",
   },
   stopBtnText: {
-    color: "#fff",
+    color: "#000",
     fontWeight: "bold",
     fontSize: 16,
   },
   startBtn: {
-    backgroundColor: "#000000",
+    backgroundColor: "#fff",
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 30,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     borderColor: "#98DB52",
   },
   startBtnText: {
-    color: "#fff",
+    color: "#000",
     fontWeight: "bold",
     fontSize: 16,
   },
