@@ -79,3 +79,21 @@ export const getRedeemedDeals = createAsyncThunk('deals/getRedeemedDeals', async
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get deals');
     }
 });
+
+// Use Deal
+export const markDealAsUsed = createAsyncThunk('deals/markDealAsUsed', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.patch(`${API_BASE_URL}/deals/redeemed`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to update deal');
+    }
+});
