@@ -47,12 +47,6 @@ const CreateDeal = ({ navigation }) => {
     }
   };
 
-  const handleRemoveImage = (index) => {
-    const updated = [...images];
-    updated.splice(index, 1);
-    setImages(updated);
-  };
-
   const handleSubmit = async () => {
     if (
       !title ||
@@ -127,7 +121,7 @@ const CreateDeal = ({ navigation }) => {
                 <Image source={{ uri }} style={styles.previewImage} />
                 <TouchableOpacity
                   style={styles.removeIcon}
-                  onPress={() => handleRemoveImage(index)}
+                  onPress={() => handleRemoveImage(index, setImages)}
                 >
                   <Ionicons name="close-circle" size={18} color="#f00" />
                 </TouchableOpacity>
@@ -265,6 +259,7 @@ const CreateDeal = ({ navigation }) => {
             mode="date"
             display="default"
             onChange={handleDateChange}
+            minimumDate={new Date()}
           />
         )}
 

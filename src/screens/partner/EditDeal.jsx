@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,12 +10,16 @@ import {
   Image,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import DropDownPicker from "react-native-dropdown-picker";
+import { RadioButton } from "react-native-paper";
 import { useDispatch } from "react-redux";
 import { updateDeals } from "../../redux/actions/dealsAction";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
-import { handlePickImages, formatDate, handleRemoveImage } from "../../utils/helpers";
+import {
+  handlePickImages,
+  formatDate,
+  handleRemoveImage,
+} from "../../utils/helpers";
 
 const EditDeal = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -23,7 +27,10 @@ const EditDeal = ({ navigation, route }) => {
 
   const [title, setTitle] = useState(deal.title || "");
   const [description, setDescription] = useState(deal.description || "");
-  const [discount, setDiscount] = useState(String(deal.discount) || "");
+  const [discount, setDiscount] = useState(null);
+  const [isDiscount, setIsDiscount] = useState(false);
+  const [free, setFree] = useState(null);
+  const [stamp, setStamp] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [redemptionPoints, setRedemptionPoints] = useState(
@@ -37,19 +44,18 @@ const EditDeal = ({ navigation, route }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [category, setCategory] = useState(deal.category || null);
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: "Product", value: "Product" },
-    { label: "Service", value: "Service" },
-  ]);
 
   const [tier, setTier] = useState(deal.tier || null);
-  const [open2, setOpen2] = useState(false);
-  const [items2, setItems2] = useState([
-    { label: "Bronze", value: "Bronze" },
-    { label: "Silver", value: "Silver" },
-    { label: "Gold", value: "Gold" },
-  ]);
+
+  useEffect(() => {
+    if (deal?.discount !== undefined) {
+      setIsDiscount(true);
+      setDiscount(String(deal.discount));
+    } else {
+      setStamp(String(deal.stampInfo.stamp));
+      setFree(String(deal.stampInfo.free));
+    }
+  }, [deal]);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -62,7 +68,6 @@ const EditDeal = ({ navigation, route }) => {
     if (
       !title ||
       !description ||
-      !discount ||
       !expiryDate ||
       !category ||
       !tier ||
@@ -77,7 +82,6 @@ const EditDeal = ({ navigation, route }) => {
       partner: deal.partner._id,
       title,
       description,
-      discount: Number(discount),
       expiryDate,
       redemptionPoints: Number(redemptionPoints),
       category,
@@ -86,6 +90,15 @@ const EditDeal = ({ navigation, route }) => {
       updatedAt: Date.now(),
       images,
     };
+
+    if (discount) {
+      data.discount = Number(discount);
+    } else {
+      data.stampInfo = {
+        stamp,
+        free,
+      };
+    }
 
     try {
       setIsSubmitting(true);
@@ -112,18 +125,6 @@ const EditDeal = ({ navigation, route }) => {
             onChangeText={setTitle}
           />
 
-          <DropDownPicker
-            open={open}
-            value={category}
-            items={items}
-            setOpen={setOpen}
-            setValue={setCategory}
-            setItems={setItems}
-            placeholder="Select category type"
-            style={styles.dropdown}
-            dropDownContainerStyle={styles.dropdownContainer}
-          />
-
           <TextInput
             style={styles.input}
             placeholder="Description"
@@ -134,30 +135,10 @@ const EditDeal = ({ navigation, route }) => {
 
           <TextInput
             style={styles.input}
-            placeholder="Discount (%)"
-            keyboardType="numeric"
-            value={discount}
-            onChangeText={setDiscount}
-          />
-
-          <TextInput
-            style={styles.input}
             placeholder="Redemption points"
             keyboardType="numeric"
             value={redemptionPoints}
             onChangeText={setRedemptionPoints}
-          />
-
-          <DropDownPicker
-            open={open2}
-            value={tier}
-            items={items2}
-            setOpen={setOpen2}
-            setValue={setTier}
-            setItems={setItems2}
-            placeholder="Select tier availability"
-            style={styles.dropdown}
-            dropDownContainerStyle={styles.dropdownContainer}
           />
 
           {/* Expiry Date Picker */}
@@ -169,6 +150,75 @@ const EditDeal = ({ navigation, route }) => {
               Expiry Date: {formatDate(expiryDate)}
             </Text>
           </TouchableOpacity>
+
+          <Text style={styles.radioLabel}>CATEGORY</Text>
+          <View style={styles.radioContainer}>
+            <RadioButton.Group
+              onValueChange={(value) => setCategory(value)}
+              value={category}
+            >
+              <View style={styles.radioOption}>
+                <RadioButton value={"Product"} />
+                <Text>Product</Text>
+              </View>
+              <View style={styles.radioOption}>
+                <RadioButton value={"Service"} />
+                <Text>Service</Text>
+              </View>
+            </RadioButton.Group>
+          </View>
+
+          <Text style={styles.radioLabel}>AVAILABILITY</Text>
+          <View style={styles.radioContainer}>
+            <RadioButton.Group
+              onValueChange={(value) => setTier(value)}
+              value={tier}
+            >
+              <View style={styles.radioOption}>
+                <RadioButton value={"Bronze"} />
+                <Text>Bronze</Text>
+              </View>
+              <View style={styles.radioOption}>
+                <RadioButton value={"Silver"} />
+                <Text>Silver</Text>
+              </View>
+              <View style={styles.radioOption}>
+                <RadioButton value={"Gold"} />
+                <Text>Gold</Text>
+              </View>
+            </RadioButton.Group>
+          </View>
+
+          {isDiscount ? (
+            <>
+              <Text style={styles.radioLabel}>DISCOUNT</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Discount (%)"
+                keyboardType="numeric"
+                value={discount}
+                onChangeText={setDiscount}
+              />
+            </>
+          ) : (
+            <>
+              <Text style={styles.radioLabel}>STAMP INFO</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Total Stamps"
+                keyboardType="numeric"
+                value={stamp}
+                onChangeText={setStamp}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Stamp with free product/service"
+                keyboardType="numeric"
+                value={free}
+                onChangeText={setFree}
+              />
+            </>
+          )}
           {showDatePicker && (
             <DateTimePicker
               value={expiryDate}
@@ -331,6 +381,23 @@ const styles = StyleSheet.create({
   },
   datePickerText: {
     color: "#000",
+  },
+  radioLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  radioContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+    marginBottom: 10,
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
 });
 
