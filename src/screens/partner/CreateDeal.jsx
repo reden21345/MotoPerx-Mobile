@@ -85,6 +85,7 @@ const CreateDeal = ({ navigation }) => {
         return;
       }
       data.stampInfo = { stamp, free };
+      data.discount = null
     }
 
     try {

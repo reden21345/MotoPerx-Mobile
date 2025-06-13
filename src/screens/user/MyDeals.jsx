@@ -54,12 +54,12 @@ const MyDeals = () => {
     setModalVisible(false);
   };
 
-  const filteredDeals = redeemed
-    .filter((deal) => deal.used !== true)
+  const filteredDeals = redeemed.filter((deal) => deal.used !== true);
 
   const renderItem = ({ item }) => {
     const imageUrl = item.images?.[0]?.url || null;
     const expiry = new Date(item.expiryDate).toLocaleDateString();
+    const isDiscount = item.discount !== null;
     return (
       <TouchableOpacity
         key={item._id}
@@ -77,7 +77,11 @@ const MyDeals = () => {
           <Text style={styles.partnerText}>{item.partner?.storeName}</Text>
           <Text style={styles.description}>{item.description}</Text>
           <Text style={styles.description}>{item.tier}</Text>
-          <Text style={styles.discountText}>Discount: {item.discount}%</Text>
+          {isDiscount ? (
+            <Text style={styles.discountText}>Discount: {item.discount}%</Text>
+          ) : (
+            <Text style={styles.discountText}>Stamped {item.stampedCount} time/s</Text>
+          )}
           <Text style={styles.pointsText}>
             Points Redeemed: {item.redemptionPoints}
           </Text>
@@ -243,7 +247,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 5,
-    marginTop: 20
+    marginTop: 20,
   },
   closeButtonText: {
     color: "#000000", // black text for contrast

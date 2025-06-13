@@ -48,7 +48,7 @@ const EditDeal = ({ navigation, route }) => {
   const [tier, setTier] = useState(deal.tier || null);
 
   useEffect(() => {
-    if (deal?.discount !== undefined) {
+    if (deal?.discount !== null) {
       setIsDiscount(true);
       setDiscount(String(deal.discount));
     } else {

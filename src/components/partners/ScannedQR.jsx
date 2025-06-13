@@ -89,11 +89,15 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
       dealId: dealItem._id,
     };
 
-    dispatch(markDealAsUsed(dealData)).then((res) => {
+    dispatch(markDealAsUsed(dealData)).then(() => {
       const notifData = {
         userId: data?.user?._id,
-        title: "Used deal!",
-        body: `You have used the ${dealItem.title} deal from ${partner?.storeName}`,
+        title:
+          dealItem.discount !== null ? "Used Deal!" : "Loyalty Card Stamped",
+        body:
+          dealItem.discount !== null
+            ? `You have used the ${dealItem.title} deal from ${partner?.storeName}`
+            : `Your ${dealItem.title} deal from ${partner?.storeName} has been stamped`,
       };
       dispatch(sendSingleUserNotif(notifData));
     });
@@ -139,8 +143,22 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
               />
             ))}
           </View>
+          {dealItem.discount !== null ? (
+            <Text style={styles.dealInfo}>Discount: {dealItem.discount}%</Text>
+          ) : (
+            <>
+              <Text style={styles.dealInfo}>
+                Total Stamp: {dealItem.stampInfo?.stamp}
+              </Text>
+              <Text style={styles.dealInfo}>
+                Free item stamp: {dealItem.stampInfo?.free}
+              </Text>
+              <Text style={styles.dealInfo}>
+                Stamped: {dealItem.stampedCount}
+              </Text>
+            </>
+          )}
 
-          <Text style={styles.dealInfo}>Discount: {dealItem.discount}%</Text>
           <Text style={styles.dealInfo}>
             Points Required: {dealItem.redemptionPoints}
           </Text>
@@ -156,7 +174,7 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
         onPress={isDealQR ? handleDealQR : handleRewardSubmit}
       >
         <Text style={styles.buttonText}>
-          {isDealQR ? "Confirm deal" : "Submit"}
+          {isDealQR ? "Use deal" : "Submit"}
         </Text>
       </TouchableOpacity>
 

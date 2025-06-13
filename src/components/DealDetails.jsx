@@ -21,6 +21,7 @@ const DealDetails = ({ route, navigation }) => {
 
   const isService = item?.category === "Service";
   const isProduct = item?.category === "Product";
+  const isDiscount = item?.discount !== null;
 
   const getTierColor = (tier) => {
     switch (tier?.toLowerCase()) {
@@ -108,9 +109,20 @@ const DealDetails = ({ route, navigation }) => {
           </View>
         </View>
 
-        {/* Discount */}
-        <Text style={styles.label}>Discount:</Text>
-        <Text style={styles.description}>{item?.discount}%</Text>
+        {/* Discount or Loyalty Stamp */}
+        {isDiscount ? (
+          <>
+            <Text style={styles.label}>Discount:</Text>
+            <Text style={styles.description}>{item?.discount}%</Text>
+          </>
+        ) : (
+          <>
+            <Text style={styles.label}>Total Stamp:</Text>
+            <Text style={styles.description}>{item?.stampInfo?.stamp}</Text>
+            <Text style={styles.label}>Free Item:</Text>
+            <Text style={styles.description}>Every {item?.stampInfo?.free} stamped is free</Text>
+          </>
+        )}
 
         {/* Description */}
         <Text style={styles.label}>Description:</Text>
@@ -126,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   scrollContainer: {
-    paddingBottom: 40, 
+    paddingBottom: 40,
   },
   backButton: {
     position: "absolute",
