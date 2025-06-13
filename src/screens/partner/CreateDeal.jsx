@@ -54,15 +54,7 @@ const CreateDeal = ({ navigation }) => {
   };
 
   const handleSubmit = async () => {
-    if (
-      !title ||
-      !description ||
-      !choice ||
-      !expiryDate ||
-      !category ||
-      !tier ||
-      !redemptionPoints
-    ) {
+    if (!title || !description || !choice || !expiryDate || !category || !tier || !redemptionPoints) {
       Alert.alert("Error", "Please fill out all fields.");
       return;
     }
@@ -90,10 +82,7 @@ const CreateDeal = ({ navigation }) => {
         Alert.alert("Error", "Please fill the loyalty card info.");
         return;
       }
-      data.stampInfo = {
-        stamp,
-        free,
-      };
+      data.stampInfo = { stamp, free };
     }
 
     try {
@@ -109,155 +98,60 @@ const CreateDeal = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <SafeAreaView style={styles.innerContainer}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>ADD DEALS</Text>
-        </View>
-        <View style={styles.imageRow}>
-          <TouchableOpacity
-            style={styles.selectImage}
-            onPress={() => handlePickImages(setImages)}
-          >
-            <Ionicons name="add" size={32} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.previewRow}>
-            {images.map((uri, index) => (
-              <View key={index} style={styles.previewBox}>
-                <Image source={{ uri }} style={styles.previewImage} />
-                <TouchableOpacity
-                  style={styles.removeIcon}
-                  onPress={() => handleRemoveImage(index)}
-                >
-                  <Ionicons name="close-circle" size={18} color="#f00" />
-                </TouchableOpacity>
-              </View>
-            ))}
+        <Text style={styles.header}>ADD DEAL</Text>
+
+        <View style={styles.imageSection}>
+          <View style={styles.column}>
+            <Text style={styles.sectionLabel}>SELECT IMAGE</Text>
+            <TouchableOpacity
+              style={styles.selectImage}
+              onPress={() => handlePickImages(setImages)}
+            >
+              <Ionicons name="add" size={32} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.column}>
+            <Text style={styles.sectionLabel}>PREVIEW IMAGES</Text>
+            <View style={styles.previewRow}>
+              {images.map((uri, index) => (
+                <View key={index} style={styles.previewBox}>
+                  <Image source={{ uri }} style={styles.previewImage} />
+                  <TouchableOpacity
+                    style={styles.removeIcon}
+                    onPress={() => handleRemoveImage(index)}
+                  >
+                    <Ionicons name="close-circle" size={18} color="#f00" />
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
 
         <View style={styles.rowInputs}>
           <TextInput
             style={styles.inputBox}
-            placeholder="DEAL TITLE"
-            placeholderTextColor="#000"
+            placeholder="Deal Title"
+            placeholderTextColor="#363636"
             value={title}
             onChangeText={setTitle}
           />
-
-          <TouchableOpacity
-            style={[styles.dateButton, { marginBottom: 12 }]}
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text style={styles.dateText}>{formatDate(expiryDate)}</Text>
-            <Ionicons name="calendar-outline" size={16} />
-          </TouchableOpacity>
-
           <TextInput
             style={styles.inputBox}
-            placeholder="REDEMPTION POINTS"
-            placeholderTextColor="#000"
+            placeholder="Redemption Points"
+            placeholderTextColor="#363636"
             keyboardType="numeric"
             value={redemptionPoints}
             onChangeText={setRedemptionPoints}
           />
         </View>
 
-        <Text style={styles.radioLabel}>DEAL TYPE</Text>
-        <View style={styles.radioContainer}>
-          <RadioButton.Group
-            onValueChange={(value) => setChoice(value)}
-            value={choice}
-          >
-            <View style={styles.radioOption}>
-              <RadioButton value={"Discount"} />
-              <Text>Discount</Text>
-            </View>
-            <View style={styles.radioOption}>
-              <RadioButton value={"Loyalty"} />
-              <Text>Loyalty Card</Text>
-            </View>
-          </RadioButton.Group>
-        </View>
-
-        {choice === "Discount" && (
-          <TextInput
-            style={styles.input}
-            placeholder="DISCOUNT"
-            placeholderTextColor="#000"
-            keyboardType="numeric"
-            value={discount}
-            onChangeText={setDiscount}
-          />
-        )}
-        {choice === "Loyalty" && (
-          <>
-            <TextInput
-              style={styles.input}
-              placeholder="TOTAL STAMPS"
-              placeholderTextColor="#000"
-              keyboardType="numeric"
-              value={stamp}
-              onChangeText={setStamp}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="FREE PRODUCT/SERVICE"
-              placeholderTextColor="#000"
-              keyboardType="numeric"
-              value={free}
-              onChangeText={setFree}
-            />
-          </>
-        )}
-
-        <Text style={styles.radioLabel}>CATEGORY</Text>
-        <View style={styles.radioContainer}>
-          <RadioButton.Group
-            onValueChange={(value) => setCategory(value)}
-            value={category}
-          >
-            <View style={styles.radioOption}>
-              <RadioButton value={"Product"} />
-              <Text>Product</Text>
-            </View>
-            <View style={styles.radioOption}>
-              <RadioButton value={"Service"} />
-              <Text>Service</Text>
-            </View>
-          </RadioButton.Group>
-        </View>
-
-        <Text style={styles.radioLabel}>AVAILABILITY</Text>
-        <View style={styles.radioContainer}>
-          <RadioButton.Group
-            onValueChange={(value) => setTier(value)}
-            value={tier}
-          >
-            <View style={styles.radioOption}>
-              <RadioButton value={"Bronze"} />
-              <Text>Bronze</Text>
-            </View>
-            <View style={styles.radioOption}>
-              <RadioButton value={"Silver"} />
-              <Text>Silver</Text>
-            </View>
-            <View style={styles.radioOption}>
-              <RadioButton value={"Gold"} />
-              <Text>Gold</Text>
-            </View>
-          </RadioButton.Group>
-        </View>
-
-        <TextInput
-          style={styles.descriptionInput}
-          placeholder="DESCRIPTION"
-          placeholderTextColor="#000"
-          multiline
-          numberOfLines={6}
-          value={description}
-          onChangeText={setDescription}
-        />
+        <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
+          <Text style={styles.dateText}>Expiry Date: {formatDate(expiryDate)}</Text>
+          <Ionicons name="calendar-outline" size={16} />
+        </TouchableOpacity>
 
         {showDatePicker && (
           <DateTimePicker
@@ -267,6 +161,74 @@ const CreateDeal = ({ navigation }) => {
             onChange={handleDateChange}
           />
         )}
+
+        <View style={styles.groupRow}>
+          <View style={styles.groupBox}>
+            <Text style={styles.radioLabel}>Category</Text>
+            <RadioButton.Group onValueChange={setCategory} value={category}>
+              <View style={styles.radioOption}><RadioButton value="Product" /><Text>Product</Text></View>
+              <View style={styles.radioOption}><RadioButton value="Service" /><Text>Service</Text></View>
+            </RadioButton.Group>
+          </View>
+
+          <View style={styles.groupBox}>
+            <Text style={styles.radioLabel}>Tier Level</Text>
+            <RadioButton.Group onValueChange={setTier} value={tier}>
+              <View style={styles.radioOption}><RadioButton value="Bronze" /><Text>Bronze</Text></View>
+              <View style={styles.radioOption}><RadioButton value="Silver" /><Text>Silver</Text></View>
+              <View style={styles.radioOption}><RadioButton value="Gold" /><Text>Gold</Text></View>
+            </RadioButton.Group>
+          </View>
+        </View>
+
+        <View style={styles.groupBox}>
+          <Text style={styles.radioLabel}>Deal Type</Text>
+          <RadioButton.Group onValueChange={setChoice} value={choice}>
+            <View style={styles.radioOption}><RadioButton value="Discount" /><Text>Discount</Text></View>
+            <View style={styles.radioOption}><RadioButton value="Loyalty" /><Text>Loyalty Card</Text></View>
+          </RadioButton.Group>
+
+          {choice === "Discount" && (
+            <TextInput
+              style={styles.input}
+              placeholder="DISCOUNT"
+              placeholderTextColor="#363636"
+              keyboardType="numeric"
+              value={discount}
+              onChangeText={setDiscount}
+            />
+          )}
+
+          {choice === "Loyalty" && (
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="TOTAL STAMPS"
+                placeholderTextColor="#363636"
+                keyboardType="numeric"
+                value={stamp}
+                onChangeText={setStamp}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="FREE PRODUCT/SERVICE"
+                placeholderTextColor="#363636"
+                value={free}
+                onChangeText={setFree}
+              />
+            </>
+          )}
+        </View>
+
+        <TextInput
+          style={styles.descriptionInput}
+          placeholder="Description"
+          placeholderTextColor="#363636"
+          multiline
+          numberOfLines={6}
+          value={description}
+          onChangeText={setDescription}
+        />
 
         <TouchableOpacity
           style={[styles.submitButton, isSubmitting && { opacity: 0.5 }]}
@@ -289,19 +251,27 @@ const styles = StyleSheet.create({
   innerContainer: {
     paddingBottom: 40,
   },
-  headerContainer: {
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  headerText: {
+  header: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#000",
-  },
-  imageRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    textAlign: "center",
     marginBottom: 16,
+  },
+  imageSection: {
+    flexDirection: "row",
+    marginBottom: 16,
+    borderColor: "#000",
+    borderWidth: 2,
+    borderRadius: 4,
+    padding: 12,
+  },
+  column: {
+    marginRight: 8,
+  },
+  sectionLabel: {
+    fontWeight: "bold",
+    marginBottom: 4,
+    color: "#000",
   },
   selectImage: {
     width: 60,
@@ -309,7 +279,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 8,
     borderRadius: 4,
   },
   previewRow: {
@@ -340,66 +309,65 @@ const styles = StyleSheet.create({
   rowInputs: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 6,
+    gap: 8,
     marginBottom: 12,
   },
   inputBox: {
     flex: 1,
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#fff",
+    borderColor: "#000",
+    borderWidth: 2,
     padding: 10,
     borderRadius: 4,
     color: "#000",
     fontWeight: "bold",
-  },
-  dropdown: {
-    backgroundColor: "#e0e0e0",
-    marginBottom: 12,
-    borderColor: "#000",
-  },
-  dropdownHalf: {
-    flex: 1,
-    backgroundColor: "#e0e0e0",
-    marginRight: 8,
-  },
-  dropdownContainer: {
-    backgroundColor: "#fff",
-  },
-  descriptionInput: {
-    backgroundColor: "#e0e0e0",
-    color: "#000",
-    padding: 12,
-    borderRadius: 4,
-    marginBottom: 12,
-    fontWeight: "bold",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   dateButton: {
-    flex: 1,
+    backgroundColor: "#fff",
+    borderColor: "#000",
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 4,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#e0e0e0",
-    padding: 10,
-    borderRadius: 4,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   dateText: {
     color: "#000",
-    fontWeight: "bold",
   },
-  submitButton: {
-    backgroundColor: "#e0e0e0",
-    padding: 16,
-    borderRadius: 50,
-    alignItems: "center",
-    marginTop: 24,
+  groupRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 5,
   },
-  submitText: {
-    fontWeight: "bold",
-    color: "#000",
+  groupBox: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderColor: "#000",
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 4,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   radioLabel: {
     fontSize: 16,
     fontWeight: "bold",
-    marginTop: 10,
     marginBottom: 5,
   },
   radioContainer: {
@@ -413,6 +381,49 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 5,
   },
+  input: {
+    backgroundColor: "#fff",
+    borderColor: "#000",
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 4,
+    marginBottom: 8,
+    color: "#000",
+    fontWeight: "bold",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  descriptionInput: {
+    backgroundColor: "#fff",
+    borderColor: "#000",
+    borderWidth: 2,
+    padding: 12,
+    borderRadius: 4,
+    color: "#000",
+    marginBottom: 12,
+    fontWeight: "bold",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  submitButton: {
+    backgroundColor: "#000",
+    padding: 16,
+    borderRadius: 50,
+    alignItems: "center",
+    marginTop: 5,
+  },
+  submitText: {
+    fontWeight: "bold",
+    color: "#fff",
+    fontSize: 16,
+  },
 });
+
 
 export default CreateDeal;
