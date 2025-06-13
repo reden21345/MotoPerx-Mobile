@@ -11,11 +11,15 @@ import {
   ScrollView,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import DropDownPicker from "react-native-dropdown-picker";
+import { RadioButton } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { createDeals } from "../../redux/actions/dealsAction";
 import { Ionicons } from "@expo/vector-icons";
-import { handlePickImages, formatDate } from "../../utils/helpers";
+import {
+  handlePickImages,
+  formatDate,
+  handleRemoveImage,
+} from "../../utils/helpers";
 
 const CreateDeal = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -24,27 +28,17 @@ const CreateDeal = ({ navigation }) => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [tier, setTier] = useState(null);
   const [discount, setDiscount] = useState("");
+  const [free, setFree] = useState("");
+  const [stamp, setStamp] = useState("");
+  const [choice, setChoice] = useState(null);
   const [redemptionPoints, setRedemptionPoints] = useState("");
   const [images, setImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [expiryDate, setExpiryDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-
   const [category, setCategory] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: "Product", value: "Product" },
-    { label: "Service", value: "Service" },
-  ]);
-
-  const [tier, setTier] = useState(null);
-  const [open2, setOpen2] = useState(false);
-  const [items2, setItems2] = useState([
-    { label: "Bronze", value: "Bronze" },
-    { label: "Silver", value: "Silver" },
-    { label: "Gold", value: "Gold" },
-  ]);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -60,7 +54,15 @@ const CreateDeal = ({ navigation }) => {
   };
 
   const handleSubmit = async () => {
-    if (!title || !description || !discount || !expiryDate || !category || !tier || !redemptionPoints) {
+    if (
+      !title ||
+      !description ||
+      !choice ||
+      !expiryDate ||
+      !category ||
+      !tier ||
+      !redemptionPoints
+    ) {
       Alert.alert("Error", "Please fill out all fields.");
       return;
     }
@@ -69,7 +71,6 @@ const CreateDeal = ({ navigation }) => {
       partner: partner._id,
       title,
       description,
-      discount: Number(discount),
       expiryDate,
       redemptionPoints,
       category,
@@ -77,6 +78,23 @@ const CreateDeal = ({ navigation }) => {
       createdBy: user?._id,
       images,
     };
+
+    if (choice === "Discount") {
+      if (!discount) {
+        Alert.alert("Error", "Please fill discount info.");
+        return;
+      }
+      data.discount = Number(discount);
+    } else {
+      if (!free || !stamp) {
+        Alert.alert("Error", "Please fill the loyalty card info.");
+        return;
+      }
+      data.stampInfo = {
+        stamp,
+        free,
+      };
+    }
 
     try {
       setIsSubmitting(true);
@@ -97,7 +115,10 @@ const CreateDeal = ({ navigation }) => {
           <Text style={styles.headerText}>ADD DEALS</Text>
         </View>
         <View style={styles.imageRow}>
-          <TouchableOpacity style={styles.selectImage} onPress={() => handlePickImages(setImages)}>
+          <TouchableOpacity
+            style={styles.selectImage}
+            onPress={() => handlePickImages(setImages)}
+          >
             <Ionicons name="add" size={32} color="#fff" />
           </TouchableOpacity>
           <View style={styles.previewRow}>
@@ -123,14 +144,15 @@ const CreateDeal = ({ navigation }) => {
             value={title}
             onChangeText={setTitle}
           />
-          <TextInput
-            style={styles.inputBox}
-            placeholder="DISCOUNT"
-            placeholderTextColor="#000"
-            keyboardType="numeric"
-            value={discount}
-            onChangeText={setDiscount}
-          />
+
+          <TouchableOpacity
+            style={[styles.dateButton, { marginBottom: 12 }]}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text style={styles.dateText}>{formatDate(expiryDate)}</Text>
+            <Ionicons name="calendar-outline" size={16} />
+          </TouchableOpacity>
+
           <TextInput
             style={styles.inputBox}
             placeholder="REDEMPTION POINTS"
@@ -141,17 +163,91 @@ const CreateDeal = ({ navigation }) => {
           />
         </View>
 
-        <DropDownPicker
-          open={open}
-          value={category}
-          items={items}
-          setOpen={setOpen}
-          setValue={setCategory}
-          setItems={setItems}
-          placeholder="SELECT CATEGORY TYPE"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-        />
+        <Text style={styles.radioLabel}>DEAL TYPE</Text>
+        <View style={styles.radioContainer}>
+          <RadioButton.Group
+            onValueChange={(value) => setChoice(value)}
+            value={choice}
+          >
+            <View style={styles.radioOption}>
+              <RadioButton value={"Discount"} />
+              <Text>Discount</Text>
+            </View>
+            <View style={styles.radioOption}>
+              <RadioButton value={"Loyalty"} />
+              <Text>Loyalty Card</Text>
+            </View>
+          </RadioButton.Group>
+        </View>
+
+        {choice === "Discount" && (
+          <TextInput
+            style={styles.input}
+            placeholder="DISCOUNT"
+            placeholderTextColor="#000"
+            keyboardType="numeric"
+            value={discount}
+            onChangeText={setDiscount}
+          />
+        )}
+        {choice === "Loyalty" && (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="TOTAL STAMPS"
+              placeholderTextColor="#000"
+              keyboardType="numeric"
+              value={stamp}
+              onChangeText={setStamp}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="FREE PRODUCT/SERVICE"
+              placeholderTextColor="#000"
+              keyboardType="numeric"
+              value={free}
+              onChangeText={setFree}
+            />
+          </>
+        )}
+
+        <Text style={styles.radioLabel}>CATEGORY</Text>
+        <View style={styles.radioContainer}>
+          <RadioButton.Group
+            onValueChange={(value) => setCategory(value)}
+            value={category}
+          >
+            <View style={styles.radioOption}>
+              <RadioButton value={"Product"} />
+              <Text>Product</Text>
+            </View>
+            <View style={styles.radioOption}>
+              <RadioButton value={"Service"} />
+              <Text>Service</Text>
+            </View>
+          </RadioButton.Group>
+        </View>
+
+        <Text style={styles.radioLabel}>AVAILABILITY</Text>
+        <View style={styles.radioContainer}>
+          <RadioButton.Group
+            onValueChange={(value) => setTier(value)}
+            value={tier}
+          >
+            <View style={styles.radioOption}>
+              <RadioButton value={"Bronze"} />
+              <Text>Bronze</Text>
+            </View>
+            <View style={styles.radioOption}>
+              <RadioButton value={"Silver"} />
+              <Text>Silver</Text>
+            </View>
+            <View style={styles.radioOption}>
+              <RadioButton value={"Gold"} />
+              <Text>Gold</Text>
+            </View>
+          </RadioButton.Group>
+        </View>
 
         <TextInput
           style={styles.descriptionInput}
@@ -162,28 +258,6 @@ const CreateDeal = ({ navigation }) => {
           value={description}
           onChangeText={setDescription}
         />
-
-      <View style={{ marginBottom: 12 }}>
-        <DropDownPicker
-          open={open2}
-          value={tier}
-          items={items2}
-          setOpen={setOpen2}
-          setValue={setTier}
-          setItems={setItems2}
-          placeholder="SELECT FOR AVAILABILITY"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-        />
-      </View>
-
-      <TouchableOpacity
-        style={[styles.dateButton, { marginBottom: 12 }]}
-        onPress={() => setShowDatePicker(true)}
-      >
-        <Text style={styles.dateText}>{formatDate(expiryDate)}</Text>
-        <Ionicons name="calendar-outline" size={16} />
-      </TouchableOpacity>
 
         {showDatePicker && (
           <DateTimePicker
@@ -321,6 +395,23 @@ const styles = StyleSheet.create({
   submitText: {
     fontWeight: "bold",
     color: "#000",
+  },
+  radioLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  radioContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+    marginBottom: 10,
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
 });
 
