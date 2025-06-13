@@ -378,16 +378,16 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
   },
   topBar: {
     width: "100%",
     paddingVertical: 15,
     paddingHorizontal: width * 0.05,
     alignItems: "flex-start",
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
   },
-  arrowButton: {
+  arrowButton: { 
     padding: 5,
     backgroundColor: "#98DB52",
     borderRadius: 5,

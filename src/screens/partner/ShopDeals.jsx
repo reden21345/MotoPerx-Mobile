@@ -53,7 +53,7 @@ const Deals = ({ navigation }) => {
           onPress={() => console.log("View History")}
         >
           <Text style={styles.buttonText}>
-            <Ionicons name="time" size={16} color="white" /> History
+            <Ionicons name="time" size={16} color="black" /> History
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -61,7 +61,7 @@ const Deals = ({ navigation }) => {
           onPress={() => navigation.navigate("CreateDeal")}
         >
           <Text style={styles.buttonText}>
-            <Ionicons name="add-circle" size={16} color="white" /> Add
+            <Ionicons name="add-circle" size={16} color="black" /> Add
           </Text>
         </TouchableOpacity>
       </View>
@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
   },
   screenTitle: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 5,
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     borderColor: "#98DB52",
   },
   buttonText: {
-    color: "white",
+    color: "black",
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",

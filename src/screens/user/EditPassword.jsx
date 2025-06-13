@@ -97,7 +97,7 @@ const EditProfile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     padding: 20,
     justifyContent: "center",
   },
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "#98DB52"
+    color: "#000"
   },
   inputWrapper: {
     position: "relative",
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     borderRadius: 8,
     paddingHorizontal: 15,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     marginTop: 10,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
   },
   buttonText: {

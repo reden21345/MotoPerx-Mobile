@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 40,
     paddingHorizontal: 10,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
   },
   screenTitle: {
     fontSize: 24,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 10,
     borderRadius: 8,
-    borderColor: "#ccc",
+    borderColor: "#000",
     borderWidth: 1,
     marginBottom: 10,
   },

@@ -297,7 +297,7 @@ const ApplyPartnership = () => {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -319,8 +319,8 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "100%",
-    backgroundColor: "#000",
-    borderColor: "#98DB52",
+    backgroundColor: "#fff",
+    borderColor: "#000",
     borderWidth: 1,
     borderRadius: 12,
     padding: 20,
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 12,
     borderWidth: 2,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderRadius: 10,
     marginBottom: 15,
     fontSize: 16,
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   avatarText: {
-    color: "#fff",
+    color: "#98DB52",
     textAlign: "center",
   },
   map: {

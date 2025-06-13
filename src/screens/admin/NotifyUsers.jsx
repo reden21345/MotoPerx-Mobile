@@ -1,116 +1,123 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from "react-native";
+import { useDispatch } from "react-redux";
 import { sendNotifications } from "../../redux/actions/notifAction";
 
-const NotifyUsers = ({ navigation }) => {
+const NotifyUsers = () => {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
   const handleSubmit = () => {
-    const data = {
-        title,
-        body,
-        role: 'user'
-    }
-
-    dispatch(sendNotifications(data)).then(()=>{
-        Alert.alert('Notified!', 'Announcement is sent to all users');
-        setTitle("");
-        setBody("");
+    const data = { title, body, role: "user" };
+    dispatch(sendNotifications(data)).then(() => {
+      Alert.alert("Notified!", "Announcement is sent to all users");
+      setTitle("");
+      setBody("");
     });
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.screenTitle}>Announcement</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>ANNOUNCEMENT</Text>
 
+      <Text style={styles.label}>TITLE</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Enter title"
+        style={styles.titleInput}
         value={title}
         onChangeText={setTitle}
+        placeholder="Enter title"
+        placeholderTextColor="#999"
       />
 
+      <Text style={styles.label}>BODY</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Enter body"
+        style={styles.bodyInput}
         value={body}
-        multiline={true}
         onChangeText={setBody}
+        placeholder="Enter body"
+        placeholderTextColor="#999"
+        multiline
+        textAlignVertical="top"
       />
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Send</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>SEND ANNOUNCEMENT</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  screenTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  resultContainer: {
+    padding: 24,
     backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-    width: "80%",
-    alignItems: "center",
-    marginBottom: 20,
+    flexGrow: 1,
+    justifyContent: "center",
   },
-  resultText: {
-    fontSize: 18,
+  header: {
+    fontSize: 30,
     fontWeight: "bold",
-    color: "#333",
-    marginVertical: 5,
-  },
-  errorText: {
-    fontSize: 16,
-    color: "red",
-  },
-  input: {
-    width: "80%",
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    marginBottom: 15,
     textAlign: "center",
+    marginBottom: 32,
   },
-  submitButton: {
-    backgroundColor: "#28a745",
-    padding: 12,
-    borderRadius: 8,
-    width: "80%",
-    alignItems: "center",
-    marginBottom: 10,
+  label: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 8,
+    marginLeft: 4,
+  },
+  titleInput: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    borderColor: "#000",
+    borderWidth: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    fontSize: 16,
+    marginBottom: 24,
+    justifyContent: "flex-end",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 6,
+  },
+  bodyInput: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    borderColor: "#000",
+    borderWidth: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    height: 180,
+    fontSize: 16,
+    marginBottom: 32,
+    justifyContent: "flex-end",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 6,
   },
   button: {
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 8,
-    width: "80%",
+    backgroundColor: "#000",
+    borderRadius: 32,
+    paddingVertical: 14,
     alignItems: "center",
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
     fontWeight: "bold",
+    fontSize: 14,
+    color: "#fff",
   },
 });
 

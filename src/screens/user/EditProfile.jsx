@@ -160,7 +160,7 @@ const EditProfile = ({ route, navigation }) => {
               ? `Birthday: ${formatDate(birthday)}`
               : "Select your birthday"}
           </Text>
-          <Ionicons name="calendar" size={20} color="#fff" />
+          <Ionicons name="calendar" size={20} color="#000" />
         </View>
       </TouchableOpacity>
 
@@ -194,7 +194,7 @@ const EditProfile = ({ route, navigation }) => {
           >
             {address}
           </Text>
-          <Ionicons name="map" size={20} color="#fff" />
+          <Ionicons name="map" size={20} color="#000" />
         </View>
       </TouchableOpacity>
 
@@ -260,7 +260,7 @@ const EditProfile = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // take up the full height
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 30,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 45,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     borderRadius: 45,
   },
   avatarText: {
-    color: "#888",
+    color: "#000",
     fontSize: 12,
     textAlign: "center",
   },
@@ -302,18 +302,18 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     borderRadius: 8,
     marginBottom: 15,
     paddingHorizontal: 15,
     fontSize: 16,
     justifyContent: "center",
-    color: "#fff", // helps ensure vertical centering
+    color: "#000", // helps ensure vertical centering
   },
   birthday: {
     height: 50,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     borderRadius: 8,
     marginBottom: 15,
@@ -322,19 +322,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   datePickerText: {
-    color: "#fff",
+    color: "#000",
     alignSelf: "center",
   },
   subtext: {
     fontSize: 14,
-    color: "#fff",
+    color: "#000",
     marginTop: 4,
     flexWrap: "wrap",
     maxWidth: 200,
   },
   button: {
     backgroundColor: "#000",
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     padding: 15,
     borderRadius: 8,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   locBtn: {
-    backgroundColor: "#424242",
+    backgroundColor: "#000",
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,

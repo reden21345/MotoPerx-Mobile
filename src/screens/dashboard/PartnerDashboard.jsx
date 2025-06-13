@@ -181,7 +181,7 @@ const ManageCard = ({ icon, label, value, onPress }) => (
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     flexGrow: 1,
     paddingBottom: 32,
   },
@@ -192,23 +192,33 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
   },
   profileCard: {
-    backgroundColor: "#000", // fixed
+    backgroundColor: "#fff",
     borderRadius: 12,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
     position: "relative",
     marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 6,
   },
   avatar: {
     width: screenWidth * 0.15,
     height: screenWidth * 0.15,
     borderRadius: (screenWidth * 0.15) / 2,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#000",
     marginRight: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
   },
   profileText: {
     flex: 1,
@@ -216,11 +226,11 @@ const styles = StyleSheet.create({
   storeName: {
     fontWeight: "bold",
     fontSize: 16,
-    color: "#fff",
+    color: "#000",
   },
   subtext: {
     fontSize: 12,
-    color: "#fff",
+    color: "#000",
   },
   editIcon: {
     position: "absolute",
@@ -238,24 +248,29 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: "32%",
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     borderRadius: 10,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     alignItems: "center",
     padding: 12,
     marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 6,
   },
   statLabel: {
     fontSize: 10,
-    color: "#fff",
+    color: "#000",
     marginTop: 4,
     textAlign: "center",
   },
   statValue: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
   },
   manageRow: {
     flexDirection: "row",
@@ -264,12 +279,17 @@ const styles = StyleSheet.create({
   },
   manageCard: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#fff",
     borderRadius: 10,
-    borderColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 2,
     padding: 12,
     marginHorizontal: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 6,
   },
   manageCardContent: {
     flexDirection: "row",
@@ -280,27 +300,32 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     marginLeft: 8,
-    color: "#fff",
+    color: "#000",
   },
   manageLabel: {
     flex: 1,
     textAlign: "center",
     fontSize: 12,
-    color: "#fff",
+    color: "#000",
   },
   salesGraph: {
-    backgroundColor: "#000",
-    borderColor: "#98DB52",
+    backgroundColor: "#fff",
+    borderColor: "#000",
     borderWidth: 2,
     borderRadius: 10,
     padding: 16,
     marginTop: 16,
     height: 200,
     justifyContent: "flex-end",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 6,
   },
   salesLabel: {
     fontSize: 12,
-    color: "#fff",
+    color: "#000",
     marginBottom: 8,
   },
   barChartContainer: {
@@ -321,164 +346,9 @@ const styles = StyleSheet.create({
   },
   barLabel: {
     fontSize: 10,
-    color: "#fff",
+    color: "#000",
     marginTop: 4,
   },
 });
 
-
-//Light Version
-// const styles = StyleSheet.create({
-//   container: {
-//     padding: 12, // reduced from 20
-//     backgroundColor: "#f7f9fc",
-//     flex: 1,
-//   },
-//   profileCard: {
-//     backgroundColor: "#ffffff",
-//     borderRadius: 16,
-//     borderColor: "#4CAF50",
-//     borderWidth: 1.5,
-//     flexDirection: "row",
-//     alignItems: "center",
-//     padding: 14, // reduced
-//     marginBottom: 12, // tighter
-//     shadowColor: "#4CAF50",
-//     shadowOffset: { width: 0, height: 3 },
-//     shadowOpacity: 0.15,
-//     shadowRadius: 6,
-//     elevation: 4,
-//   },
-//   avatar: {
-//     width: 56, // reduced from 70
-//     height: 56,
-//     borderRadius: 28,
-//     borderWidth: 1.5,
-//     borderColor: "#4CAF50",
-//     marginRight: 12,
-//   },
-//   profileText: {
-//     flex: 1,
-//     color: "#333",
-//   },
-//   storeName: {
-//     fontWeight: "bold",
-//     fontSize: 17, // smaller
-//     color: "#4CAF50",
-//     marginBottom: 2,
-//   },
-//   subtext: {
-//     fontSize: 12, // smaller
-//     color: "#666",
-//   },
-//   editIcon: {
-//     position: "absolute",
-//     top: 10,
-//     right: 10,
-//     color: "#fff",
-//     borderRadius: 16,
-//     padding: 6,
-//     backgroundColor: "#4CAF50",
-//   },
-//   statsGrid: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     marginBottom: 14,
-//   },
-//   statCard: {
-//     flex: 1,
-//     backgroundColor: "#e8f5e9",
-//     borderRadius: 12,
-//     borderColor: "#81c784",
-//     borderWidth: 1.5,
-//     alignItems: "center",
-//     padding: 10,
-//     marginHorizontal: 4,
-//     elevation: 3,
-//   },
-//   statLabel: {
-//     fontSize: 11,
-//     color: "#388e3c",
-//     marginTop: 4,
-//     textAlign: "center",
-//   },
-//   statValue: {
-//     fontSize: 17,
-//     fontWeight: "bold",
-//     color: "#2e7d32",
-//   },
-//   manageRow: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     marginVertical: 10,
-//   },
-//   manageCard: {
-//     flex: 1,
-//     backgroundColor: "#fff3e0",
-//     borderRadius: 12,
-//     borderColor: "#ffb74d",
-//     borderWidth: 1.5,
-//     padding: 12,
-//     marginHorizontal: 4,
-//     elevation: 2,
-//   },
-//   manageCardContent: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     justifyContent: "space-between",
-//   },
-//   manageText: {
-//     fontWeight: "bold",
-//     fontSize: 14,
-//     marginLeft: 6,
-//     color: "#e65100",
-//   },
-//   manageLabel: {
-//     flex: 1,
-//     textAlign: "center",
-//     fontSize: 12,
-//     color: "#bf360c",
-//   },
-//   salesGraph: {
-//     backgroundColor: "#e3f2fd",
-//     borderColor: "#42a5f5",
-//     borderWidth: 1.5,
-//     borderRadius: 12,
-//     padding: 14,
-//     marginTop: 16,
-//     height: 180, // reduced from 220
-//     justifyContent: "flex-end",
-//     elevation: 4,
-//   },
-//   salesLabel: {
-//     fontSize: 13,
-//     color: "#1976d2",
-//     marginBottom: 6,
-//   },
-//   salesLine: {
-//     height: 1.5,
-//     backgroundColor: "#64b5f6",
-//   },
-//   barChartContainer: {
-//     flexDirection: "row",
-//     alignItems: "flex-end",
-//     justifyContent: "space-between",
-//     height: 120, // reduced
-//     marginTop: 8,
-//   },
-//   barWrapper: {
-//     alignItems: "center",
-//     width: 26,
-//   },
-//   bar: {
-//     width: 18,
-//     backgroundColor: "#4CAF50",
-//     borderRadius: 5,
-//   },
-//   barLabel: {
-//     fontSize: 10,
-//     color: "#2e7d32",
-//     marginTop: 4,
-//   },
-// });
 export default PartnerDashboard;
