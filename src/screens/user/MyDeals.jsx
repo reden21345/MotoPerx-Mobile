@@ -60,33 +60,39 @@ const MyDeals = () => {
     const imageUrl = item.images?.[0]?.url || null;
     const expiry = new Date(item.expiryDate).toLocaleDateString();
     const isDiscount = item.discount !== null;
+    const stampTotal = item.stampInfo?.stamp || 0;
+    const stampFree = item.stampInfo?.free || 0;
+    const filled = item.stampedCount || 0;
+
+    const stamps = Array.from({ length: stampTotal }, (_, index) => {
+      const isFilled = index < filled;
+      const isFree = stampFree > 0 && index === stampTotal - 1;
+      return (
+        <View
+          key={index}
+          style={[styles.stampTire, isFilled && styles.stampFilled, isFree && styles.stampFree]}
+        >
+          <Text style={styles.stampText}>{isFree ? "FREE" : "STAMP"}</Text>
+        </View>
+      );
+    });
+
     return (
       <TouchableOpacity
         key={item._id}
-        style={styles.dealCard}
+        style={styles.cardContainer}
         onPress={() => handleUseDeal(item)}
         disabled={item.used}
       >
-        <Image
-          source={{ uri: imageUrl }}
-          style={styles.dealImage}
-          resizeMode="cover"
-        />
-        <View style={styles.dealContent}>
-          <Text style={styles.dealTitle}>{item.title}</Text>
-          <Text style={styles.partnerText}>{item.partner?.storeName}</Text>
-          <Text style={styles.description}>{item.description}</Text>
-          <Text style={styles.description}>{item.tier}</Text>
-          {isDiscount ? (
-            <Text style={styles.discountText}>Discount: {item.discount}%</Text>
-          ) : (
-            <Text style={styles.discountText}>Stamped {item.stampedCount} time/s</Text>
-          )}
-          <Text style={styles.pointsText}>
-            Points Redeemed: {item.redemptionPoints}
-          </Text>
-          <Text style={styles.expiryText}>Expires on: {expiry}</Text>
-        </View>
+        <Text style={styles.cardTitle}>{isDiscount ? "DISCOUNT CATEGORY" : "STAMP DEALS"}</Text>
+        <Text style={styles.dealTitle}>{item.title}</Text>
+        {isDiscount ? (
+          <Text style={styles.discountText}>Discount: {item.discount}%</Text>
+        ) : (
+          <View style={styles.stampContainer}>{stamps}</View>
+        )}
+        <Text style={styles.pointsText}>Points Redeemed: {item.redemptionPoints}</Text>
+        <Text style={styles.expiryText}>Expires on: {expiry}</Text>
       </TouchableOpacity>
     );
   };
@@ -119,10 +125,7 @@ const MyDeals = () => {
                 ) : (
                   <Text style={styles.qrLabel}>QR Code Loading...</Text>
                 )}
-                <TouchableOpacity
-                  onPress={closeModal}
-                  style={styles.closeButton}
-                >
+                <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                   <Text style={styles.closeButtonText}>Close</Text>
                 </TouchableOpacity>
               </View>
@@ -168,59 +171,76 @@ const styles = StyleSheet.create({
   list: {
     paddingBottom: 20,
   },
-  dealCard: {
-    flexDirection: "row", // Arrange image and content side by side
+  cardContainer: {
     backgroundColor: "#fff",
     borderRadius: 12,
+    padding: 16,
     marginBottom: 20,
-    overflow: "hidden",
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
-  dealImage: {
-    width: 100,
-    height: 160,
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
-  },
-  dealContent: {
-    flex: 1,
-    padding: 10,
-    justifyContent: "center",
+  cardTitle: {
+    fontWeight: "bold",
+    fontSize: 18,
+    marginBottom: 10,
   },
   dealTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 5,
-  },
-  partnerText: {
-    fontSize: 14,
-    color: "#007bff",
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 12,
   },
   discountText: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#28a745",
-    fontWeight: "600",
-    marginBottom: 5,
+    fontWeight: "bold",
   },
   pointsText: {
     fontSize: 14,
     color: "#dc3545",
-    marginBottom: 5,
+    marginTop: 10,
   },
   expiryText: {
     fontSize: 12,
     color: "#888",
+    marginTop: 4,
+  },
+  stampContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    justifyContent: "flex-start",
+  },
+  stampTire: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 4,
+    borderColor: "#444",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 5,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  stampFilled: {
+    backgroundColor: "#98DB52",
+    borderColor: "#000",
+  },
+  stampFree: {
+    borderColor: "#28a745",
+    borderWidth: 3,
+  },
+  stampText: {
+    fontSize: 10,
+    color: "#000",
+    textAlign: "center",
   },
   modalBackground: {
     flex: 1,
@@ -230,7 +250,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: 300,
-    backgroundColor: "#FFFFFF", // white
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
@@ -239,18 +259,18 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 16,
     fontWeight: "500",
-    color: "#000000", // black
+    color: "#000000",
     marginBottom: 12,
   },
   closeButton: {
-    backgroundColor: "#98DB52", // green
+    backgroundColor: "#98DB52",
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 5,
     marginTop: 20,
   },
   closeButtonText: {
-    color: "#000000", // black text for contrast
+    color: "#000000",
     fontWeight: "600",
   },
 });

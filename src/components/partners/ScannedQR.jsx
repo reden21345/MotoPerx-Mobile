@@ -143,20 +143,32 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
               />
             ))}
           </View>
-          {dealItem.discount !== null ? (
-            <Text style={styles.dealInfo}>Discount: {dealItem.discount}%</Text>
-          ) : (
-            <>
-              <Text style={styles.dealInfo}>
-                Total Stamp: {dealItem.stampInfo?.stamp}
-              </Text>
-              <Text style={styles.dealInfo}>
-                Free item stamp: {dealItem.stampInfo?.free}
-              </Text>
-              <Text style={styles.dealInfo}>
-                Stamped: {dealItem.stampedCount}
-              </Text>
-            </>
+          {dealItem.discount === null && (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 10 }}>
+              {Array.from({ length: dealItem.stampInfo?.stamp || 0 }).map((_, index) => {
+                const isFilled = index < dealItem.stampedCount;
+                const isFree = index + 1 === dealItem.stampInfo?.stamp;
+
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      width: 45,
+                      height: 45,
+                      borderRadius: 30,
+                      backgroundColor: isFilled ? "#28a745" : "#e0e0e0",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      margin: 4,
+                      borderWidth: isFree ? 2 : 0,
+                      borderColor: isFree ? "gold" : "transparent",
+                    }}
+                  >
+                    <Text style={{ fontSize: 10 }}>{isFree ? "FREE" : "STAMP"}</Text>
+                  </View>
+                );
+              })}
+            </View>
           )}
 
           <Text style={styles.dealInfo}>

@@ -153,7 +153,7 @@ const Notifications = ({ visible, onClose }) => {
             />
           ) : (
             <FlatList
-              data={notifications}
+              data={[...notifications].sort((a, b) => new Date(b.notifiedAt) - new Date(a.notifiedAt))}
               keyExtractor={(_, index) => index.toString()}
               renderItem={renderItem}
               ListEmptyComponent={
