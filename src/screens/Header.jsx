@@ -53,7 +53,7 @@ const Header = ({ navigation }) => {
             }}
             style={styles.profileImage}
           />
-          <Text style={styles.userName}>Hi {user?.name}!</Text>
+          <Text style={styles.userName}>{user?.name}</Text>
         </View>
 
         {/* Center: Logo */}
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#fff", // black
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    //paddingVertical: 3,
   },
   logoContainer: {
     justifyContent: "center",
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     flex: 1, // center alignment
   },
   logo: {
-    width: 80,
-    height: 60,
+    width: 350,
+    height: 50,
     marginLeft: 20,
     marginBottom: 15, 
     resizeMode: "contain",
@@ -153,22 +153,25 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
   },
   userInfo: {
-    flexDirection: "row",
     alignItems: "center",
-    flex: 1, // so it takes available space
+    justifyContent: "center",
+    flex: 1,
+    marginLeft: -30,
   },
   profileImage: {
-    width: 40,
+    width: 40, // slightly larger if preferred
     height: 40,
     borderRadius: 20,
-    marginRight: 8,
+    //marginBottom: 4, // space between image and text
     backgroundColor: "#ccc",
-    borderColor: "#98DB52", // green
+    borderColor: "#98DB52",
     borderWidth: 1,
+    marginTop: 8,
   },
   userName: {
-    color: "#98DB52", // green
+    color: "#000", // green
     fontSize: 16,
     fontWeight: "bold",
+    marginBottom: 3,
   },
 });

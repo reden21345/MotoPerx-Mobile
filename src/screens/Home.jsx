@@ -12,9 +12,12 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import motor1 from "../../assets/motor1.jpg";
-import motor2 from "../../assets/motor2.jpg";
-import motor3 from "../../assets/motor3.jpg";
+import motor1 from "../../assets/makina.jpg";
+import motor2 from "../../assets/unioil.png";
+import motor3 from "../../assets/suzuki.jpg";
+import motor4 from "../../assets/hjc.jpg";
+import motor5 from "../../assets/Honda.png";
+import motor6 from "../../assets/jabbre.png";
 
 const { width } = Dimensions.get("window");
 
@@ -29,7 +32,7 @@ const Home = ({ navigation }) => {
       : null
   );
   const [posts, setPosts] = useState([]);
-  const carouselImages = [motor1, motor2, motor3];
+  const carouselImages = [motor1, motor2, motor3, motor4, motor5, motor6];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -297,7 +300,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 16,
     marginHorizontal: 10,
-    marginTop: -10,
+    marginTop: -30,
     justifyContent: "space-between",
     alignItems: "center",
     shadowOffset: { width: 0, height: 4 },
@@ -490,7 +493,7 @@ const styles = StyleSheet.create({
   },
   carouselImage: {
     width: "100%",
-    height: "200%",
+    height: "100%",
     resizeMode: "cover",
   },
   horizontalStoreRow: {
