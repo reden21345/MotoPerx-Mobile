@@ -102,7 +102,7 @@ const Home = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.productBox}
-        onPress={() => navigation.navigate("DealDetails", { item })}
+        onPress={() => navigation.navigate("DealDetails", { item, partner: false })}
       >
         <Image
           source={{ uri: imageUrl }}

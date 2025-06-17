@@ -8,7 +8,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
 import { useSelector } from "react-redux";
 import DealsComponent from "../components/DealsComponent";
 
@@ -17,14 +16,7 @@ const Deals = () => {
   const { error, message } = useSelector((state) => state.points);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [open, setOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState("All");
-  const [items, setItems] = useState([
-    { label: 'All', value: 'All' },
-    { label: 'Bronze', value: 'Bronze' },
-    { label: 'Silver', value: 'Silver' },
-    { label: 'Gold', value: 'Gold' },
-  ]);
 
   const getTierStyle = (tier) => {
       const isSelected = selectedTier === tier;

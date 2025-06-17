@@ -26,7 +26,7 @@ const tierColors = {
 };
 
 
-const DealCard = ({ item, partner, onRightActions, onRedeem }) => {
+const DealCard = ({ item, partner, onRightActions, onRedeem, navigation }) => {
   const [imageIndex, setImageIndex] = useState(0);
   const imageList = item.images || [];
 
@@ -40,18 +40,18 @@ const DealCard = ({ item, partner, onRightActions, onRedeem }) => {
     <Swipeable
       renderRightActions={() => (!partner ? null : onRightActions(item))}
     >
-      <View
+      <TouchableOpacity
         style={[
           styles.dealCard,
           {
             borderLeftColor: tierColors[item.tier] || "#98DB52", // fallback color
           },
         ]}
+        onPress={() => navigation.navigate("DealDetails", { item, partner })}
       >
         <View style={styles.topSection}>
           <View style={styles.textContainer}>
             <Text style={styles.dealTitle}>{item.title}</Text>
-            <Text style={styles.dealDescription}>{item.description}</Text>
             <Text style={styles.dealDescription}>Required Tier: {item.tier}</Text>
             <Text style={styles.dealDescription}>
               {item.partner.storeName} Shop
@@ -84,7 +84,7 @@ const DealCard = ({ item, partner, onRightActions, onRedeem }) => {
             <Text style={styles.buttonText}>🔥 Redeem Now</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </TouchableOpacity>
     </Swipeable>
   );
 };
@@ -159,6 +159,7 @@ const DealsComponent = ({ dealsData, partner }) => {
         },
       ])
     }
+    navigation={navigation}
   />
 );
 

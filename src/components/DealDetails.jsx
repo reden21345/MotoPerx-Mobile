@@ -7,14 +7,20 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { redeemPoints } from "../redux/actions/pointsAction";
+import { clearMessages } from "../redux/slices/pointSlice";
 
 const screenWidth = Dimensions.get("window").width;
 
 const DealDetails = ({ route, navigation }) => {
-  const { item } = route.params;
+  const dispatch = useDispatch();
+  const { item, partner } = route.params;
+  const { error, message } = useSelector((state) => state.points);
   const handleBack = () => {
     navigation.goBack();
   };
@@ -35,6 +41,27 @@ const DealDetails = ({ route, navigation }) => {
         return "#ccc";
     }
   };
+
+  const onRedeem = () => {
+    Alert.alert("Redeem", "Do you want to redeem this deal?", [
+      { text: "No", style: "cancel" },
+      {
+        text: "Yes",
+        onPress: () =>
+          dispatch(redeemPoints({ dealId: item._id })).then(() =>
+            dispatch(clearMessages())
+          ),
+      },
+    ]);
+  };
+
+  if (error) {
+    Alert.alert("Failed", error);
+  }
+
+  if (message) {
+    Alert.alert("Success", message);
+  }
 
   return (
     <View style={styles.container}>
@@ -120,13 +147,21 @@ const DealDetails = ({ route, navigation }) => {
             <Text style={styles.label}>Total Stamp:</Text>
             <Text style={styles.description}>{item?.stampInfo?.stamp}</Text>
             <Text style={styles.label}>Free Item:</Text>
-            <Text style={styles.description}>Every {item?.stampInfo?.free} stamped is free</Text>
+            <Text style={styles.description}>
+              Every {item?.stampInfo?.free} stamped is free
+            </Text>
           </>
         )}
 
         {/* Description */}
         <Text style={styles.label}>Description:</Text>
         <Text style={styles.description}>{item?.description}</Text>
+
+        {!partner && (
+          <TouchableOpacity style={styles.redeemButton} onPress={onRedeem}>
+            <Text style={styles.buttonText}>🔥 Redeem Now</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );
@@ -262,6 +297,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
     color: "#000",
+  },
+  redeemButton: {
+    backgroundColor: "#efeffe",
+    borderWidth: 1,
+    borderColor: "#000",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    margin: 30,
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "bold",
+    letterSpacing: 1,
   },
 });
 
