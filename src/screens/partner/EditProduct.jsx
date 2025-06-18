@@ -8,13 +8,17 @@ import {
   SafeAreaView,
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { useDispatch } from "react-redux";
 import { updateProduct } from "../../redux/actions/productAction";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { RadioButton } from "react-native-paper";
 import { handlePickImages, handleRemoveImage } from "../../utils/helpers";
+import { PRODUCT_OPTIONS, SERVICE_OPTIONS } from "../../utils/constants";
 
 const EditProduct = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -26,20 +30,17 @@ const EditProduct = ({ navigation, route }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [images, setImages] = useState(product.images || []);
 
-  const [category, setCategory] = useState(product.types || null);
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: "Products", value: "Products" },
-    { label: "Services", value: "Services" },
-  ]);
+  const [category, setCategory] = useState(product.info?.category);
+  const [typeOpen, setTypeOpen] = useState(false);
+  const [typeValue, setTypeValue] = useState(
+    product.info?.productType || product.info?.serviceType || null
+  );
+  const [typeItems, setTypeItems] = useState(
+    product.info?.productType ? PRODUCT_OPTIONS : SERVICE_OPTIONS
+  );
 
   const handleSubmit = async () => {
-    if (
-      !name ||
-      !description ||
-      !price ||
-      !category
-    ) {
+    if (!name || !description || !price || !category) {
       Alert.alert("Error", "Please fill out all fields.");
       return;
     }
@@ -49,7 +50,10 @@ const EditProduct = ({ navigation, route }) => {
       name,
       description,
       price: Number(price),
-      types: category,
+      info:
+        category === "Products"
+          ? { category: "Products", productType: typeValue }
+          : { category: "Services", serviceType: typeValue },
       createdBy: product.createdBy,
       images,
     };
@@ -67,8 +71,14 @@ const EditProduct = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
         <SafeAreaView style={styles.form}>
           <Text style={styles.screenTitle}>Edit Product</Text>
 
@@ -79,17 +89,49 @@ const EditProduct = ({ navigation, route }) => {
             onChangeText={setName}
           />
 
-          <DropDownPicker
-            open={open}
+          <Text style={styles.label}>Select Category</Text>
+          <RadioButton.Group
+            onValueChange={(value) => {
+              setCategory(value);
+              setTypeValue(null);
+              setTypeItems(
+                value === "Products" ? PRODUCT_OPTIONS : SERVICE_OPTIONS
+              );
+            }}
             value={category}
-            items={items}
-            setOpen={setOpen}
-            setValue={setCategory}
-            setItems={setItems}
-            placeholder="Select category type"
-            style={styles.dropdown}
-            dropDownContainerStyle={styles.dropdownContainer}
-          />
+          >
+            <View style={styles.radioGroup}>
+              <View style={styles.radioOption}>
+                <RadioButton value="Products" />
+                <Text style={styles.radioLabel}>Products</Text>
+              </View>
+              <View style={styles.radioOption}>
+                <RadioButton value="Services" />
+                <Text style={styles.radioLabel}>Services</Text>
+              </View>
+            </View>
+          </RadioButton.Group>
+
+          {category && (
+            <DropDownPicker
+              open={typeOpen}
+              value={typeValue}
+              items={typeItems}
+              setOpen={setTypeOpen}
+              setValue={setTypeValue}
+              setItems={setTypeItems}
+              placeholder={`Select ${
+                category === "Products" ? "Product" : "Service"
+              } Type`}
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              searchable={true}
+              searchPlaceholder="Search type..."
+              listMode="SCROLLVIEW"
+              nestedScrollEnabled={true}
+              zIndex={1000}
+            />
+          )}
 
           <TextInput
             style={styles.input}
@@ -151,7 +193,7 @@ const EditProduct = ({ navigation, route }) => {
           </TouchableOpacity>
         </SafeAreaView>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -259,6 +301,19 @@ const styles = StyleSheet.create({
   },
   datePickerText: {
     color: "#000",
+  },
+  radioGroup: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  radioLabel: {
+    fontSize: 16,
   },
 });
 

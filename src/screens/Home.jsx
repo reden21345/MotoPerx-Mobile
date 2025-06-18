@@ -138,7 +138,7 @@ const Home = ({ navigation }) => {
         />
         <Text style={styles.productValue}>₱{item.price}</Text>
         <Text style={styles.productLabel}>{item.name}</Text>
-        <Text style={styles.productLabel}>{item.types}</Text>
+        <Text style={styles.productLabel}>{item.info?.category}</Text>
       </TouchableOpacity>
     );
   };

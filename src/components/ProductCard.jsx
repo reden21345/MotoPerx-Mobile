@@ -54,7 +54,7 @@ const ProductCard = ({ item, compact = false }) => {
       <View style={styles.topSection}>
         <View style={styles.textContainer}>
           <Text style={styles.value}>{item.name}</Text>
-          <Text style={styles.value}>Type: {item.types}</Text>
+          <Text style={styles.value}>Type: {item.info?.category}</Text>
           <Text style={styles.value}>Price: ₱{item.price}</Text>
           <Text style={styles.value}>Description: {item.description}</Text>
         </View>

@@ -92,6 +92,7 @@ const ProductServices = ({ navigation }) => {
   );
 
   const renderItem = ({ item }) => {
+    const isProduct = item.info?.category === "Products";
     return (
       <Swipeable renderRightActions={() => renderRightActions(item)}>
         <TouchableOpacity
@@ -107,7 +108,12 @@ const ProductServices = ({ navigation }) => {
           )}
           <View style={styles.info}>
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.subText}>{item.types}</Text>
+            <Text style={styles.subText}>{item.info?.category}</Text>
+            {isProduct ? (
+              <Text style={styles.subText}>{item.info?.productType}</Text>
+            ) : (
+              <Text style={styles.subText}>{item.info?.serviceType}</Text>
+            )}
             <Text style={styles.subText}>{item.price} PHP</Text>
             <Text style={styles.subText}>{item.description}</Text>
           </View>

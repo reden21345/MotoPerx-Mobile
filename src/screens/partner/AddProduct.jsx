@@ -14,7 +14,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProduct } from "../../redux/actions/productAction";
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { RadioButton } from "react-native-paper";
 import { handlePickImages, handleRemoveImage } from "../../utils/helpers";
+import { PRODUCT_OPTIONS, SERVICE_OPTIONS } from "../../utils/constants";
 
 const CreateProduct = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -27,29 +29,44 @@ const CreateProduct = ({ navigation }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [category, setCategory] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
-    { label: "Products", value: "Products" },
-    { label: "Services", value: "Services" },
-  ]);
+
+  // Product / Service type dropdown
+  const [typeOpen, setTypeOpen] = useState(false);
+  const [typeValue, setTypeValue] = useState(null);
+  const [typeItems, setTypeItems] = useState([]);
+
+  const handleCategoryChange = (selectedCategory) => {
+    setCategory(selectedCategory);
+    setTypeValue(null); // Reset type when category changes
+    if (selectedCategory === "Products") {
+      setTypeItems(PRODUCT_OPTIONS);
+    } else {
+      setTypeItems(SERVICE_OPTIONS);
+    }
+  };
 
   const handleSubmit = async () => {
-    if (
-      !name ||
-      !description ||
-      !price ||
-      !category
-    ) {
+    if (!name || !description || !price || !category || !typeValue) {
       Alert.alert("Error", "Please fill out all fields.");
       return;
+    }
+
+    const info = {
+      category,
+    };
+
+    if (category === "Products") {
+      info.productType = typeValue;
+    } else if (category === "Services") {
+      info.serviceType = typeValue;
     }
 
     const data = {
       name,
       description,
       price: Number(price),
-      types: category,
       createdBy: user?._id,
+      info,
       images,
     };
 
@@ -78,17 +95,43 @@ const CreateProduct = ({ navigation }) => {
             onChangeText={setName}
           />
 
-          <DropDownPicker
-            open={open}
+          {/* Radio Buttons for Category */}
+          <RadioButton.Group
+            onValueChange={handleCategoryChange}
             value={category}
-            items={items}
-            setOpen={setOpen}
-            setValue={setCategory}
-            setItems={setItems}
-            placeholder="Select category type"
-            style={styles.dropdown}
-            dropDownContainerStyle={styles.dropdownContainer}
-          />
+          >
+            <View style={styles.radioGroup}>
+              <View style={styles.radioOption}>
+                <RadioButton value="Products" />
+                <Text style={styles.radioLabel}>Products</Text>
+              </View>
+              <View style={styles.radioOption}>
+                <RadioButton value="Services" />
+                <Text style={styles.radioLabel}>Services</Text>
+              </View>
+            </View>
+          </RadioButton.Group>
+
+          {category && (
+            <DropDownPicker
+              open={typeOpen}
+              value={typeValue}
+              items={typeItems}
+              setOpen={setTypeOpen}
+              setValue={setTypeValue}
+              setItems={setTypeItems}
+              placeholder={`Select ${
+                category === "Products" ? "Product" : "Service"
+              } Type`}
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              searchable={true}
+              searchPlaceholder="Search type..."
+              listMode="SCROLLVIEW"
+              nestedScrollEnabled={true}
+              zIndex={1000}
+            />
+          )}
 
           <TextInput
             style={styles.input}
@@ -106,8 +149,6 @@ const CreateProduct = ({ navigation }) => {
             onChangeText={setPrice}
           />
 
-
-          {/* Image Upload Button */}
           <TouchableOpacity
             style={styles.imageButton}
             onPress={() => handlePickImages(setImages)}
@@ -117,16 +158,11 @@ const CreateProduct = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          {/* Display Selected Images */}
           {images.length > 0 && (
             <View style={styles.imagePreviewContainer}>
               {images.map((uri, index) => (
                 <View key={index} style={styles.imageWrapper}>
-                  <Image
-                    key={index}
-                    source={{ uri }}
-                    style={styles.imagePreview}
-                  />
+                  <Image source={{ uri }} style={styles.imagePreview} />
                   <TouchableOpacity
                     style={styles.removeImageButton}
                     onPress={() => handleRemoveImage(index, setImages)}
@@ -143,11 +179,9 @@ const CreateProduct = ({ navigation }) => {
             onPress={handleSubmit}
             disabled={isSubmitting}
           >
-            {isSubmitting ? (
-              <Text style={styles.submitButtonText}>Creating...</Text>
-            ) : (
-              <Text style={styles.submitButtonText}>Add Product</Text>
-            )}
+            <Text style={styles.submitButtonText}>
+              {isSubmitting ? "Creating..." : "Add Product"}
+            </Text>
           </TouchableOpacity>
         </SafeAreaView>
       </ScrollView>
@@ -178,6 +212,29 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 12,
   },
+  radioGroup: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  radioLabel: {
+    fontSize: 16,
+  },
+  dropdown: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginBottom: 12,
+    zIndex: 999, // Ensures dropdown shows properly
+  },
+  dropdownContainer: {
+    zIndex: 998,
+  },
   imageButton: {
     alignSelf: "center",
     marginBottom: 20,
@@ -191,7 +248,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   imageButtonText: {
-    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -214,7 +270,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: 0,
-    backgroundColor: "rgb(255, 255, 255)",
+    backgroundColor: "white",
     width: 24,
     height: 24,
     borderRadius: 12,
@@ -237,17 +293,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-  },
-  dropdown: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  dropdownContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
   },
 });
 

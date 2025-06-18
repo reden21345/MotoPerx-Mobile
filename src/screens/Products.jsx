@@ -47,8 +47,8 @@ const Products = ({ navigation }) => {
 
     const matchesFilter =
       !filter || (filter === "service"
-        ? prod.types?.toLowerCase() === "services"
-        : prod.types?.toLowerCase() === "products");
+        ? prod.info?.category?.toLowerCase() === "services"
+        : prod.info?.category?.toLowerCase() === "products");
 
     return matchesSearch && matchesFilter;
   });

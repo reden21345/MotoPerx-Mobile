@@ -16,13 +16,16 @@ const screenWidth = Dimensions.get("window").width;
 const ProductComponent = ({ route, navigation }) => {
   const { item } = route.params;
 
-  const isService = item.types === "Services";
-  const isProduct = item.types === "Products";
+  const isService = item.info?.category === "Services";
+  const isProduct = item.info?.category === "Products";
 
   return (
     <View style={styles.container}>
       {/* Back Button (Fixed Position) */}
-      <TouchableOpacity style={styles.backButton} onPress={()=> navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
         <View style={styles.backIconWrapper}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </View>
@@ -39,7 +42,11 @@ const ProductComponent = ({ route, navigation }) => {
             style={styles.carousel}
           >
             {item.images.map((img) => (
-              <Image key={img._id} source={{ uri: img.url }} style={styles.image} />
+              <Image
+                key={img._id}
+                source={{ uri: img.url }}
+                style={styles.image}
+              />
             ))}
           </ScrollView>
 
@@ -57,18 +64,31 @@ const ProductComponent = ({ route, navigation }) => {
           <Text style={styles.price}>₱{item.price}</Text>
         </View>
 
-        {/* Type */}
-        <Text style={styles.label}>Type:</Text>
+        {/* Category */}
+        <Text style={styles.label}>Category:</Text>
         <View style={styles.typeRow}>
-          <View style={[styles.typeButton, isService && styles.activeTypeButton]}>
+          <View
+            style={[styles.typeButton, isService && styles.activeTypeButton]}
+          >
             <FontAwesome5 name="tools" size={16} color="#333" />
             <Text style={styles.typeText}>Services</Text>
           </View>
-          <View style={[styles.typeButton, isProduct && styles.activeTypeButton]}>
+          <View
+            style={[styles.typeButton, isProduct && styles.activeTypeButton]}
+          >
             <MaterialCommunityIcons name="cube" size={18} color="#333" />
             <Text style={styles.typeText}>Products</Text>
           </View>
         </View>
+
+        <Text style={styles.label}>
+          {isProduct ? "Product Type" : "Service Type"}
+        </Text>
+        {isProduct ? (
+          <Text style={styles.description}>{item.info?.productType}</Text>
+        ) : (
+          <Text style={styles.description}>{item.info?.serviceType}</Text>
+        )}
 
         {/* Description */}
         <Text style={styles.label}>Description:</Text>
