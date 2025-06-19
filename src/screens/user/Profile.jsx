@@ -9,37 +9,26 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
+  Switch,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { useDispatch, useSelector } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { getUserPoints } from "../../redux/actions/pointsAction";
 import { profile } from "../../redux/actions/authAction";
-import { MaterialIcons } from "@expo/vector-icons";
-import QRCode from "react-native-qrcode-svg";
-import { Animated, Dimensions } from "react-native";
-import { generateQRCode, getQRCode } from "../../redux/actions/qrcodeAction";
+import { getQRCode } from "../../redux/actions/qrcodeAction";
+
+
 
 const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { qrCode } = useSelector((state) => state.qrCode);
   const { loyaltyTier, lifetimePoints, loading, error } = useSelector(
     (state) => state.points
   );
-  const [modalVisible, setModalVisible] = useState(false);
-
   const [refreshing, setRefreshing] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [confettiList, setConfettiList] = useState([]);
-  const isBirthdayToday = (birthday) => {
-    const today = new Date();
-    const bday = new Date(birthday);
-    return (
-      today.getDate() === bday.getDate() && today.getMonth() === bday.getMonth()
-    );
-  };
-console.log(qrCode)
+  const [darkMode, setDarkMode] = useState(false);
+
   const onRefresh = () => {
     setRefreshing(true);
     dispatch(profile());
@@ -54,66 +43,28 @@ console.log(qrCode)
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      Alert.alert("Error", error);
-    }
-  }, [error]);
-
   const currentPoints = lifetimePoints || 0;
+  let maxPoints = 500;
 
-  let tierColor = "#cd7f32"; // Default Bronze
-  let maxPoints = 999;
-
-  if (currentPoints >= 5000) {
-    tierColor = "#ffd700"; // Gold
-    maxPoints = 6000;
-  } else if (currentPoints >= 1000) {
-    tierColor = "#c0c0c0"; // Silver
-    maxPoints = 5000;
+  // Tier Color Mapping
+  let tierColor = "#000";
+  switch (loyaltyTier?.toLowerCase()) {
+    case "bronze":
+      tierColor = "#cd7f32";
+      break;
+    case "silver":
+      tierColor = "#C0C0C0";
+      break;
+    case "gold":
+      tierColor = "#FFD700";
+      break;
+    case "platinum":
+      tierColor = "#E5E4E2";
+      break;
+    default:
+      tierColor = "#98DB52"; // Default green
   }
 
-  useEffect(() => {
-    const today = new Date();
-    const bday = new Date(user?.birthday);
-
-    if (
-      today.getDate() === bday.getDate() &&
-      today.getMonth() === bday.getMonth()
-    ) {
-      launchConfetti();
-    }
-  }, [user]);
-
-  const launchConfetti = () => {
-    const screenWidth = Dimensions.get("window").width;
-    const colors = ["#ff0", "#f0f", "#0ff", "#f90", "#0f0"];
-    let confetti = [];
-
-    for (let i = 0; i < 30; i++) {
-      const animation = new Animated.Value(0);
-      confetti.push({
-        id: i,
-        left: Math.random() * screenWidth,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        animation,
-      });
-
-      Animated.timing(animation, {
-        toValue: 1,
-        duration: 3000 + Math.random() * 2000,
-        useNativeDriver: true,
-      }).start();
-    }
-
-    setConfettiList(confetti);
-    setShowConfetti(true);
-
-    // Hide after 5 seconds
-    setTimeout(() => {
-      setShowConfetti(false);
-    }, 10000);
-  };
 
   return (
     <ScrollView
@@ -130,9 +81,9 @@ console.log(qrCode)
         />
       ) : (
         <>
-          <View style={styles.profileContainer}>
-            {/* Avatar */}
-            <View style={styles.avatarContainer}>
+          {/* Header */}
+         <View style={[styles.profileHeader, { backgroundColor: tierColor }]}>
+            <View style={styles.avatarWrapper}>
               <Image
                 source={{
                   uri:
@@ -143,63 +94,40 @@ console.log(qrCode)
                 style={styles.avatar}
               />
             </View>
-
-            {/* User Info */}
-            <View style={styles.infoContainer}>
-              {isBirthdayToday(user?.birthday) && (
-                <View style={styles.confettiRow}>
-                  <Text style={styles.happyBirthdayText}>
-                    Happy Birthday!🎂
-                  </Text>
+            <View style={styles.nameRow}>
+              <Text style={styles.profileName}>{user?.name}</Text>
+              {/* {loyaltyTier && (
+                <View style={[styles.badge, { backgroundColor: tierColor }]}>
+                  <Text style={styles.badgeText}>{loyaltyTier.toUpperCase()}</Text>
                 </View>
-              )}
-              <Text style={styles.username}>{user?.name}</Text>
-              <Text style={styles.infoText}>{user?.email}</Text>
-              <Text style={styles.infoText}>{user?.phone}</Text>
-              <View style={styles.birthdayContainer}>
-                <Text style={styles.infoText}>
-                  {user?.birthday
-                    ? new Date(user.birthday)
-                        .toLocaleDateString("en-US", {
-                          month: "long",
-                          day: "2-digit",
-                          year: "numeric",
-                        })
-                        .replace(/, /g, ", ")
-                    : "No birthday set"}
-                </Text>
-              </View>
+              )} */}
             </View>
-
-            {/* Gear Icon */}
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Ionicons name="settings-outline" size={28} color="#000" />
-            </TouchableOpacity>
           </View>
 
-          <View style={[styles.card, { borderColor: tierColor }]}>
-            <TouchableOpacity
-              style={styles.referralRow}
-              onPress={handleCopyReferralCode}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.referralLabel}>Referral Code:</Text>
-              <Text style={styles.referralCode}>
-                {user?.referralCode || "N/A"}
-              </Text>
-              <Ionicons
-                name="copy-outline"
-                size={18}
-                color="#98DB52"
-                style={{ marginLeft: 5 }}
-              />
-            </TouchableOpacity>
+          {/* Info Rows */}
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>PHONE</Text>
+            <Text style={styles.infoValue}>{user?.phone}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>EMAIL</Text>
+            <Text style={styles.infoValue}>{user?.email}</Text>
+          </View>
 
-            {/* <Text style={styles.userPoints}>Points: {currentPoints.toFixed(2)}</Text> */}
-            <Text style={styles.userTier}>{loyaltyTier || "N/A"}</Text>
+          {/* Points Card */}
+          <View style={styles.pointsCard}>
+            <View style={styles.referralRow}>
+              <Text style={styles.referralLabel}>REFERRAL CODE:</Text>
+              <Text style={styles.referralCode}>{user?.referralCode || "N/A"}</Text>
+              <TouchableOpacity onPress={handleCopyReferralCode}>
+                <Ionicons name="copy-outline" size={18} color="#000" style={{ marginLeft: 6 }} />
+              </TouchableOpacity>
+            </View>
 
-            <View style={styles.progressContainer}>
-              <Text style={{ color: "#000" }}>0</Text>
+            <Text style={styles.pointsLabel}>POINTS: {currentPoints}</Text>
+
+            <View style={styles.progressWrapper}>
+              <Text style={styles.progressNumber}>0</Text>
               <View style={styles.progressBar}>
                 <View
                   style={[
@@ -209,129 +137,40 @@ console.log(qrCode)
                       backgroundColor: tierColor,
                     },
                   ]}
-                >
-                  <Text style={styles.progressText}>{currentPoints} pts</Text>
-                </View>
+                />
               </View>
-              <Text style={{ color: "#000" }}>{maxPoints}</Text>
+              <Text style={styles.progressNumber}>{maxPoints}</Text>
             </View>
-
-            <MaterialIcons
-              name="workspace-premium"
-              size={28}
-              color={tierColor}
-              style={styles.tierIcon}
-            />
           </View>
 
+          {/* Actions */}
+          {/* <View style={styles.actionItem}>
+            <Ionicons name="moon-outline" size={20} />
+            <Text style={styles.actionText}>DARK MODE</Text>
+            <Switch
+              value={darkMode}
+              onValueChange={() => setDarkMode((prev) => !prev)}
+              style={{ marginLeft: "auto" }}
+            />
+          </View> */}
+
           <TouchableOpacity
-            style={styles.actionButton}
+            style={styles.actionItem}
             onPress={() => navigation.navigate("MyGears")}
-            activeOpacity={0.8}
           >
-            <Ionicons
-              name="build-outline"
-              size={18}
-              color="#000"
-              style={{ marginRight: 6 }}
-            />
-            <Text style={styles.actionButtonText}>My Gears</Text>
+            <Ionicons name="settings-outline" size={20} />
+            <Text style={styles.actionText}>MY GEARS</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.actionButton}
+            style={styles.actionItem}
             onPress={() => navigation.navigate("MyDeals")}
-            activeOpacity={0.8}
           >
-            <Ionicons
-              name="pricetag-outline"
-              size={18}
-              color="#000"
-              style={{ marginRight: 6 }}
-            />
-            <Text style={styles.actionButtonText}>Redeemed Deals</Text>
+            <Ionicons name="pricetag-outline" size={20} />
+            <Text style={styles.actionText}>REDEEMED DEALS</Text>
           </TouchableOpacity>
-
-          {modalVisible && (
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContainer}>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => {
-                    setModalVisible(false);
-                    navigation.navigate("EditProfile", { user });
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Edit Profile</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => {
-                    setModalVisible(false);
-                    navigation.navigate("EditPassword");
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Edit Password</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Text style={styles.closeText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-          {qrCode?.code && user?._id === qrCode?.user ? (
-            <QRCode
-              key={qrCode.code}
-              value={qrCode.code.toString()}
-              size={150}
-              color="#98DB52"
-              backgroundColor="transparent"
-            />
-          ) : (
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => dispatch(generateQRCode()).then(()=>{
-                Alert.alert("Success!", "QR code generated")
-              })}
-              activeOpacity={0.8}
-            >
-              <Ionicons
-                name="qr-code-outline"
-                size={18}
-                color="#fff"
-                style={{ marginRight: 6 }}
-              />
-              <Text style={styles.actionButtonText}>Generate QR</Text>
-            </TouchableOpacity>
-          )}
         </>
       )}
-      {showConfetti &&
-        confettiList.map((item) => {
-          const translateY = item.animation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [-50, Dimensions.get("window").height + 50],
-          });
-
-          return (
-            <Animated.View
-              key={item.id}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: item.left,
-                width: 8,
-                height: 12,
-                backgroundColor: item.color,
-                borderRadius: 2,
-                transform: [{ translateY }],
-                zIndex: 999,
-              }}
-            />
-          );
-        })}
     </ScrollView>
   );
 };
@@ -339,276 +178,131 @@ console.log(qrCode)
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 20,
   },
-  screenTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 16,
-  },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 15,
-    borderWidth: 2,
-    borderColor: "#98DB52",
-  },
-  userName: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  userEmail: {
-    fontSize: 16,
-    color: "#000",
-    marginBottom: 5,
-  },
-  userRole: {
-    fontSize: 16,
-    color: "#000",
-    marginBottom: 5,
-  },
-  userPoints: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#98DB52",
-    marginBottom: 20,
-  },
-  edit: {
-    position: "absolute",
-    top: 40,
-    right: 20,
-    zIndex: 10,
-  },
-  editPassword: {
-    position: "absolute",
-    top: 40,
-    left: 20,
-    zIndex: 10,
-  },
-  qrCodeImage: {
-    width: 150,
-    height: 150,
-    marginVertical: 10,
-  },
-  button: {
-    backgroundColor: "#98DB52",
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 25,
-    marginTop: 15,
-    width: "80%",
+  profileHeader: {
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  logoutButton: {
-    backgroundColor: "#dc3545",
-  },
-  referralContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-    backgroundColor: "#e6f0ff",
-    padding: 10,
-    borderRadius: 8,
-  },
-  referralLabel: {
-    fontSize: 16,
-    color: "#000",
-    fontWeight: "500",
-    marginRight: 6,
-  },
-  referralCode: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#98DB52",
-  },
-  actionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#000",
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    marginTop: 10,
-    marginBottom: 15,
-    borderColor: "#000",
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 2, height: 8 },
-    shadowOpacity: 0.75,
-    shadowRadius: 12,
-    elevation: 15,
-    backgroundColor: "#fff",
-  },
-  actionButtonText: {
-    color: "#76A51D",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  card: {
+    paddingVertical: 5,
     width: "100%",
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 12,
-    marginVertical: 20,
-    borderWidth: 1,
-    borderColor: "#98DB52",
-    position: "relative",
   },
-  referralRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  userTier: {
-    fontSize: 16,
-    color: "#000",
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  progressContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  progressBar: {
-    flex: 1,
-    height: 20,
-    backgroundColor: "#fff",
-    borderColor: "#000",
-    borderWidth: 2,
-    borderRadius: 10,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    marginHorizontal: 10,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  tierIcon: {
-    position: "absolute",
-    top: -15,
-    right: -15,
-    backgroundColor: "#fff",
-
-  },
-  progressText: {
-    color: "#000",
-    fontWeight: "bold",
-    fontSize: 12,
-  },
-  gearIcon: {
-    position: "absolute",
-    top: 40,
-    right: 20,
-    zIndex: 10,
-  },
-
-  modalOverlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(195, 195, 195, 0.7)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 100,
-  },
-
-  modalContainer: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
-  },
-
-  modalButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: "#fff",
-    borderColor: "#000",
-    borderWidth: 2,
-    borderRadius: 8,
-    marginVertical: 8,
-    width: "100%",
-    alignItems: "center",
-  },
-
-  modalButtonText: {
-    color: "#000",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-
-  closeText: {
-    color: "#000",
-    marginTop: 10,
-    textDecorationLine: "underline",
-  },
-
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 20,
-  },
-
-  avatarContainer: {
-    marginRight: 15,
-    borderColor: "#98DB52",
-    borderWidth: 2,
+  avatarWrapper: {
+    backgroundColor: "#ccc",
     borderRadius: 50,
+    width: 100,
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
     overflow: "hidden",
+    marginBottom: 8,
   },
-
   avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: "#ddd", // fallback color
   },
-
-  infoContainer: {
-    flex: 1,
+  nameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
-
-  username: {
+  profileName: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 6,
     color: "#000",
   },
-
-  infoText: {
+  badge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  badgeText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    marginTop: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingBottom: 4,
+  },
+  infoLabel: {
+    color: "#888",
+    fontWeight: "bold",
+  },
+  infoValue: {
+    color: "#000",
+    fontWeight: "bold",
+  },
+  pointsCard: {
+    width: "90%",
+    borderRadius: 12,
+    borderColor: "#000",
+    borderWidth: 1,
+    padding: 12,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  pointsLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  progressWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  progressNumber: {
+    fontSize: 12,
+    color: "#000",
+  },
+  progressBar: {
+    flex: 1,
+    height: 10,
+    backgroundColor: "#eee",
+    marginHorizontal: 8,
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+  },
+  actionItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "90%",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  actionText: {
+    marginLeft: 10,
     fontSize: 14,
-    marginBottom: 2,
+    fontWeight: "bold",
     color: "#000",
   },
-  happyBirthdayText: {
-    fontSize: 15,
-    marginLeft: 2,
-    fontWeight: "600",
-    color: "#e91e63",
+  referralRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    flexWrap: "wrap",
+  },
+  referralLabel: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#000",
+    marginRight: 6,
+  },
+  referralCode: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#000",
   },
 });
 
 export default Profile;
+

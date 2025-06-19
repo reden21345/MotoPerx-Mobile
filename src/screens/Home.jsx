@@ -294,64 +294,65 @@ const styles = StyleSheet.create({
     backgroundColor: "#98DB52", // green
     position: "relative",
   },
-  rewardsCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: 20,
-    flexDirection: "row",
-    padding: 16,
-    marginHorizontal: 10,
-    marginTop: -30,
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  rewardsLeft: {
-    flex: 1,
-  },
-  rewardsTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#000000", // white
-    marginBottom: 4,
-  },
-  rewardsPoints: {
-    fontSize: 26,
-    fontWeight: "bold",
-    color: "#000000", // white
-  },
-  rewardsExpiry: {
-    fontSize: 12,
-    color: "#000000", // white
-    marginTop: 4,
-  },
-  rewardsRight: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  viewHistoryButton: {
-    backgroundColor: "#000000", // black
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginBottom: 12,
-  },
-  viewHistoryText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 12,
-  },
-  redeemContainer: {
-    alignItems: "center",
-  },
-  redeemLabel: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#000000",
-    marginTop: 4,
-  },
+rewardsCard: {
+  backgroundColor: "#ffffff",
+  borderRadius: 12,
+  flexDirection: "row",
+  padding: 10,
+  marginHorizontal: 8,
+  marginTop: -6,
+  justifyContent: "space-between",
+  alignItems: "center",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+  elevation: 3,
+},
+rewardsLeft: {
+  flex: 1,
+},
+rewardsTitle: {
+  fontSize: 12,
+  fontWeight: "600",
+  color: "#000000",
+  marginBottom: 2,
+},
+rewardsPoints: {
+  fontSize: 20,
+  fontWeight: "bold",
+  color: "#000000",
+},
+rewardsExpiry: {
+  fontSize: 10,
+  color: "#000000",
+  marginTop: 2,
+},
+rewardsRight: {
+  alignItems: "center",
+  justifyContent: "center",
+},
+viewHistoryButton: {
+  backgroundColor: "#000000",
+  borderRadius: 8,
+  paddingHorizontal: 8,
+  paddingVertical: 4,
+  marginBottom: 8,
+},
+viewHistoryText: {
+  color: "#FFFFFF",
+  fontWeight: "bold",
+  fontSize: 10,
+},
+redeemContainer: {
+  alignItems: "center",
+},
+redeemLabel: {
+  fontSize: 10,
+  fontWeight: "600",
+  color: "#000000",
+  marginTop: 2,
+},
+
 
   productContainer: {
     marginHorizontal: 10,

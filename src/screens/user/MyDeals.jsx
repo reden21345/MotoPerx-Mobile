@@ -64,18 +64,18 @@ const MyDeals = () => {
     const stampFree = item.stampInfo?.free || 0;
     const filled = item.stampedCount || 0;
 
-    const stamps = Array.from({ length: stampTotal }, (_, index) => {
-      const isFilled = index < filled;
-      const isFree = stampFree > 0 && index === stampTotal - 1;
-      return (
-        <View
-          key={index}
-          style={[styles.stampTire, isFilled && styles.stampFilled, isFree && styles.stampFree]}
-        >
-          <Text style={styles.stampText}>{isFree ? "FREE" : "STAMP"}</Text>
-        </View>
-      );
-    });
+  const stamps = Array.from({ length: stampTotal }, (_, index) => {
+    const isFilled = index < filled;
+    const isFree = stampFree > 0 && index === (stampFree - 1); // convert to 0-based index
+    return (
+      <View
+        key={index}
+        style={[styles.stampTire, isFilled && styles.stampFilled, isFree && styles.stampFree]}
+      >
+        <Text style={styles.stampText}>{isFree ? "FREE" : "STAMP"}</Text>
+      </View>
+    );
+  });
 
     return (
       <TouchableOpacity
@@ -210,12 +210,15 @@ const styles = StyleSheet.create({
   stampContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
     justifyContent: "flex-start",
+    gap: 10,
+    columnGap: 10,
+    rowGap: 10,
+    width: "100%",
   },
   stampTire: {
-    width: 50,
-    height: 50,
+    width: 38,
+    height: 38,
     borderRadius: 25,
     borderWidth: 4,
     borderColor: "#444",
@@ -238,7 +241,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   stampText: {
-    fontSize: 10,
+    fontSize: 8,
     color: "#000",
     textAlign: "center",
   },
