@@ -13,9 +13,11 @@ import {
   View,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import DropDownPicker from "react-native-dropdown-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../redux/actions/productAction";
 import ProductCard from "../components/ProductCard";
+import { PRODUCT_OPTIONS, SERVICE_OPTIONS } from "../utils/constants";
 
 const Products = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -25,6 +27,9 @@ const Products = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState(null);
 
+  const [typeOpen, setTypeOpen] = useState(false);
+  const [typeValue, setTypeValue] = useState(null);
+  const [typeItems, setTypeItems] = useState([]);
 
   if (loading) {
     return (
@@ -46,13 +51,19 @@ const Products = ({ navigation }) => {
       .includes(searchTerm.toLowerCase());
 
     const matchesFilter =
-      !filter || (filter === "service"
+      !filter ||
+      (filter === "services"
         ? prod.info?.category?.toLowerCase() === "services"
         : prod.info?.category?.toLowerCase() === "products");
 
-    return matchesSearch && matchesFilter;
-  });
+    const matchesType =
+      !typeValue ||
+      (filter === "products"
+        ? prod.info?.productType === typeValue
+        : prod.info?.serviceType === typeValue);
 
+    return matchesSearch && matchesFilter && matchesType;
+  });
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -64,7 +75,10 @@ const Products = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={styles.container}
     >
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
         <Ionicons name="arrow-back" size={28} color="#98DB52" />
       </TouchableOpacity>
 
@@ -72,7 +86,12 @@ const Products = ({ navigation }) => {
 
       {/* Search Bar */}
       <View style={styles.searchWrapper}>
-        <Ionicons name="search" size={20} color="#000" style={{ marginRight: 8 }} />
+        <Ionicons
+          name="search"
+          size={20}
+          color="#000"
+          style={{ marginRight: 8 }}
+        />
         <TextInput
           style={[styles.searchInput, { color: "#000" }]}
           placeholder="Search by name"
@@ -87,11 +106,12 @@ const Products = ({ navigation }) => {
         <TouchableOpacity
           style={[
             styles.filterButton,
-            filter === "service" && styles.activeFilter,
+            filter === "services" && styles.activeFilter,
           ]}
-          onPress={() =>
-            setFilter((prev) => (prev === "service" ? null : "service"))
-          }
+          onPress={() => {
+            setTypeValue(null);
+            setFilter((prev) => (prev === "services" ? null : "services"));
+          }}
         >
           <Ionicons name="construct-outline" size={16} color="#000" />
           <Text style={styles.filterText}> Services</Text>
@@ -100,17 +120,41 @@ const Products = ({ navigation }) => {
         <TouchableOpacity
           style={[
             styles.filterButton,
-            filter === "product" && styles.activeFilter,
+            filter === "products" && styles.activeFilter,
           ]}
-          onPress={() =>
-            setFilter((prev) => (prev === "product" ? null : "product"))
-          }
+          onPress={() => {
+            setTypeValue(null);
+            setFilter((prev) => (prev === "products" ? null : "products"));
+          }}
         >
           <Ionicons name="cube-outline" size={16} color="#000" />
           <Text style={styles.filterText}> Products</Text>
         </TouchableOpacity>
-
       </View>
+
+      {filter && (
+        <DropDownPicker
+          open={typeOpen}
+          value={typeValue}
+          items={filter === "products" ? PRODUCT_OPTIONS : SERVICE_OPTIONS}
+          setOpen={setTypeOpen}
+          setValue={setTypeValue}
+          setItems={setTypeItems}
+          placeholder={`Select ${
+            filter === "products" ? "Product" : "Service"
+          } Type`}
+          searchable={true}
+          searchPlaceholder="Search type..."
+          style={{
+            marginBottom: 10,
+            zIndex: 1000,
+            borderColor: "#000",
+          }}
+          dropDownContainerStyle={{ zIndex: 999 }}
+          listMode="SCROLLVIEW"
+          nestedScrollEnabled={true}
+        />
+      )}
 
       {/* Product Grid */}
       <FlatList
@@ -124,7 +168,6 @@ const Products = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
-
     </KeyboardAvoidingView>
   );
 };
@@ -164,7 +207,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     paddingVertical: 10,
-    color: "#fff"
+    color: "#fff",
   },
   filterWrapper: {
     flexDirection: "row",
