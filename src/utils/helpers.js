@@ -191,3 +191,15 @@ export const handleMapSearch = async (searchQuery, setLocation, setRegion) => {
     console.error("Error during geocoding:", error);
   }
 };
+
+export const getStatusStyle = (status) => {
+  switch (status) {
+    case "Approved":
+      return { color: "#4CAF50", fontWeight: "bold" }; // green
+    case "Disapproved":
+      return { color: "#F44336", fontWeight: "bold" }; // red
+    case "Pending":
+    default:
+      return { color: "#FFC107", fontWeight: "bold" }; // amber/yellow
+  }
+};

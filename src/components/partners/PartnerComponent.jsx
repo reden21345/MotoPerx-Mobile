@@ -12,9 +12,10 @@ import { Swipeable } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { updateStatus } from "../../redux/actions/partnerAction";
-import { getAddress } from "../../utils/helpers";
+import { getAddress, getStatusStyle } from "../../utils/helpers";
 import { deletePartner, getAllPartners } from "../../redux/actions/adminAction";
 import { sendSingleUserNotif } from "../../redux/actions/notifAction";
+import { clearMessage } from "../../redux/slices/partnerSlice";
 
 const PartnerItem = ({ item, admin }) => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const PartnerItem = ({ item, admin }) => {
     navigation.navigate("EditPartner", { partner: item, admin: true });
   };
 
-  const handlePartnerStatus = (stat) => {
+  const handlePartnerStatus = async (stat) => {
     const data = {
       id: item._id,
       status: stat ? "Approved" : "Disapproved",
@@ -44,10 +45,23 @@ const PartnerItem = ({ item, admin }) => {
         : "We are sorry to inform you that your application of partnership is disapproved",
       userId: item.owner?._id,
     };
-    dispatch(updateStatus(data)).then(() => {
-      dispatch(sendSingleUserNotif(notifData));
-      dispatch(getAllPartners());
-    });
+
+    try {
+      const resultAction = await dispatch(updateStatus(data));
+
+      if (updateStatus.fulfilled.match(resultAction)) {
+        dispatch(sendSingleUserNotif(notifData));
+        dispatch(clearMessage());
+        dispatch(getAllPartners());
+      } else {
+        Alert.alert(
+          "Update Failed",
+          resultAction.payload || "Failed to update partner status."
+        );
+      }
+    } catch (err) {
+      Alert.alert("Error", err.message || "Something went wrong.");
+    }
   };
 
   const handleDelete = async (id) => {
@@ -65,8 +79,6 @@ const PartnerItem = ({ item, admin }) => {
 
               if (deletePartner.fulfilled.match(resultAction)) {
                 Alert.alert("Success", "Partner store deleted successfully");
-
-                // Optionally, re-fetch partner list
                 dispatch(getAllPartners());
               } else {
                 Alert.alert(
@@ -150,7 +162,9 @@ const PartnerItem = ({ item, admin }) => {
           <Text style={styles.email}>Address: {address || "Loading..."}</Text>
           {admin && (
             <>
-              <Text style={styles.role}>Status: {item.status}</Text>
+              <Text style={[styles.role, getStatusStyle(item.status)]}>
+                Status: {item.status}
+              </Text>
               <Text style={styles.created}>
                 {item.status === "Pending"
                   ? `Created At: ${createdAt}`
