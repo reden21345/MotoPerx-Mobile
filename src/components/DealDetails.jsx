@@ -159,7 +159,7 @@ const DealDetails = ({ route, navigation }) => {
 
         {!partner && (
           <TouchableOpacity style={styles.redeemButton} onPress={onRedeem}>
-            <Text style={styles.buttonText}>🔥 Redeem Now</Text>
+            <Text style={styles.buttonText}>Redeem Now</Text>
           </TouchableOpacity>
         )}
       </ScrollView>
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   redeemButton: {
-    backgroundColor: "#efeffe",
+    backgroundColor: "#98DB52",
     borderWidth: 1,
     borderColor: "#000",
     padding: 12,

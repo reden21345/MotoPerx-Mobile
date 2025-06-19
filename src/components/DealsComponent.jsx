@@ -81,7 +81,7 @@ const DealCard = ({ item, partner, onRightActions, onRedeem, navigation }) => {
         </View>
         {!partner && (
           <TouchableOpacity style={styles.redeemButton} onPress={onRedeem}>
-            <Text style={styles.buttonText}>🔥 Redeem Now</Text>
+            <Text style={styles.buttonText}>Redeem Now</Text>
           </TouchableOpacity>
         )}
       </TouchableOpacity>
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   redeemButton: {
-    backgroundColor: "#efeffe",
+    backgroundColor: "#98DB52",
     borderWidth: 1,
     borderColor: "#000",
     padding: 12,
