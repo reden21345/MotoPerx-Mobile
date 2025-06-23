@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  ScrollView,
 } from "react-native";
 import { getUserFromQr } from "../../redux/actions/qrcodeAction";
 import { resetData } from "../../redux/slices/qrSlice";
@@ -99,12 +100,14 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
             ? `You have used the ${dealItem.title} deal from ${partner?.storeName}`
             : `Your ${dealItem.title} deal from ${partner?.storeName} has been stamped`,
       };
-      dispatch(sendSingleUserNotif(notifData));
+      dispatch(sendSingleUserNotif(notifData)).then(()=> {
+        Alert.alert("Success", "The deal is used");
+      });
     });
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.screenTitle}>
         {isDealQR ? "Use deal" : "Reward Points"}
       </Text>
@@ -144,30 +147,55 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
             ))}
           </View>
           {dealItem.discount === null && (
-            <View style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 10 }}>
-              {Array.from({ length: dealItem.stampInfo?.stamp || 0 }).map((_, index) => {
-                const isFilled = index < dealItem.stampedCount;
-                const isFree = index + 1 === dealItem.stampInfo?.stamp;
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                marginVertical: 10,
+              }}
+            >
+              {(() => {
+                const total = dealItem.stampInfo?.stamp || 0;
+                const freeCount = dealItem.stampInfo?.free || 0;
+                const filled = dealItem.stampedCount || 0;
 
-                return (
-                  <View
-                    key={index}
-                    style={{
-                      width: 45,
-                      height: 45,
-                      borderRadius: 30,
-                      backgroundColor: isFilled ? "#28a745" : "#e0e0e0",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      margin: 4,
-                      borderWidth: isFree ? 2 : 0,
-                      borderColor: isFree ? "gold" : "transparent",
-                    }}
-                  >
-                    <Text style={{ fontSize: 10 }}>{isFree ? "FREE" : "STAMP"}</Text>
-                  </View>
-                );
-              })}
+                const getFreeIndices = (total, freeCount) => {
+                  if (freeCount <= 0) return [];
+                  const interval = total / freeCount;
+                  return Array.from(
+                    { length: freeCount },
+                    (_, i) => Math.round((i + 1) * interval) - 1
+                  );
+                };
+
+                const freeIndices = getFreeIndices(total, freeCount);
+
+                return Array.from({ length: total }).map((_, index) => {
+                  const isFilled = index < filled;
+                  const isFree = freeIndices.includes(index);
+
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        width: 45,
+                        height: 45,
+                        borderRadius: 30,
+                        backgroundColor: isFilled ? "#28a745" : "#e0e0e0",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        margin: 4,
+                        borderWidth: isFree ? 2 : 0,
+                        borderColor: isFree ? "gold" : "transparent",
+                      }}
+                    >
+                      <Text style={{ fontSize: 10 }}>
+                        {isFree ? "FREE" : "STAMP"}
+                      </Text>
+                    </View>
+                  );
+                });
+              })()}
             </View>
           )}
 
@@ -193,15 +221,16 @@ const ScannedQR = ({ scannedQR, setScanned }) => {
       <TouchableOpacity style={styles.button} onPress={() => setScanned(false)}>
         <Text style={styles.buttonText}>Scan Another QR</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 20,
   },
   screenTitle: {
     fontSize: 24,

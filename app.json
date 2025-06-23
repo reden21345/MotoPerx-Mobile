@@ -4,11 +4,11 @@
     "slug": "MotoPerx-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/motoperx-logo.jpeg",
     "userInterfaceStyle": "light",
     "newArchEnabled": false,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/motoperx-logo.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/motoperx-logo.jpeg",
         "backgroundColor": "#000000"
       },
       "package": "com.reden21345.MotoPerxMobile",

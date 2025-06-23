@@ -64,18 +64,35 @@ const MyDeals = () => {
     const stampFree = item.stampInfo?.free || 0;
     const filled = item.stampedCount || 0;
 
-  const stamps = Array.from({ length: stampTotal }, (_, index) => {
-    const isFilled = index < filled;
-    const isFree = stampFree > 0 && index === (stampFree - 1); // convert to 0-based index
-    return (
-      <View
-        key={index}
-        style={[styles.stampTire, isFilled && styles.stampFilled, isFree && styles.stampFree]}
-      >
-        <Text style={styles.stampText}>{isFree ? "FREE" : "STAMP"}</Text>
-      </View>
-    );
-  });
+    const getFreeIndices = (total, freeCount) => {
+      if (freeCount <= 0) return [];
+
+      const interval = total / freeCount;
+      return Array.from(
+        { length: freeCount },
+        (_, i) => Math.round((i + 1) * interval) - 1
+      );
+    };
+
+    const freeIndices = getFreeIndices(stampTotal, stampFree);
+
+    const stamps = Array.from({ length: stampTotal }, (_, index) => {
+      const isFilled = index < filled;
+      const isFree = freeIndices.includes(index);
+
+      return (
+        <View
+          key={index}
+          style={[
+            styles.stampTire,
+            isFilled && styles.stampFilled,
+            isFree && styles.stampFree,
+          ]}
+        >
+          <Text style={styles.stampText}>{isFree ? "FREE" : "STAMP"}</Text>
+        </View>
+      );
+    });
 
     return (
       <TouchableOpacity
@@ -84,14 +101,18 @@ const MyDeals = () => {
         onPress={() => handleUseDeal(item)}
         disabled={item.used}
       >
-        <Text style={styles.cardTitle}>{isDiscount ? "DISCOUNT CATEGORY" : "STAMP DEALS"}</Text>
+        <Text style={styles.cardTitle}>
+          {isDiscount ? "DISCOUNT CATEGORY" : "STAMP DEALS"}
+        </Text>
         <Text style={styles.dealTitle}>{item.title}</Text>
         {isDiscount ? (
           <Text style={styles.discountText}>Discount: {item.discount}%</Text>
         ) : (
           <View style={styles.stampContainer}>{stamps}</View>
         )}
-        <Text style={styles.pointsText}>Points Redeemed: {item.redemptionPoints}</Text>
+        <Text style={styles.pointsText}>
+          Points Redeemed: {item.redemptionPoints}
+        </Text>
         <Text style={styles.expiryText}>Expires on: {expiry}</Text>
       </TouchableOpacity>
     );
@@ -125,7 +146,10 @@ const MyDeals = () => {
                 ) : (
                   <Text style={styles.qrLabel}>QR Code Loading...</Text>
                 )}
-                <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                <TouchableOpacity
+                  onPress={closeModal}
+                  style={styles.closeButton}
+                >
                   <Text style={styles.closeButtonText}>Close</Text>
                 </TouchableOpacity>
               </View>
