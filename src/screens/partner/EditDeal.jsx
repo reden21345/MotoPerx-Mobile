@@ -31,6 +31,7 @@ const EditDeal = ({ navigation, route }) => {
   const [isDiscount, setIsDiscount] = useState(false);
   const [free, setFree] = useState(null);
   const [stamp, setStamp] = useState(null);
+  const [freeOption, setFreeOption] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [redemptionPoints, setRedemptionPoints] = useState(
@@ -56,6 +57,16 @@ const EditDeal = ({ navigation, route }) => {
       setFree(String(deal.stampInfo.free));
     }
   }, [deal]);
+
+  useEffect(() => {
+    if (free) {
+      if (free === "1" || free === "2") {
+        setFreeOption(free);
+      } else {
+        setFreeOption("Other");
+      }
+    }
+  }, [free]);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -94,10 +105,8 @@ const EditDeal = ({ navigation, route }) => {
     if (discount) {
       data.discount = Number(discount);
     } else {
-      data.stampInfo = {
-        stamp,
-        free,
-      };
+      data.stampInfo = { stamp: Number(stamp), free: Number(free) };
+      data.discount = null;
     }
 
     try {
@@ -210,13 +219,42 @@ const EditDeal = ({ navigation, route }) => {
                 value={stamp}
                 onChangeText={setStamp}
               />
-              <TextInput
-                style={styles.input}
-                placeholder="Stamp with free product/service"
-                keyboardType="numeric"
-                value={free}
-                onChangeText={setFree}
-              />
+              <Text style={styles.radioLabel}>How many free stamp?</Text>
+              <RadioButton.Group
+                onValueChange={(value) => {
+                  setFreeOption(value);
+                  if (value === "1" || value === "2") {
+                    setFree(value);
+                  } else {
+                    setFree("");
+                  }
+                }}
+                value={freeOption}
+              >
+                <View style={styles.radioOption}>
+                  <RadioButton value="1" />
+                  <Text>Once</Text>
+                </View>
+                <View style={styles.radioOption}>
+                  <RadioButton value="2" />
+                  <Text>Twice</Text>
+                </View>
+                <View style={styles.radioOption}>
+                  <RadioButton value="Other" />
+                  <Text>Other</Text>
+                </View>
+              </RadioButton.Group>
+
+              {freeOption === "Other" && (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter custom free value"
+                  placeholderTextColor="#363636"
+                  keyboardType="numeric"
+                  value={free}
+                  onChangeText={(value) => setFree(value)}
+                />
+              )}
             </>
           )}
           {showDatePicker && (

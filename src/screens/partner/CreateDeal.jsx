@@ -30,6 +30,7 @@ const CreateDeal = ({ navigation }) => {
   const [description, setDescription] = useState("");
   const [tier, setTier] = useState(null);
   const [discount, setDiscount] = useState("");
+  const [freeOption, setFreeOption] = useState(null);
   const [free, setFree] = useState("");
   const [stamp, setStamp] = useState("");
   const [choice, setChoice] = useState(null);
@@ -84,8 +85,8 @@ const CreateDeal = ({ navigation }) => {
         Alert.alert("Error", "Please fill the loyalty card info.");
         return;
       }
-      data.stampInfo = { stamp, free };
-      data.discount = null
+      data.stampInfo = { stamp: Number(stamp), free: Number(free) };
+      data.discount = null;
     }
 
     try {
@@ -238,13 +239,42 @@ const CreateDeal = ({ navigation }) => {
                 value={stamp}
                 onChangeText={setStamp}
               />
-              <TextInput
-                style={styles.input}
-                placeholder="FREE PRODUCT/SERVICE"
-                placeholderTextColor="#363636"
-                value={free}
-                onChangeText={setFree}
-              />
+              <Text style={styles.radioLabel}>How many free stamp?</Text>
+              <RadioButton.Group
+                onValueChange={(value) => {
+                  setFreeOption(value);
+                  if (value === "1" || value === "2") {
+                    setFree(value);
+                  } else {
+                    setFree(""); 
+                  }
+                }}
+                value={freeOption}
+              >
+                <View style={styles.radioOption}>
+                  <RadioButton value="1" />
+                  <Text>Once</Text>
+                </View>
+                <View style={styles.radioOption}>
+                  <RadioButton value="2" />
+                  <Text>Twice</Text>
+                </View>
+                <View style={styles.radioOption}>
+                  <RadioButton value="Other" />
+                  <Text>Other</Text>
+                </View>
+              </RadioButton.Group>
+
+              {freeOption === "Other" && (
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter custom free value"
+                  placeholderTextColor="#363636"
+                  keyboardType="numeric"
+                  value={free}
+                  onChangeText={(value) => setFree(value)}
+                />
+              )}
             </>
           )}
         </View>

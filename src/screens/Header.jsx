@@ -58,7 +58,7 @@ const Header = ({ navigation }) => {
 
         {/* Center: Logo */}
         <View style={styles.logoContainer}>
-          <Image source={require("../../assets/motoperx-logo-final.png")} style={styles.logo} />
+          <Image source={require("../../assets/Motoperx-logo-hor.png")} style={styles.logo} />
         </View>
 
         {/* Right: Notifications and Menu */}
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     flex: 1, // center alignment
   },
   logo: {
-    width: 350,
+    width: 250,
     height: 50,
     marginLeft: 20,
     marginBottom: 15, 
