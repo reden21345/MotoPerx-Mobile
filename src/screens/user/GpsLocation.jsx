@@ -235,7 +235,7 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: "#fff",
+    backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 60,
   },
@@ -268,7 +268,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     alignItems: "center",
-    paddingBottom: 40, 
+    paddingBottom: 40,
+    backgroundColor: "#fff", 
   },
   map: {
     width: width - 40,
