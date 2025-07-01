@@ -34,6 +34,7 @@ import {
 } from "../../utils/helpers";
 import { sendNotifications } from "../../redux/actions/notifAction";
 import { profile } from "../../redux/actions/authAction";
+import Geocoder from 'react-native-geocoding';
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
