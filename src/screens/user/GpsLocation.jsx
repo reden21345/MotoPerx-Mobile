@@ -7,17 +7,30 @@ import {
   StyleSheet,
   Dimensions,
   Image,
+  Alert,
 } from "react-native";
 import useLocation from "../../hooks/useLocation";
 import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 import { getNearbyPartners } from "../../redux/actions/partnerAction";
+import { saveTracking } from "../../redux/actions/trackingAction";
 import { getAddress } from "../../utils/helpers";
 
 const GpsLocation = () => {
-  const { latitude, longitude, isTracking, startTracking, stopTracking } =
-    useLocation();
+  const {
+    latitude,
+    longitude,
+    isTracking,
+    startLoc,
+    endLoc,
+    totalDistance,
+    kph,
+    duration,
+    startTracking,
+    stopTracking,
+  } = useLocation();
+
   const mapRef = useRef(null);
   const dispatch = useDispatch();
   const { nearby } = useSelector((state) => state.partners);
@@ -71,6 +84,33 @@ const GpsLocation = () => {
 
   const filteredNearby = nearby?.filter((near) => near.status === "Approved");
 
+  const handleStopTracking = () => {
+    if (!startLoc || !endLoc) {
+      Alert.alert("Tracking Error", "Incomplete location data to save.");
+      return;
+    }
+
+    const data = {
+      kph: Number(kph).toFixed(2),
+      distance: Number(totalDistance).toFixed(2),
+      duration,
+      startLoc: {
+        type: "Point",
+        coordinates: [startLoc.longitude, startLoc.latitude],
+      },
+      endLoc: {
+        type: "Point",
+        coordinates: [endLoc.longitude, endLoc.latitude],
+      },
+    };
+
+    stopTracking();
+
+    dispatch(saveTracking(data)).then(() => {
+      Alert.alert("Saved!", "Traveled distance has been saved");
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Live Location</Text>
@@ -108,9 +148,7 @@ const GpsLocation = () => {
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={styles.stopBtn}
-              onPress={() => {
-                stopTracking();
-              }}
+              onPress={() => handleStopTracking()}
             >
               <Text style={styles.stopBtnText}>Stop Tracking</Text>
             </TouchableOpacity>

@@ -9,6 +9,7 @@ import badgesReducer from './slices/badgeSlice';
 import partnerReducer from './slices/partnerSlice';
 import productReducer from './slices/producSlice';
 import gearReducer from './slices/gearSlice';
+import trackReducer from './slices/trackingSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     notifications: notifReducer,
     products: productReducer,
     gears: gearReducer,
+    tracks: trackReducer,
   },
 });
 
