@@ -146,7 +146,9 @@ const GpsLocation = () => {
     >
       <View style={styles.container}>
         <View style={styles.headerRow}>
-          <Text style={styles.title}>Live Location</Text>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={styles.title}>Live Location</Text>
+          </View>
           <TouchableOpacity
             style={styles.historyBtn}
             onPress={() => navigation.navigate("TrackHistory")}
@@ -272,11 +274,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 60,
   },
-  title: {
+    title: {
     fontSize: 24,
     color: "#000",
     fontWeight: "bold",
-    marginBottom: 15,
+    marginRight: -30,
   },
   headerRow: {
     flexDirection: "row",
@@ -285,9 +287,8 @@ const styles = StyleSheet.create({
     width: "90%",
     marginTop: 10,
     marginBottom: 15,
-  },
-
-  historyBtn: {
+  }, 
+   historyBtn: {
     backgroundColor: "#fff",
     padding: 8,
     borderRadius: 20,
@@ -302,6 +303,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     paddingBottom: 40,
+    backgroundColor: "#fff",
   },
   map: {
     width: width - 40,

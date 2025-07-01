@@ -48,7 +48,7 @@ const TrackHistory = () => {
       {tracks?.length === 0 ? (
         <Text style={styles.noData}>No tracking data available.</Text>
       ) : (
-        tracks.map((track, index) => {
+      [...tracks].reverse().map((track, index) => {
           const start = {
             latitude: track.startLoc.coordinates[1],
             longitude: track.startLoc.coordinates[0],
