@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image,
   Alert,
+  ScrollView,
 } from "react-native";
 import useLocation from "../../hooks/useLocation";
 import { useDispatch, useSelector } from "react-redux";
@@ -116,6 +117,7 @@ const GpsLocation = () => {
   };
 
   return (
+    <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>Live Location</Text>
@@ -224,6 +226,7 @@ const GpsLocation = () => {
         </Modal>
       )}
     </View>
+    </ScrollView>
   );
 };
 
@@ -261,6 +264,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    alignItems: "center",
+    paddingBottom: 40, 
   },
   map: {
     width: width - 40,
