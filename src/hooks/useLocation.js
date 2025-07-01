@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import * as Location from "expo-location";
-import haversine from "haversine-distance"; // 📦 install via: npm i haversine-distance
+import haversine from "haversine-distance";
 
 const useLocation = () => {
   const [latitude, setLatitude] = useState(null);
@@ -12,8 +12,6 @@ const useLocation = () => {
   const [totalDistance, setTotalDistance] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
-  const [duration, setDuration] = useState(0);
 
   const prevLoc = useRef(null);
   const locationSubscription = useRef(null);
@@ -69,22 +67,19 @@ const useLocation = () => {
 
   const stopTracking = () => {
     if (locationSubscription.current) {
-      if (startTime) {
-        const end = Date.now();
-        setEndTime(end);
-        setDuration(Math.floor((end - startTime) / 1000));
-      }
       locationSubscription.current.remove();
       locationSubscription.current = null;
       setIsTracking(false);
     }
+  };
+
+  const resetTrackingData = () => {
     setStartLoc(null);
     setEndLoc(null);
     setTotalDistance(0);
     setKph(0);
-    setDuration(0);
     setStartTime(null);
-    setEndTime(null);
+    prevLoc.current = null;
   };
 
   return {
@@ -93,11 +88,12 @@ const useLocation = () => {
     isTracking,
     startTracking,
     stopTracking,
+    resetTrackingData,
     startLoc,
     endLoc,
     totalDistance,
     kph,
-    duration,
+    startTime,
   };
 };
 

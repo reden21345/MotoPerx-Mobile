@@ -17,7 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 import { getNearbyPartners } from "../../redux/actions/partnerAction";
 import { saveTracking } from "../../redux/actions/trackingAction";
-import { getAddress } from "../../utils/helpers";
+import { getAddress, formatDuration } from "../../utils/helpers";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const GpsLocation = () => {
@@ -29,9 +29,10 @@ const GpsLocation = () => {
     endLoc,
     totalDistance,
     kph,
-    duration,
+    startTime,
     startTracking,
     stopTracking,
+    resetTrackingData,
   } = useLocation();
 
   const navigation = useNavigation();
@@ -43,6 +44,9 @@ const GpsLocation = () => {
   const [selectedPartner, setSelectedPartner] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [address, setAddress] = useState(null);
+
+  const [liveDuration, setLiveDuration] = useState(0);
+  const intervalRef = useRef(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -89,16 +93,35 @@ const GpsLocation = () => {
 
   const filteredNearby = nearby?.filter((near) => near.status === "Approved");
 
+  const handleStartTracking = () => {
+    setLiveDuration(0);
+    startTracking();
+
+    intervalRef.current = setInterval(() => {
+      setLiveDuration((prev) => prev + 1);
+    }, 1000);
+  };
+
   const handleStopTracking = () => {
     if (!startLoc || !endLoc) {
       Alert.alert("Tracking Error", "Incomplete location data to save.");
       return;
     }
 
+    stopTracking();
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    const end = Date.now();
+    const computedDuration = Math.floor((end - startTime) / 1000);
+
     const data = {
       kph: Number(kph),
       distance: Number(totalDistance),
-      duration,
+      duration: computedDuration,
       startLoc: {
         type: "Point",
         coordinates: [startLoc.longitude, startLoc.latitude],
@@ -109,123 +132,133 @@ const GpsLocation = () => {
       },
     };
 
-    stopTracking();
-
     dispatch(saveTracking(data)).then(() => {
       Alert.alert("Saved!", "Traveled distance has been saved");
+      resetTrackingData();
+      setLiveDuration(0); // reset display
     });
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-    <View style={styles.container}>
-      <View style={styles.headerRow}>
-        <Text style={styles.title}>Live Location</Text>
-        <TouchableOpacity
-          style={styles.historyBtn}
-          onPress={() => navigation.navigate("TrackHistory")}
-        >
-          <Icon name="history" size={24} color="#000" />
-        </TouchableOpacity>
-      </View>
-
-      {isTracking && latitude && longitude ? (
-        <>
-          <MapView
-            ref={mapRef}
-            style={styles.map}
-            initialRegion={{
-              latitude,
-              longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            showsUserLocation
+    <ScrollView
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.container}>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>Live Location</Text>
+          <TouchableOpacity
+            style={styles.historyBtn}
+            onPress={() => navigation.navigate("TrackHistory")}
           >
-            <Marker coordinate={{ latitude, longitude }} title="You are here" />
+            <Icon name="history" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
 
-            {filteredNearby?.map((partner) => (
-              <Marker
-                key={partner._id}
-                coordinate={{
-                  latitude: partner.location.coordinates[1],
-                  longitude: partner.location.coordinates[0],
-                }}
-                title={partner.storeName}
-                description={partner.status}
-                onPress={() => handleMarkerPress(partner)}
-              />
-            ))}
-          </MapView>
-
-          <Text style={styles.coords}>{address}</Text>
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.stopBtn}
-              onPress={() => handleStopTracking()}
+        {isTracking && latitude && longitude ? (
+          <>
+            <MapView
+              ref={mapRef}
+              style={styles.map}
+              initialRegion={{
+                latitude,
+                longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+              showsUserLocation
             >
-              <Text style={styles.stopBtnText}>Stop Tracking</Text>
-            </TouchableOpacity>
+              <Marker
+                coordinate={{ latitude, longitude }}
+                title="You are here"
+              />
 
-            <TouchableOpacity style={styles.startBtn} onPress={centerMap}>
-              <Text style={styles.startBtnText}>Recenter</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      ) : (
-        <TouchableOpacity
-          style={styles.startBtn}
-          onPress={() => {
-            startTracking();
-          }}
-        >
-          <Text style={styles.startBtnText}>Start Tracking</Text>
-        </TouchableOpacity>
-      )}
+              {filteredNearby?.map((partner) => (
+                <Marker
+                  key={partner._id}
+                  coordinate={{
+                    latitude: partner.location.coordinates[1],
+                    longitude: partner.location.coordinates[0],
+                  }}
+                  title={partner.storeName}
+                  description={partner.status}
+                  onPress={() => handleMarkerPress(partner)}
+                />
+              ))}
+            </MapView>
 
-      {selectedPartner && (
-        <Modal
-          visible={modalVisible}
-          transparent
-          animationType="slide"
-          onRequestClose={closeModal}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              {selectedPartner.avatar?.url && (
-                <Image
-                  source={{ uri: selectedPartner.avatar.url }}
-                  style={styles.partnerLogo}
-                  resizeMode="contain"
-                />
-              )}
-              <View style={styles.nameStatusRow}>
-                <Text style={styles.storeName}>
-                  {selectedPartner.storeName}
-                </Text>
-                <View
-                  style={[
-                    styles.statusDot,
-                    {
-                      backgroundColor:
-                        selectedPartner.status === "Approved"
-                          ? "#4caf50"
-                          : "#f44336",
-                    },
-                  ]}
-                />
-              </View>
-              <Text style={styles.conversionText}>
-                💱 {selectedPartner.conversion} PHP = 1 point
+            <Text style={styles.coords}>{address}</Text>
+            {isTracking && (
+              <Text style={styles.durationText}>
+                ⏱️ {formatDuration(liveDuration)}
               </Text>
-              <TouchableOpacity style={styles.closeBtn} onPress={closeModal}>
-                <Text style={styles.closeBtnText}>Close</Text>
+            )}
+
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={styles.stopBtn}
+                onPress={handleStopTracking}
+              >
+                <Text style={styles.stopBtnText}>Stop Tracking</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.startBtn} onPress={centerMap}>
+                <Text style={styles.startBtnText}>Recenter</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        </Modal>
-      )}
-    </View>
+          </>
+        ) : (
+          <TouchableOpacity
+            style={styles.startBtn}
+            onPress={handleStartTracking}
+          >
+            <Text style={styles.startBtnText}>Start Tracking</Text>
+          </TouchableOpacity>
+        )}
+
+        {selectedPartner && (
+          <Modal
+            visible={modalVisible}
+            transparent
+            animationType="slide"
+            onRequestClose={closeModal}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                {selectedPartner.avatar?.url && (
+                  <Image
+                    source={{ uri: selectedPartner.avatar.url }}
+                    style={styles.partnerLogo}
+                    resizeMode="contain"
+                  />
+                )}
+                <View style={styles.nameStatusRow}>
+                  <Text style={styles.storeName}>
+                    {selectedPartner.storeName}
+                  </Text>
+                  <View
+                    style={[
+                      styles.statusDot,
+                      {
+                        backgroundColor:
+                          selectedPartner.status === "Approved"
+                            ? "#4caf50"
+                            : "#f44336",
+                      },
+                    ]}
+                  />
+                </View>
+                <Text style={styles.conversionText}>
+                  💱 {selectedPartner.conversion} PHP = 1 point
+                </Text>
+                <TouchableOpacity style={styles.closeBtn} onPress={closeModal}>
+                  <Text style={styles.closeBtnText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        )}
+      </View>
     </ScrollView>
   );
 };
@@ -269,7 +302,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     paddingBottom: 40,
-    backgroundColor: "#fff", 
   },
   map: {
     width: width - 40,
@@ -392,6 +424,13 @@ const styles = StyleSheet.create({
     color: "#121212",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  durationText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+    marginVertical: 8,
   },
 });
 

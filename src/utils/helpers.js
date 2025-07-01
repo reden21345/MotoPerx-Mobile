@@ -203,3 +203,17 @@ export const getStatusStyle = (status) => {
       return { color: "#FFC107", fontWeight: "bold" }; // amber/yellow
   }
 };
+
+export const formatDuration = (seconds) => {
+  const h = Math.floor(seconds / 3600)
+    .toString()
+    .padStart(2, "0");
+  const m = Math.floor((seconds % 3600) / 60)
+    .toString()
+    .padStart(2, "0");
+  const s = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, "0");
+
+  return `${h}:${m}:${s}`;
+};
