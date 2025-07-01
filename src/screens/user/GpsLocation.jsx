@@ -12,10 +12,12 @@ import {
 import useLocation from "../../hooks/useLocation";
 import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 import { getNearbyPartners } from "../../redux/actions/partnerAction";
 import { saveTracking } from "../../redux/actions/trackingAction";
 import { getAddress } from "../../utils/helpers";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const GpsLocation = () => {
   const {
@@ -30,6 +32,8 @@ const GpsLocation = () => {
     startTracking,
     stopTracking,
   } = useLocation();
+
+  const navigation = useNavigation();
 
   const mapRef = useRef(null);
   const dispatch = useDispatch();
@@ -91,8 +95,8 @@ const GpsLocation = () => {
     }
 
     const data = {
-      kph: Number(kph).toFixed(2),
-      distance: Number(totalDistance).toFixed(2),
+      kph: Number(kph),
+      distance: Number(totalDistance),
       duration,
       startLoc: {
         type: "Point",
@@ -113,7 +117,15 @@ const GpsLocation = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Live Location</Text>
+      <View style={styles.headerRow}>
+        <Text style={styles.title}>Live Location</Text>
+        <TouchableOpacity
+          style={styles.historyBtn}
+          onPress={() => navigation.navigate("TrackHistory")}
+        >
+          <Icon name="history" size={24} color="#000" />
+        </TouchableOpacity>
+      </View>
 
       {isTracking && latitude && longitude ? (
         <>
@@ -229,6 +241,26 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
     marginBottom: 15,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "90%",
+    marginTop: 10,
+    marginBottom: 15,
+  },
+
+  historyBtn: {
+    backgroundColor: "#fff",
+    padding: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   map: {
     width: width - 40,

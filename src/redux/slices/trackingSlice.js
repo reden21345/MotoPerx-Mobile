@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { saveTracking } from "../actions/trackingAction";
+import { getTrackingHistory, saveTracking } from "../actions/trackingAction";
 
 const trackingSlice = createSlice({
   name: "tracks",
@@ -38,6 +38,19 @@ const trackingSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(saveTracking.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getTrackingHistory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getTrackingHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tracks = action.payload.tracks;
+      })
+      .addCase(getTrackingHistory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

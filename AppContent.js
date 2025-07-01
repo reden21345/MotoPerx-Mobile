@@ -25,6 +25,7 @@ import MyDeals from './src/screens/user/MyDeals';
 import AllProducts from './src/screens/Products';
 import AllStores from './src/screens/Stores';
 import MyGears from './src/screens/user/MyGears';
+import TrackHistory from './src/screens/user/TrackHistory';
 
 import ProductDetails from './src/components/ProductComponent'
 
@@ -92,6 +93,7 @@ const AppContent = () => {
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="MyDeals" component={MyDeals} />
           <Stack.Screen name="MyGears" component={MyGears} />
+          <Stack.Screen name="TrackHistory" component={TrackHistory} />
 
           <Stack.Screen name="ProductDetails" component={ProductDetails} />
 

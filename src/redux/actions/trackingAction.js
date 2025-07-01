@@ -26,3 +26,24 @@ export const saveTracking = createAsyncThunk(
     }
   }
 );
+
+
+export const getTrackingHistory  = createAsyncThunk(
+  "tracking/getTrackingHistory",
+  async (_, thunkAPI) => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+
+      const response = await axios.get(`${apiKey}/tracking/history`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.errMessage || "Failed to get travel history"
+      );
+    }
+  }
+);
