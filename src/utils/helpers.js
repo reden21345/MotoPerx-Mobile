@@ -4,9 +4,14 @@ import * as Location from "expo-location";
 import * as ImageManipulator from "expo-image-manipulator";
 import Geocoder from "react-native-geocoding";
 import { Alert } from "react-native";
+import Constants from "expo-constants";
 
-import { GOOGLE_MAPS_API } from "@env";
-Geocoder.init(`${GOOGLE_MAPS_API}`);
+const googleKey = 
+  Constants.expoConfig?.extra?.GOOGLE_MAPS_API ||
+  Constants.manifest?.extra?.GOOGLE_MAPS_API ||
+  Constants.manifest2.extra?.GOOGLE_MAPS_API;
+  
+Geocoder.init(`${googleKey}`);
 
 // Pick and compress avatar image
 export const pickAvatar = async (setAvatar) => {
