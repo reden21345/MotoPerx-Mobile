@@ -1,13 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Get QR Code
 export const getQRCode = createAsyncThunk('QRCode/getQRCode', async (_, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get(`${API_BASE_URL}/qr/me`, {
+        const response = await axios.get(`${apiKey}/api/v1/qr/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -24,7 +28,7 @@ export const getUserFromQr = createAsyncThunk('QRCode/getUserFromQr', async (qrC
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.get(`${API_BASE_URL}/partner/${qrCode}`, {
+        const response = await axios.get(`${apiKey}/api/v1/partner/${qrCode}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -41,7 +45,7 @@ export const generateQRCode = createAsyncThunk('QRCode/generateQRCode', async (_
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.post(`${API_BASE_URL}/qr/generate`, {
+        const response = await axios.post(`${apiKey}/api/v1/qr/generate`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

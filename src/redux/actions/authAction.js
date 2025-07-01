@@ -1,12 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Async Thunks
 export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, password }, thunkAPI) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
+        console.log(`${apiKey}/api/v1/login`);
+        const response = await axios.post(`${apiKey}/api/v1/login`, { email, password });
 
         console.log('✅ Login Successful:', response.data); // Log Response
 
@@ -22,12 +27,12 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
 // Register User and Generate QR Code
 export const registerUser = createAsyncThunk('auth/registerUser', async (data, thunkAPI) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/register`, data);
+        const response = await axios.post(`${apiKey}/api/v1/register`, data);
         const token = response.data.token;
         await AsyncStorage.setItem('token', token);
 
         // Generate QR Code for the registered user
-        const qrResponse = await axios.post(`${API_BASE_URL}/qr/generate`, {}, {
+        const qrResponse = await axios.post(`${apiKey}/api/v1/qr/generate`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -39,7 +44,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (data, t
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, thunkAPI) => {
     try {
-      await axios.post(`${API_BASE_URL}/logout`);
+      await axios.post(`${apiKey}/api/v1/logout`);
       await AsyncStorage.removeItem('token');
       return {};
     } catch (error) {
@@ -53,7 +58,7 @@ export const profile = createAsyncThunk('auth/profile', async (_, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.get(`${API_BASE_URL}/me`, {
+        const response = await axios.get(`${apiKey}/api/v1/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -70,7 +75,7 @@ export const editProfile = createAsyncThunk('auth/editProfile', async (data, thu
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.put(`${API_BASE_URL}/me/update`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/me/update`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -87,7 +92,7 @@ export const editPassword = createAsyncThunk('auth/editPassword', async (data, t
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.put(`${API_BASE_URL}/password/update`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/password/update`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -103,7 +108,7 @@ export const editPassword = createAsyncThunk('auth/editPassword', async (data, t
 export const forgetPassword = createAsyncThunk('auth/forgetPassword', async ({email}, thunkAPI) => {
     try {
         
-        const response = await axios.post(`${API_BASE_URL}/password/forgot`, {email});
+        const response = await axios.post(`${apiKey}/api/v1/password/forgot`, {email});
 
         return response.data;
     } catch (error) {
@@ -116,7 +121,7 @@ export const resetPassword = createAsyncThunk('auth/resetPassword', async (data,
     try {
         const { token } = data;
      
-        const response = await axios.put(`${API_BASE_URL}/password/reset/${token}`, data);
+        const response = await axios.put(`${apiKey}/api/v1/password/reset/${token}`, data);
 
         return response.data;
     } catch (error) {
@@ -127,7 +132,7 @@ export const resetPassword = createAsyncThunk('auth/resetPassword', async (data,
 // Validate referral code
 export const validateReferral = createAsyncThunk('auth/validateReferral', async (data, thunkAPI) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/validate/referral`, data);
+        const response = await axios.post(`${apiKey}/api/v1/validate/referral`, data);
 
         return response.data;
     } catch (error) {

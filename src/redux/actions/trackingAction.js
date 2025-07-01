@@ -3,8 +3,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import Constants from "expo-constants";
 const apiKey =
-  Constants.expoConfig?.extra?.API_BASE_URL ||
-  Constants.manifest?.extra?.API_BASE_URL;
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Save tracking
 export const saveTracking = createAsyncThunk(
@@ -13,7 +14,7 @@ export const saveTracking = createAsyncThunk(
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await axios.post(`${apiKey}/tracking`, data, {
+      const response = await axios.post(`${apiKey}/api/v1/tracking`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,7 +35,7 @@ export const getTrackingHistory  = createAsyncThunk(
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await axios.get(`${apiKey}/tracking/history`, {
+      const response = await axios.get(`${apiKey}/api/v1/tracking/history`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,12 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Get Deals
 export const getAllDeals = createAsyncThunk('deals/getDeals', async (_, thunkAPI) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/deals`);
+        const response = await axios.get(`${apiKey}/api/v1/deals`);
         return response.data;
     } catch (error) {
         
@@ -19,7 +23,7 @@ export const createDeals = createAsyncThunk('deals/createDeals', async (data, th
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.post(`${API_BASE_URL}/deals`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/deals`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -38,7 +42,7 @@ export const updateDeals = createAsyncThunk('deals/updateDeals', async (data, th
         const token = await AsyncStorage.getItem('token');
         const {id} = data;
 
-        const response = await axios.put(`${API_BASE_URL}/deal/${id}`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/deal/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -56,7 +60,7 @@ export const deleteDeal = createAsyncThunk('deals/deleteDeal', async (id, thunkA
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.delete(`${API_BASE_URL}/deal/${id}`, {
+        const response = await axios.delete(`${apiKey}/api/v1/deal/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -72,7 +76,7 @@ export const deleteDeal = createAsyncThunk('deals/deleteDeal', async (id, thunkA
 // Get redeemed deals
 export const getRedeemedDeals = createAsyncThunk('deals/getRedeemedDeals', async (_, thunkAPI) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/deals/redeemed`);
+        const response = await axios.get(`${apiKey}/api/v1/deals/redeemed`);
         return response.data;
     } catch (error) {
         
@@ -85,7 +89,7 @@ export const markDealAsUsed = createAsyncThunk('deals/markDealAsUsed', async (da
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.patch(`${API_BASE_URL}/deals/redeemed`, data, {
+        const response = await axios.patch(`${apiKey}/api/v1/deals/redeemed`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

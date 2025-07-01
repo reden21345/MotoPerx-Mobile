@@ -1,14 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Check user device
 export const notifChecker = createAsyncThunk('notifications/notifChecker', async (data, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.post(`${API_BASE_URL}/notifications/check`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/notifications/check`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -26,7 +30,7 @@ export const getUserNotifications = createAsyncThunk('notifications/getUserNotif
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.get(`${API_BASE_URL}/notifications`, {
+        const response = await axios.get(`${apiKey}/api/v1/notifications`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -44,7 +48,7 @@ export const sendNotifications = createAsyncThunk('notifications/sendNotificatio
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.post(`${API_BASE_URL}/notifications/send`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/notifications/send`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -62,7 +66,7 @@ export const sendSingleUserNotif = createAsyncThunk('notifications/sendSingleUse
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.post(`${API_BASE_URL}/notifications/send/single`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/notifications/send/single`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -80,7 +84,7 @@ export const markAsSeen = createAsyncThunk('notifications/markAsSeen', async (id
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.put(`${API_BASE_URL}/notifications/${id}`, {
+        const response = await axios.put(`${apiKey}/api/v1/notifications/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -98,7 +102,7 @@ export const deleteNotif = createAsyncThunk('notifications/deleteNotif', async (
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.delete(`${API_BASE_URL}/notifications/${id}`, {
+        const response = await axios.delete(`${apiKey}/api/v1/notifications/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

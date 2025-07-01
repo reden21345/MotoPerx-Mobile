@@ -1,14 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Get Products
 export const getAllProducts = createAsyncThunk('products/getAllProducts', async (_, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.get(`${API_BASE_URL}/products`, {
+        const response = await axios.get(`${apiKey}/api/v1/products`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -26,7 +30,7 @@ export const createProduct = createAsyncThunk('products/createProduct', async (d
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.post(`${API_BASE_URL}/products`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/products`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -45,7 +49,7 @@ export const updateProduct = createAsyncThunk('products/updateProduct', async (d
         const token = await AsyncStorage.getItem('token');
         const {id} = data;
 
-        const response = await axios.put(`${API_BASE_URL}/products/${id}`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/products/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -63,7 +67,7 @@ export const deleteProduct = createAsyncThunk('products/deleteProduct', async (i
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.delete(`${API_BASE_URL}/products/${id}`, {
+        const response = await axios.delete(`${apiKey}/api/v1/products/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

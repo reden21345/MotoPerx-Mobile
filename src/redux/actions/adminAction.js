@@ -1,14 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Get all users
 export const getAllUsers = createAsyncThunk('admins/getAllUsers', async (_, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.get(`${API_BASE_URL}/admin/users`, {
+        const response = await axios.get(`${apiKey}/api/v1/admin/users`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -25,7 +29,7 @@ export const deleteUser = createAsyncThunk('admins/deleteUser', async (id, thunk
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.delete(`${API_BASE_URL}/admin/user/${id}`, {
+        const response = await axios.delete(`${apiKey}/api/v1/admin/user/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -44,7 +48,7 @@ export const editUser = createAsyncThunk('admins/editUser', async (data, thunkAP
         const token = await AsyncStorage.getItem('token');
         const {id} = data;
 
-        const response = await axios.put(`${API_BASE_URL}/admin/user/${id}`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/admin/user/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -61,7 +65,7 @@ export const getAllPartners = createAsyncThunk('partner/getAllPartners', async (
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.get(`${API_BASE_URL}/partners`, {
+        const response = await axios.get(`${apiKey}/api/v1/partners`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -78,7 +82,7 @@ export const deletePartner = createAsyncThunk('admins/deletePartner', async (id,
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.delete(`${API_BASE_URL}/partner/${id}`, {
+        const response = await axios.delete(`${apiKey}/api/v1/partner/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

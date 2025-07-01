@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "MotoPerx-Mobile",
+    "name": "Motoperx",
     "slug": "MotoPerx-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,12 +21,7 @@
         "backgroundColor": "#000000"
       },
       "package": "com.reden21345.MotoPerxMobile",
-      "googleServicesFile": "./google-services.json",
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyDtbhafAucUtdQmagHIfpxyQKImqIqXbik"
-        }
-      }
+      "googleServicesFile": "./google-services.json"
     },
     "scheme": "motoperx",
     "deepLinking": true,

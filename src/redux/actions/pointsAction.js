@@ -1,13 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Get Points
 export const getUserPoints = createAsyncThunk('points/getPoints', async (_, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get(`${API_BASE_URL}/points/me`, {
+        const response = await axios.get(`${apiKey}/api/v1/points/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -25,7 +29,7 @@ export const earnPoints = createAsyncThunk('points/earnPoints', async (data, thu
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.post(`${API_BASE_URL}/points/earn`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/points/earn`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -42,7 +46,7 @@ export const redeemPoints = createAsyncThunk('points/redeemPoints', async (data,
     try {
         const token = await AsyncStorage.getItem('token');
         
-        const response = await axios.post(`${API_BASE_URL}/points/redeem`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/points/redeem`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

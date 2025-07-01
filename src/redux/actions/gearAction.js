@@ -1,12 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '@env';
+import Constants from "expo-constants";
+const apiKey =
+  Constants.expoConfig?.extra?.EXPO_URL ||
+  Constants.manifest?.extra?.EXPO_URL ||
+  Constants.manifest2.extra?.EXPO_URL;
 
 // Get All Gears (ADMIN)
 export const getAllGears = createAsyncThunk('gears/getAllGears', async (_, thunkAPI) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/gears`);
+        const response = await axios.get(`${apiKey}/api/v1/gears`);
         return response.data;
     } catch (error) {
         
@@ -19,7 +23,7 @@ export const createGears = createAsyncThunk('gears/createGears', async (data, th
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.post(`${API_BASE_URL}/gears`, data, {
+        const response = await axios.post(`${apiKey}/api/v1/gears`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -38,7 +42,7 @@ export const updateGear = createAsyncThunk('gears/updateGear', async (data, thun
         const token = await AsyncStorage.getItem('token');
         const {id} = data;
 
-        const response = await axios.put(`${API_BASE_URL}/gear/${id}`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/gear/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -56,7 +60,7 @@ export const deleteGear = createAsyncThunk('gears/deleteGear', async (id, thunkA
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.delete(`${API_BASE_URL}/deal/${id}`, {
+        const response = await axios.delete(`${apiKey}/api/v1/deal/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -74,7 +78,7 @@ export const getUserGear = createAsyncThunk('gears/getUserGear', async (_, thunk
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.get(`${API_BASE_URL}/gears/user`, {
+        const response = await axios.get(`${apiKey}/api/v1/gears/user`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

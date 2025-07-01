@@ -35,6 +35,14 @@ import {
 import { sendNotifications } from "../../redux/actions/notifAction";
 import { profile } from "../../redux/actions/authAction";
 import Geocoder from 'react-native-geocoding';
+import Constants from "expo-constants";
+
+const googleKey = 
+  Constants.expoConfig?.extra?.GOOGLE_MAPS_API ||
+  Constants.manifest?.extra?.GOOGLE_MAPS_API ||
+  Constants.manifest2.extra?.GOOGLE_MAPS_API;
+
+Geocoder.init(`${googleKey}`);
 
 const ApplyPartnership = () => {
   const dispatch = useDispatch();
