@@ -12,6 +12,7 @@ import Profile from './src/screens/user/Profile';
 import Deals from './src/screens/Deals';
 import DealDetails from './src/components/DealDetails';
 import Notifications from './src/screens/Notifications';
+import Settings from './src/screens/Settings';
 
 // Users Import
 import Apply from './src/screens/user/ApplyPartnership';
@@ -84,6 +85,7 @@ const AppContent = () => {
           <Stack.Screen name="AllProducts" component={AllProducts} />
           <Stack.Screen name="AllStores" component={AllStores} />
           <Stack.Screen name="Notifications" component={Notifications} />
+          <Stack.Screen name="Settings" component={Settings} />
 
           {/* Profile Screens */}
           <Stack.Screen name="EditProfile" component={EditProfile} />

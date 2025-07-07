@@ -22,14 +22,14 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
 
   const partners = [
     { name: "Dashboard", icon: "grid-outline", screen: "Main" },
-    { name: "Settings", icon: "settings-outline", screen: "Profile" },
+    { name: "Settings", icon: "settings-outline", screen: "Settings" },
     { name: "Transaction", icon: "card-outline", screen: "History" },
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
   ];
 
   const riders = [
     { name: "Home", icon: "grid-outline", screen: "Main" },
-    { name: "Settings", icon: "settings-outline", screen: "Profile" },
+    { name: "Settings", icon: "settings-outline", screen: "Settings" },
     { name: "Transaction", icon: "card-outline", screen: "History" },
     { name: "Apply Partnership", icon: "business-outline", screen: "Apply" },
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
@@ -37,7 +37,7 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
 
   const admins = [
     { name: "Dashboard", icon: "grid-outline", screen: "Main" },
-    { name: "Settings", icon: "settings-outline", screen: "Profile" },
+    { name: "Settings", icon: "settings-outline", screen: "Settings" },
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
   ];
 

@@ -25,10 +25,9 @@ import {
   handleMapSearch,
 } from "../../utils/helpers";
 
-const EditProfile = ({ route, navigation }) => {
+const EditProfile = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { user } = route.params;
-  const { error } = useSelector((state) => state.auth);
+  const { user, error } = useSelector((state) => state.auth);
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
