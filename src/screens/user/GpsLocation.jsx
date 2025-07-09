@@ -57,7 +57,6 @@ const GpsLocation = () => {
       return () => {
         if (isTracking) {
           stopTracking();
-          console.log("GpsLocation screen blurred, tracking stopped");
         }
       };
     }, [isTracking])

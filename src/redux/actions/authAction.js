@@ -10,15 +10,11 @@ const apiKey =
 // Async Thunks
 export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, password }, thunkAPI) => {
     try {
-        console.log(`${apiKey}/api/v1/login`);
         const response = await axios.post(`${apiKey}/api/v1/login`, { email, password });
-
-        console.log('✅ Login Successful:', response.data); // Log Response
 
         await AsyncStorage.setItem('token', response.data.token);
         return response.data;
     } catch (error) {
-        console.log('❌ Login Error:', error.response?.data?.errMessage || error); // Log Error Response
         
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Login failed');
     }
@@ -48,7 +44,6 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, thunkAPI
       await AsyncStorage.removeItem('token');
       return {};
     } catch (error) {
-      console.error('Logout API error:', error?.response?.data || error.message);
       return thunkAPI.rejectWithValue(error?.response?.data?.errMessage || 'Failed to logouts');
     }
   });

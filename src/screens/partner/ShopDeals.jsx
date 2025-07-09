@@ -48,14 +48,14 @@ const Deals = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.screenTitle}>Created deals</Text>
       <View style={styles.buttonRow}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.addButton}
           onPress={() => console.log("View History")}
         >
           <Text style={styles.buttonText}>
             <Ionicons name="time" size={16} color="black" /> History
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => navigation.navigate("CreateDeal")}
