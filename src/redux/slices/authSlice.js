@@ -9,6 +9,7 @@ import {
   forgetPassword,
   resetPassword,
   validateReferral,
+  confirmAccount,
 } from "../actions/authAction";
 
 // Auth Slice
@@ -24,6 +25,10 @@ const authSlice = createSlice({
   reducers: {
     clearAuthState: (state) => {
       state.user = null;
+      state.message = null;
+      state.error = null;
+    },
+    clearAuthMessage: (state) => {
       state.message = null;
       state.error = null;
     },
@@ -52,10 +57,22 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(confirmAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(confirmAccount.fulfilled, (state, action) => {
+        state.loading = false;
         state.token = action.payload.token;
         state.user = action.payload.user;
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(confirmAccount.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -140,5 +157,5 @@ const authSlice = createSlice({
       });
   },
 });
-export const { clearAuthState, clearError } = authSlice.actions;
+export const { clearAuthState, clearError, clearAuthMessage } = authSlice.actions;
 export default authSlice.reducer;

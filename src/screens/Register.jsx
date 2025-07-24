@@ -15,6 +15,8 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, validateReferral } from "../redux/actions/authAction";
+import { useFocusEffect } from "@react-navigation/native";
+import { clearAuthMessage } from "../redux/slices/authSlice";
 import MapView, { Marker } from "react-native-maps";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {
@@ -28,7 +30,7 @@ const { width } = Dimensions.get("window");
 
 const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error, message } = useSelector((state) => state.auth);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -50,6 +52,10 @@ const RegisterScreen = ({ navigation }) => {
   useEffect(() => {
     fetchCurrentLocation(setRegion);
   }, []);
+
+  if (message) {
+    Alert.alert("Success", message);
+  }
 
   const handleRegionChangeComplete = (newRegion) => {
     setRegion((prev) => ({
@@ -85,15 +91,9 @@ const RegisterScreen = ({ navigation }) => {
       location,
       birthday,
     };
-    const result = await dispatch(registerUser(data));
-    if (registerUser.fulfilled.match(result)) {
-      navigation.replace("Main");
-    } else {
-      Alert.alert(
-        "Registration Failed",
-        result.payload || "Something went wrong"
-      );
-    }
+    dispatch(registerUser(data)).then(() => {
+      navigation.goBack();
+    });
   };
 
   const handleReferral = async () => {
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: "#fff",
   },
-  arrowButton: { 
+  arrowButton: {
     padding: 5,
     backgroundColor: "#98DB52",
     borderRadius: 5,

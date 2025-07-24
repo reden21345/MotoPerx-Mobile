@@ -24,15 +24,8 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
 export const registerUser = createAsyncThunk('auth/registerUser', async (data, thunkAPI) => {
     try {
         const response = await axios.post(`${apiKey}/api/v1/register`, data);
-        const token = response.data.token;
-        await AsyncStorage.setItem('token', token);
 
-        // Generate QR Code for the registered user
-        const qrResponse = await axios.post(`${apiKey}/api/v1/qr/generate`, {}, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-
-        return { ...response.data, qrCode: qrResponse.data.qrCode };
+        return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Registration failed');
     }
@@ -119,6 +112,22 @@ export const resetPassword = createAsyncThunk('auth/resetPassword', async (data,
         const response = await axios.put(`${apiKey}/api/v1/password/reset/${token}`, data);
 
         return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});
+
+// Confirm Account
+export const confirmAccount = createAsyncThunk('auth/confirmAccount', async (token, thunkAPI) => {
+    try {
+        const response = await axios.post(`${apiKey}/api/v1/confirm/${token}`);
+        const resToken = response.data.token;
+
+        const qrResponse = await axios.post(`${apiKey}/api/v1/qr/generate`, {}, {
+            headers: { Authorization: `Bearer ${resToken}` }
+        });
+
+        return { ...response.data, qrCode: qrResponse.data.qrCode };
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
