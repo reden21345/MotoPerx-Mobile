@@ -156,7 +156,7 @@ const EditPartner = ({ route, navigation }) => {
       )}
 
       <Modal visible={mapVisible} animationType="slide">
-        <View style={styles.searchContainer}>
+        {/* <View style={styles.searchContainer}>
           <TextInput
             style={styles.input2}
             placeholder="Search Location"
@@ -169,7 +169,7 @@ const EditPartner = ({ route, navigation }) => {
           >
             <Ionicons name="search" size={20} color="white" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         {region ? (
           <MapView
             style={styles.map}
