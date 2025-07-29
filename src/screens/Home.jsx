@@ -35,21 +35,21 @@ const Home = ({ navigation }) => {
   const carouselImages = [motor1, motor2, motor3, motor4, motor5, motor6];
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(
-          "https://jabbre.shop/wp-json/wp/v2/posts?_embed"
-        );
-        const data = await response.json();
-        setPosts(data);
-      } catch (error) {
-        console.error("Error fetching blog posts:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchPosts = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         "https://jabbre.shop/wp-json/wp/v2/posts?_embed"
+  //       );
+  //       const data = await response.json();
+  //       setPosts(data);
+  //     } catch (error) {
+  //       console.error("Error fetching blog posts:", error);
+  //     }
+  //   };
 
-    fetchPosts();
-  }, []);
+  //   fetchPosts();
+  // }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -66,24 +66,24 @@ const Home = ({ navigation }) => {
   };
 
   // Renders each blog post item
-  const renderPostItem = ({ item }) => {
-    const title = item?.title?.rendered || "No Title";
-    const link = item?.link || "#";
-    const imageUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+  // const renderPostItem = ({ item }) => {
+  //   const title = item?.title?.rendered || "No Title";
+  //   const link = item?.link || "#";
+  //   const imageUrl = item._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
 
-    return (
-      <TouchableOpacity
-        style={styles.postContainer}
-        onPress={() => openPost(link)}
-      >
-        <Image
-          source={{ uri: imageUrl || "https://via.placeholder.com/350x150" }}
-          style={styles.postImage}
-        />
-        <Text style={styles.postTitle}>{title}</Text>
-      </TouchableOpacity>
-    );
-  };
+  //   return (
+  //     <TouchableOpacity
+  //       style={styles.postContainer}
+  //       onPress={() => openPost(link)}
+  //     >
+  //       <Image
+  //         source={{ uri: imageUrl || "https://via.placeholder.com/350x150" }}
+  //         style={styles.postImage}
+  //       />
+  //       <Text style={styles.postTitle}>{title}</Text>
+  //     </TouchableOpacity>
+  //   );
+  // };
 
   const renderStores = ({ item }) => {
     return (
@@ -253,7 +253,7 @@ const Home = ({ navigation }) => {
         </View>
 
         {/* LATEST BLOGS (Horizontally scrollable) */}
-        <View style={styles.blogContainer}>
+        {/* <View style={styles.blogContainer}>
           <Text style={styles.blogTitle}>LATEST BLOGS</Text>
           <FlatList
             data={posts}
@@ -264,7 +264,7 @@ const Home = ({ navigation }) => {
             style={styles.blogList}
             contentContainerStyle={{ paddingHorizontal: 10 }}
           />
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

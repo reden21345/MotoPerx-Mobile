@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Sidebar from "../navigation/Sidebar";
@@ -43,7 +44,7 @@ const Header = ({ navigation }) => {
   }, [user, expoPushToken, dispatch]);
 
   return (
-    <View>
+    <SafeAreaView style={{ backgroundColor: "#000" }} edges={["top"]}>
       <View style={styles.header}>
         {/* Left: User Info */}
         <View style={styles.userInfo}>
@@ -58,7 +59,10 @@ const Header = ({ navigation }) => {
 
         {/* Center: Logo */}
         <View style={styles.logoContainer}>
-          <Image source={require("../../assets/Motoperx-logo-hor.png")} style={styles.logo} />
+          <Image
+            source={require("../../assets/Motoperx-logo-hor.png")}
+            style={styles.logo}
+          />
         </View>
 
         {/* Right: Notifications and Menu */}
@@ -94,7 +98,7 @@ const Header = ({ navigation }) => {
         visible={showNotifications}
         onClose={() => setShowNotifications(false)}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -105,9 +109,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff", // black
+    backgroundColor: "#fff",
     paddingHorizontal: 20,
-    //paddingVertical: 3,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#000", // subtle gray line
   },
   logoContainer: {
     justifyContent: "center",
@@ -119,7 +124,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 50,
     marginLeft: 20,
-    marginBottom: 15, 
+    marginBottom: 15,
     resizeMode: "contain",
   },
   iconGroup: {
