@@ -89,7 +89,9 @@ const Home = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.productBox}
-        onPress={() => navigation.navigate("DealDetails", { item, partner: false })}
+        onPress={() =>
+          navigation.navigate("DealDetails", { item, partner: false })
+        }
       >
         <Image
           source={{ uri: imageUrl }}
@@ -238,7 +240,12 @@ const Home = ({ navigation }) => {
 
         {/* LATEST BLOGS (Horizontally scrollable) */}
         <View style={styles.blogContainer}>
-          <Text style={styles.blogTitle}>LATEST POSTS</Text>
+          <View style={styles.storeHeader}>
+            <Text style={styles.blogTitle}>POSTS</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("HomePosts")}>
+              <Text style={styles.viewAllText}>VIEW ALL</Text>
+            </TouchableOpacity>
+          </View>
           <FlatList
             data={homePosts}
             keyExtractor={(item) => item._id.toString()}
@@ -278,65 +285,64 @@ const styles = StyleSheet.create({
     backgroundColor: "#98DB52", // green
     position: "relative",
   },
-rewardsCard: {
-  backgroundColor: "#ffffff",
-  borderRadius: 12,
-  flexDirection: "row",
-  padding: 10,
-  marginHorizontal: 8,
-  marginTop: -6,
-  justifyContent: "space-between",
-  alignItems: "center",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 3,
-  elevation: 3,
-},
-rewardsLeft: {
-  flex: 1,
-},
-rewardsTitle: {
-  fontSize: 12,
-  fontWeight: "600",
-  color: "#000000",
-  marginBottom: 2,
-},
-rewardsPoints: {
-  fontSize: 20,
-  fontWeight: "bold",
-  color: "#000000",
-},
-rewardsExpiry: {
-  fontSize: 10,
-  color: "#000000",
-  marginTop: 2,
-},
-rewardsRight: {
-  alignItems: "center",
-  justifyContent: "center",
-},
-viewHistoryButton: {
-  backgroundColor: "#000000",
-  borderRadius: 8,
-  paddingHorizontal: 8,
-  paddingVertical: 4,
-  marginBottom: 8,
-},
-viewHistoryText: {
-  color: "#FFFFFF",
-  fontWeight: "bold",
-  fontSize: 10,
-},
-redeemContainer: {
-  alignItems: "center",
-},
-redeemLabel: {
-  fontSize: 10,
-  fontWeight: "600",
-  color: "#000000",
-  marginTop: 2,
-},
-
+  rewardsCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    flexDirection: "row",
+    padding: 10,
+    marginHorizontal: 8,
+    marginTop: -6,
+    justifyContent: "space-between",
+    alignItems: "center",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  rewardsLeft: {
+    flex: 1,
+  },
+  rewardsTitle: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#000000",
+    marginBottom: 2,
+  },
+  rewardsPoints: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#000000",
+  },
+  rewardsExpiry: {
+    fontSize: 10,
+    color: "#000000",
+    marginTop: 2,
+  },
+  rewardsRight: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  viewHistoryButton: {
+    backgroundColor: "#000000",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginBottom: 8,
+  },
+  viewHistoryText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 10,
+  },
+  redeemContainer: {
+    alignItems: "center",
+  },
+  redeemLabel: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: "#000000",
+    marginTop: 2,
+  },
 
   productContainer: {
     marginHorizontal: 10,

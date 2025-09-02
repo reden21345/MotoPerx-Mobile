@@ -46,6 +46,9 @@ import AddProduct from "./src/screens/partner/AddProduct";
 import EditProduct from "./src/screens/partner/EditProduct";
 import EditPartner from "./src/screens/partner/EditPartner";
 
+// Post Imports
+import HomePosts from "./src/screens/post/HomePost";
+
 // Dashboard
 import Shop from "./src/screens/dashboard/PartnerDashboard";
 
@@ -139,9 +142,10 @@ const AppContent = () => {
         <Stack.Screen name="AddProduct" component={AddProduct} />
         <Stack.Screen name="EditProduct" component={EditProduct} />
         <Stack.Screen name="EditPartner" component={EditPartner} />
+        <Stack.Screen name="Shop" component={Shop} />
 
         {/* Partner Screens */}
-        <Stack.Screen name="Shop" component={Shop} />
+        <Stack.Screen name="HomePosts" component={HomePosts} />
       </Stack.Navigator>
     </NavigationContainer>
   );
