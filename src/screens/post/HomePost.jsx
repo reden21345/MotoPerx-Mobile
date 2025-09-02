@@ -6,20 +6,21 @@ import {
   Image,
   ActivityIndicator,
   Alert,
-  StyleSheet,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { getHomePosts } from "../../redux/actions/postAction";
 import { clearMessage, clearSuccess } from "../../redux/slices/postSlice";
+import { styles } from "../../styles/HomePostStyles";
 
 const HomePost = () => {
   const dispatch = useDispatch();
   const { homePosts, loading, error, message } = useSelector(
     (state) => state.posts
   );
-
   const [refreshing, setRefreshing] = useState(false);
+  const [likedPosts, setLikedPosts] = useState(new Set());
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -28,14 +29,39 @@ const HomePost = () => {
     dispatch(clearMessage());
   };
 
+  const handleLike = (postId) => {
+    setLikedPosts(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(postId)) {
+        newSet.delete(postId);
+      } else {
+        newSet.add(postId);
+      }
+      return newSet;
+    });
+    // Here you can dispatch an action to update likes on server
+    // dispatch(likePost(postId));
+  };
+
+  const handleComment = (postId) => {
+    // Navigate to comments or open comment modal
+    Alert.alert("Comments", "Open comments for this post");
+  };
+
+  const handleShare = (postId) => {
+    Alert.alert("Share", "Share this post");
+  };
+
   if (loading) {
     return (
-      <ActivityIndicator size="large" color="#007bff" style={styles.loader} />
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#1DA1F2" />
+      </View>
     );
   }
 
   if (error) {
-    Alert.alert("Failed", error);
+    Alert.alert("Error", error);
   }
 
   if (message) {
@@ -43,38 +69,101 @@ const HomePost = () => {
   }
 
   const renderPost = ({ item }) => {
+    const isLiked = likedPosts.has(item._id);
+    const likesCount = (item.likes?.length || 0) + (isLiked ? 1 : 0);
+
     return (
-      <View style={styles.card}>
-        {/* Community Name if it's a community post */}
-        {item.isCommunity && item.communityName && (
-          <Text style={styles.communityName}>{item.communityName}</Text>
-        )}
+      <View style={styles.postContainer}>
+        {/* Header */}
+        <View style={styles.postHeader}>
+          <View style={styles.userInfo}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {item.author?.username?.charAt(0).toUpperCase() || 'U'}
+              </Text>
+            </View>
+            <View style={styles.userDetails}>
+              <Text style={styles.username}>
+                {item.author?.username || 'Anonymous'}
+              </Text>
+              {item.isCommunity && item.communityName && (
+                <Text style={styles.communityName}>in {item.communityName}</Text>
+              )}
+              <Text style={styles.timestamp}>2h ago</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.moreButton}>
+            <Text style={styles.moreText}>⋯</Text>
+          </TouchableOpacity> 
+        </View>
 
-        {/* Post Title */}
-        <Text style={styles.title}>{item.title}</Text>
-
-        {/* Post Caption */}
-        <Text style={styles.caption}>{item.caption}</Text>
+        {/* Post Content */}
+        <View style={styles.postContent}>
+          {item.title && (
+            <Text style={styles.postTitle}>{item.title}</Text>
+          )}
+          <Text style={styles.postCaption}>{item.caption}</Text>
+        </View>
 
         {/* Images */}
         {item.images?.length > 0 && (
-          <FlatList
-            data={item.images}
-            horizontal
-            keyExtractor={(img, index) => index.toString()}
-            renderItem={({ item: img }) => (
-              <Image source={{ uri: img.url }} style={styles.image} />
+          <View style={styles.imageContainer}>
+            {item.images.length === 1 ? (
+              <Image 
+                source={{ uri: item.images[0].url }} 
+                style={styles.singleImage} 
+                resizeMode="cover"
+              />
+            ) : (
+              <FlatList
+                data={item.images}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(img, index) => index.toString()}
+                renderItem={({ item: img }) => (
+                  <Image 
+                    source={{ uri: img.url }} 
+                    style={styles.multipleImage} 
+                    resizeMode="cover"
+                  />
+                )}
+                style={styles.imageList}
+              />
             )}
-            style={styles.imageList}
-          />
+          </View>
         )}
 
-        {/* Likes & Comments */}
-        <View style={styles.meta}>
-          <Text style={styles.metaText}>{item.likes?.length || 0} Likes</Text>
-          <Text style={styles.metaText}>
-            {item.comments?.length || 0} Comments
-          </Text>
+        {/* Action Buttons */}
+        <View style={styles.actionBar}>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => handleLike(item._id)}
+          >
+            <Text style={[styles.actionIcon, isLiked && styles.likedIcon]}>
+              {isLiked ? '❤️' : '🤍'}
+            </Text>
+            <Text style={[styles.actionText, isLiked && styles.likedText]}>
+              {likesCount}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => handleComment(item._id)}
+          >
+            <Text style={styles.actionIcon}>💬</Text>
+            <Text style={styles.actionText}>
+              {item.comments?.length || 0}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => handleShare(item._id)}
+          >
+            <Text style={styles.actionIcon}>📤</Text>
+            <Text style={styles.actionText}>Share</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -87,66 +176,17 @@ const HomePost = () => {
       renderItem={renderPost}
       contentContainerStyle={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl 
+          refreshing={refreshing} 
+          onRefresh={onRefresh}
+          colors={['#1DA1F2']}
+          tintColor="#1DA1F2"
+        />
       }
+      showsVerticalScrollIndicator={false}
     />
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: "#fff",
-  },
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  card: {
-    backgroundColor: "#f9f9f9",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  communityName: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#007bff",
-    marginBottom: 6,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-    marginBottom: 4,
-  },
-  caption: {
-    fontSize: 14,
-    color: "#444",
-    marginBottom: 8,
-  },
-  imageList: {
-    marginBottom: 10,
-  },
-  image: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
-    marginRight: 8,
-  },
-  meta: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  metaText: {
-    fontSize: 12,
-    color: "#666",
-  },
-});
 
 export default HomePost;
