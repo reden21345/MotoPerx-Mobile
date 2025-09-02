@@ -61,7 +61,7 @@ export const editUser = createAsyncThunk('admins/editUser', async (data, thunkAP
 });
 
 // Get all partners
-export const getAllPartners = createAsyncThunk('partner/getAllPartners', async (_, thunkAPI) => {
+export const getAllPartners = createAsyncThunk('admins/getAllPartners', async (_, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
         
@@ -92,5 +92,27 @@ export const deletePartner = createAsyncThunk('admins/deletePartner', async (id,
     } catch (error) {
         
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed delete partner');
+    }
+});
+
+// Get home posts (admin)
+export const getAllPosts = createAsyncThunk('admins/getAllPosts', async (_, thunkAPI) => {
+    try {
+        const response = await axios.get(`${apiKey}/api/v1/posts`);
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get all posts');
+    }
+});
+
+// Get all communities
+export const getAllCommunities = createAsyncThunk('admins/getAllCommunities', async (_, thunkAPI) => {
+    try {
+        const response = await axios.get(`${apiKey}/api/v1/communities`);
+        return response.data;
+    } catch (error) {
+        
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get all communities');
     }
 });

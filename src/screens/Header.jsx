@@ -13,6 +13,7 @@ import { getQRCode } from "../redux/actions/qrcodeAction";
 import { getUserPoints } from "../redux/actions/pointsAction";
 import { getAllProducts } from "../redux/actions/productAction";
 import { getAllDeals } from "../redux/actions/dealsAction";
+import { getHomePosts } from "../redux/actions/postAction";
 import Notifications from "./Notifications";
 
 const Header = ({ navigation }) => {
@@ -24,7 +25,7 @@ const Header = ({ navigation }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const hasFetched = useRef(false); // prevent redundant fetches
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     if (user && expoPushToken && !hasFetched.current) {
@@ -38,6 +39,7 @@ const Header = ({ navigation }) => {
       dispatch(getUserPoints());
       dispatch(getAllProducts());
       dispatch(getAllDeals());
+      dispatch(getHomePosts());
 
       hasFetched.current = true;
     }

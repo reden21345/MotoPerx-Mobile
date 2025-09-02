@@ -1,5 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createDeals, deleteDeal, getAllDeals, getRedeemedDeals, markDealAsUsed, updateDeals } from "../actions/dealsAction";
+import {
+  createDeals,
+  deleteDeal,
+  getAllDeals,
+  getRedeemedDeals,
+  markDealAsUsed,
+  updateDeals,
+} from "../actions/dealsAction";
 
 const dealsSlice = createSlice({
   name: "deals",
@@ -22,11 +29,11 @@ const dealsSlice = createSlice({
       state.error = null;
       state.dealDetails = null;
     },
-    clearMessage : (state) => {
+    clearMessage: (state) => {
       state.success = false;
       state.message = null;
     },
-    clearSuccess : (state) => {
+    clearSuccess: (state) => {
       state.success = false;
       state.error = null;
     },
@@ -82,7 +89,7 @@ const dealsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(getRedeemedDeals.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -96,7 +103,7 @@ const dealsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(markDealAsUsed.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -111,5 +118,6 @@ const dealsSlice = createSlice({
       });
   },
 });
-export const { clearDealState, clearSuccess, clearMessage } = dealsSlice.actions;
+export const { clearDealState, clearSuccess, clearMessage } =
+  dealsSlice.actions;
 export default dealsSlice.reducer;

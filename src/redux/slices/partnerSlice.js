@@ -1,5 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addEmployee, apply, editPartner, getNearbyPartners, getPartner, removeEmployee, updateStatus } from "../actions/partnerAction";
+import {
+  addEmployee,
+  apply,
+  editPartner,
+  getNearbyPartners,
+  getPartner,
+  removeEmployee,
+  updateStatus,
+} from "../actions/partnerAction";
 
 const partnerSlice = createSlice({
   name: "partners",
@@ -42,7 +50,7 @@ const partnerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(getPartner.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -55,7 +63,7 @@ const partnerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(updateStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -92,13 +100,13 @@ const partnerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
+
       .addCase(getNearbyPartners.fulfilled, (state, action) => {
         state.loading = false;
         state.count = action.payload.count;
         state.nearby = action.payload.partners;
       })
-      
+
       .addCase(editPartner.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -114,5 +122,6 @@ const partnerSlice = createSlice({
       });
   },
 });
-export const { clearPartnerState, clearMessage, clearPartnerDetails } = partnerSlice.actions;
+export const { clearPartnerState, clearMessage, clearPartnerDetails } =
+  partnerSlice.actions;
 export default partnerSlice.reducer;

@@ -10,6 +10,8 @@ import partnerReducer from './slices/partnerSlice';
 import productReducer from './slices/producSlice';
 import gearReducer from './slices/gearSlice';
 import trackReducer from './slices/trackingSlice';
+import postReducer from './slices/postSlice';
+import communityReducer from './slices/communitySlice';
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +26,8 @@ export const store = configureStore({
     products: productReducer,
     gears: gearReducer,
     tracks: trackReducer,
+    posts: postReducer,
+    communities: communityReducer,
   },
 });
 
