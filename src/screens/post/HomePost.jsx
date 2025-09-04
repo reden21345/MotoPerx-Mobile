@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
-  FlatList,
-  Image,
   ActivityIndicator,
   Alert,
   RefreshControl,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { getHomePosts } from "../../redux/actions/postAction";
 import { clearMessage, clearSuccess } from "../../redux/slices/postSlice";
 import { styles } from "../../styles/HomePostStyles";
 
+import WhatsOnMind from "../../components/posts/WhatsOnMind";
+import CreatePostModal from "../../components/posts/CreatePost";
+import PostItem from "../../components/posts/PostItem";
+
 const HomePost = () => {
   const dispatch = useDispatch();
   const { homePosts, loading, error, message } = useSelector(
     (state) => state.posts
   );
+  const { user } = useSelector((state) => state.auth);
+  
   const [refreshing, setRefreshing] = useState(false);
   const [likedPosts, setLikedPosts] = useState(new Set());
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -52,6 +58,82 @@ const HomePost = () => {
     Alert.alert("Share", "Share this post");
   };
 
+  const toggleDropdown = (postId) => {
+    setActiveDropdown(activeDropdown === postId ? null : postId);
+  };
+
+  const closeDropdown = () => {
+    setActiveDropdown(null);
+  };
+
+  const handleEdit = (postId) => {
+    setActiveDropdown(null);
+    Alert.alert("Edit Post", "Navigate to edit post screen");
+    // Navigate to edit screen or open edit modal
+    // navigation.navigate('EditPost', { postId });
+  };
+
+  const handleDelete = (postId) => {
+    setActiveDropdown(null);
+    Alert.alert(
+      "Delete Post",
+      "Are you sure you want to delete this post?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete", 
+          style: "destructive",
+          onPress: () => {
+            // Dispatch delete action
+            // dispatch(deletePost(postId));
+            Alert.alert("Success", "Post deleted successfully");
+          }
+        }
+      ]
+    );
+  };
+
+  const handleReport = (postId) => {
+    setActiveDropdown(null);
+    Alert.alert(
+      "Report Post",
+      "Why are you reporting this post?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Spam", onPress: () => submitReport(postId, "spam") },
+        { text: "Inappropriate Content", onPress: () => submitReport(postId, "inappropriate") },
+        { text: "Harassment", onPress: () => submitReport(postId, "harassment") },
+      ]
+    );
+  };
+
+  const submitReport = (postId, reason) => {
+    // Dispatch report action
+    // dispatch(reportPost({ postId, reason }));
+    Alert.alert("Thank you", "Your report has been submitted");
+  };
+
+  const openCreateModal = () => {
+    setShowCreateModal(true);
+  };
+
+  const closeCreateModal = () => {
+    setShowCreateModal(false);
+  };
+
+  // Handle effects
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Error", error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (message) {
+      Alert.alert("Success", message);
+    }
+  }, [message]);
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -60,133 +142,53 @@ const HomePost = () => {
     );
   }
 
-  if (error) {
-    Alert.alert("Error", error);
-  }
-
-  if (message) {
-    Alert.alert("Success", message);
-  }
-
-  const renderPost = ({ item }) => {
-    const isLiked = likedPosts.has(item._id);
-    const likesCount = (item.likes?.length || 0) + (isLiked ? 1 : 0);
-
-    return (
-      <View style={styles.postContainer}>
-        {/* Header */}
-        <View style={styles.postHeader}>
-          <View style={styles.userInfo}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {item.author?.username?.charAt(0).toUpperCase() || 'U'}
-              </Text>
-            </View>
-            <View style={styles.userDetails}>
-              <Text style={styles.username}>
-                {item.author?.username || 'Anonymous'}
-              </Text>
-              {item.isCommunity && item.communityName && (
-                <Text style={styles.communityName}>in {item.communityName}</Text>
-              )}
-              <Text style={styles.timestamp}>2h ago</Text>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.moreButton}>
-            <Text style={styles.moreText}>⋯</Text>
-          </TouchableOpacity> 
-        </View>
-
-        {/* Post Content */}
-        <View style={styles.postContent}>
-          {item.title && (
-            <Text style={styles.postTitle}>{item.title}</Text>
-          )}
-          <Text style={styles.postCaption}>{item.caption}</Text>
-        </View>
-
-        {/* Images */}
-        {item.images?.length > 0 && (
-          <View style={styles.imageContainer}>
-            {item.images.length === 1 ? (
-              <Image 
-                source={{ uri: item.images[0].url }} 
-                style={styles.singleImage} 
-                resizeMode="cover"
-              />
-            ) : (
-              <FlatList
-                data={item.images}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(img, index) => index.toString()}
-                renderItem={({ item: img }) => (
-                  <Image 
-                    source={{ uri: img.url }} 
-                    style={styles.multipleImage} 
-                    resizeMode="cover"
-                  />
-                )}
-                style={styles.imageList}
-              />
-            )}
-          </View>
-        )}
-
-        {/* Action Buttons */}
-        <View style={styles.actionBar}>
-          <TouchableOpacity 
-            style={styles.actionButton}
-            onPress={() => handleLike(item._id)}
-          >
-            <Text style={[styles.actionIcon, isLiked && styles.likedIcon]}>
-              {isLiked ? '❤️' : '🤍'}
-            </Text>
-            <Text style={[styles.actionText, isLiked && styles.likedText]}>
-              {likesCount}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.actionButton}
-            onPress={() => handleComment(item._id)}
-          >
-            <Text style={styles.actionIcon}>💬</Text>
-            <Text style={styles.actionText}>
-              {item.comments?.length || 0}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.actionButton}
-            onPress={() => handleShare(item._id)}
-          >
-            <Text style={styles.actionIcon}>📤</Text>
-            <Text style={styles.actionText}>Share</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
-  return (
-    <FlatList
-      data={homePosts}
-      keyExtractor={(item) => item._id}
-      renderItem={renderPost}
-      contentContainerStyle={styles.container}
-      refreshControl={
-        <RefreshControl 
-          refreshing={refreshing} 
-          onRefresh={onRefresh}
-          colors={['#1DA1F2']}
-          tintColor="#1DA1F2"
-        />
-      }
-      showsVerticalScrollIndicator={false}
+  const renderPost = ({ item }) => (
+    <PostItem
+      item={item}
+      user={user}
+      likedPosts={likedPosts}
+      activeDropdown={activeDropdown}
+      onLike={handleLike}
+      onComment={handleComment}
+      onShare={handleShare}
+      onToggleDropdown={toggleDropdown}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+      onReport={handleReport}
+      onCloseDropdown={closeDropdown}
     />
   );
-};
 
+  return (
+    <TouchableOpacity 
+      style={styles.container} 
+      activeOpacity={1}
+      onPress={closeDropdown}
+    >
+      <WhatsOnMind onPress={openCreateModal} />
+
+      <FlatList
+        data={homePosts}
+        keyExtractor={(item) => item._id}
+        renderItem={renderPost}
+        contentContainerStyle={styles.listContainer}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            colors={['#1DA1F2']}
+            tintColor="#1DA1F2"
+          />
+        }
+        showsVerticalScrollIndicator={false}
+      />
+
+      <CreatePostModal
+        visible={showCreateModal}
+        onClose={closeCreateModal}
+      />
+    </TouchableOpacity>
+  );
+};
 
 export default HomePost;
