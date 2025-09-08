@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export const createPostStyles = StyleSheet.create({
   // Modal Styles
@@ -113,5 +113,31 @@ export const createPostStyles = StyleSheet.create({
     fontSize: 14,
     color: "#1DA1F2",
     fontWeight: "500",
+    marginBottom: 10
+  },
+  previewRow: {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+  },
+  previewBox: {
+    width: 100,
+    height: 100,
+    borderColor: "#aaa",
+    borderWidth: 1,
+    marginRight: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  previewImage: {
+    width: 100,
+    height: 100,
+    resizeMode: "cover",
+  },
+  removeIcon: {
+    position: "absolute",
+    top: -6,
+    right: -6,
+    backgroundColor: "#fff",
+    borderRadius: 12,
   },
 });

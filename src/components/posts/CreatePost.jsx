@@ -7,13 +7,20 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Image
 } from "react-native";
 import { useSelector } from "react-redux";
-import { createPostStyles } from "../../styles/CreatePostStyles";
+import { Ionicons } from "@expo/vector-icons";
+import { createPostStyles as styles } from "../../styles/CreatePostStyles";
+import {
+  handlePickImages,
+  formatDate,
+  handleRemoveImage,
+} from "../../utils/helpers";
 
 const CreatePost = ({ visible, onClose }) => {
   const { user } = useSelector((state) => state.auth);
-  
+
   const [postTitle, setPostTitle] = useState("");
   const [postDescription, setPostDescription] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
@@ -25,12 +32,6 @@ const CreatePost = ({ visible, onClose }) => {
     onClose();
   };
 
-  const handleImageSelection = () => {
-    // This function will be called when user taps the image icon
-    // You'll implement the image picker functionality here
-    Alert.alert("Image Selection", "Image picker functionality will be implemented here");
-  };
-
   const handleCreatePost = () => {
     if (!postTitle.trim() && !postDescription.trim()) {
       Alert.alert("Error", "Please add a title or description");
@@ -38,7 +39,10 @@ const CreatePost = ({ visible, onClose }) => {
     }
 
     // Here you'll dispatch the create post action
-    Alert.alert("Success", "Post creation functionality will be implemented here");
+    Alert.alert(
+      "Success",
+      "Post creation functionality will be implemented here"
+    );
     closeModal();
   };
 
@@ -49,35 +53,35 @@ const CreatePost = ({ visible, onClose }) => {
       transparent={true}
       onRequestClose={closeModal}
     >
-      <View style={createPostStyles.modalOverlay}>
-        <View style={createPostStyles.modalContainer}>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContainer}>
           {/* Modal Header */}
-          <View style={createPostStyles.modalHeader}>
+          <View style={styles.modalHeader}>
             <TouchableOpacity onPress={closeModal}>
-              <Text style={createPostStyles.modalCancelText}>Cancel</Text>
+              <Text style={styles.modalCancelText}>Cancel</Text>
             </TouchableOpacity>
-            <Text style={createPostStyles.modalTitle}>Create Post</Text>
+            <Text style={styles.modalTitle}>Create Post</Text>
             <TouchableOpacity onPress={handleCreatePost}>
-              <Text style={createPostStyles.modalPostText}>Post</Text>
+              <Text style={styles.modalPostText}>Post</Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={createPostStyles.modalContent}>
+          <ScrollView style={styles.modalContent}>
             {/* User Info */}
-            <View style={createPostStyles.modalUserInfo}>
-              <View style={createPostStyles.modalAvatar}>
-                <Text style={createPostStyles.modalAvatarText}>
-                  {user?.username?.charAt(0).toUpperCase() || 'U'}
+            <View style={styles.modalUserInfo}>
+              <View style={styles.modalAvatar}>
+                <Text style={styles.modalAvatarText}>
+                  {user?.username?.charAt(0).toUpperCase() || "U"}
                 </Text>
               </View>
-              <Text style={createPostStyles.modalUsername}>
-                {user?.username || 'Anonymous'}
+              <Text style={styles.modalUsername}>
+                {user?.username || "Anonymous"}
               </Text>
             </View>
 
             {/* Title Input */}
             <TextInput
-              style={createPostStyles.modalTitleInput}
+              style={styles.modalTitleInput}
               placeholder="Add a title (optional)"
               placeholderTextColor="#657786"
               value={postTitle}
@@ -87,7 +91,7 @@ const CreatePost = ({ visible, onClose }) => {
 
             {/* Description Input */}
             <TextInput
-              style={createPostStyles.modalDescriptionInput}
+              style={styles.modalDescriptionInput}
               placeholder="What's happening?"
               placeholderTextColor="#657786"
               value={postDescription}
@@ -97,20 +101,32 @@ const CreatePost = ({ visible, onClose }) => {
             />
 
             {/* Image Selection */}
-            <TouchableOpacity 
-              style={createPostStyles.imageSelectionButton}
-              onPress={handleImageSelection}
+            <TouchableOpacity
+              style={styles.imageSelectionButton}
+              onPress={() => handlePickImages(setSelectedImages)}
             >
-              <Text style={createPostStyles.imageIcon}>📷</Text>
-              <Text style={createPostStyles.imageSelectionText}>Add Photos</Text>
+              <Text style={styles.imageIcon}>📷</Text>
+              <Text style={styles.imageSelectionText}>Add Photos</Text>
             </TouchableOpacity>
 
-            {/* Selected Images Preview (placeholder) */}
             {selectedImages.length > 0 && (
-              <View style={createPostStyles.selectedImagesContainer}>
-                <Text style={createPostStyles.selectedImagesText}>
-                  {selectedImages.length} image(s) selected
+              <View style={styles.selectedImagesContainer}>
+                <Text style={styles.selectedImagesText}>
+                  {selectedImages.length} image(s) selected:
                 </Text>
+                <View style={styles.previewRow}>
+                  {selectedImages.map((uri, index) => (
+                    <View key={index} style={styles.previewBox}>
+                      <Image source={{ uri }} style={styles.previewImage} />
+                      <TouchableOpacity
+                        style={styles.removeIcon}
+                        onPress={() => handleRemoveImage(index, setSelectedImages)}
+                      >
+                        <Ionicons name="close-circle" size={18} color="#f00" />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
               </View>
             )}
           </ScrollView>
