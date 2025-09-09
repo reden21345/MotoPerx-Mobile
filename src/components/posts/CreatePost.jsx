@@ -7,9 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  Image
+  Image,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { createPostStyles as styles } from "../../styles/CreatePostStyles";
 import {
@@ -17,8 +17,10 @@ import {
   formatDate,
   handleRemoveImage,
 } from "../../utils/helpers";
+import { createPosts } from "../../redux/actions/postAction";
 
 const CreatePost = ({ visible, onClose }) => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   const [postTitle, setPostTitle] = useState("");
@@ -34,16 +36,23 @@ const CreatePost = ({ visible, onClose }) => {
 
   const handleCreatePost = () => {
     if (!postTitle.trim() && !postDescription.trim()) {
-      Alert.alert("Error", "Please add a title or description");
+      Alert.alert("Error", "Please add a title and description");
       return;
     }
 
-    // Here you'll dispatch the create post action
-    Alert.alert(
-      "Success",
-      "Post creation functionality will be implemented here"
-    );
-    closeModal();
+    const data = {
+      title: postTitle,
+      caption: postDescription,
+      images: selectedImages,
+    };
+
+    dispatch(createPosts(data)).then(() => {
+      Alert.alert(
+        "Success",
+        "Post created successfully"
+      );
+      closeModal();
+    });
   };
 
   return (
@@ -82,7 +91,7 @@ const CreatePost = ({ visible, onClose }) => {
             {/* Title Input */}
             <TextInput
               style={styles.modalTitleInput}
-              placeholder="Add a title (optional)"
+              placeholder="Add a title"
               placeholderTextColor="#657786"
               value={postTitle}
               onChangeText={setPostTitle}
@@ -120,7 +129,9 @@ const CreatePost = ({ visible, onClose }) => {
                       <Image source={{ uri }} style={styles.previewImage} />
                       <TouchableOpacity
                         style={styles.removeIcon}
-                        onPress={() => handleRemoveImage(index, setSelectedImages)}
+                        onPress={() =>
+                          handleRemoveImage(index, setSelectedImages)
+                        }
                       >
                         <Ionicons name="close-circle" size={18} color="#f00" />
                       </TouchableOpacity>
