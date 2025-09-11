@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import { postItemStyles } from "../../styles/PostItemStyles";
+import { postItemStyles as styles } from "../../styles/PostItemStyles";
 
 const PostItem = ({
   item,
@@ -23,31 +23,31 @@ const PostItem = ({
   const showDropdown = activeDropdown === item._id;
 
   return (
-    <View style={postItemStyles.postContainer}>
-      <View style={postItemStyles.postHeader}>
-        <View style={postItemStyles.userInfo}>
-          <View style={postItemStyles.avatar}>
-            <Text style={postItemStyles.avatarText}>
+    <View style={styles.postContainer}>
+      <View style={styles.postHeader}>
+        <View style={styles.userInfo}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>
               {item.createdBy?.name?.charAt(0).toUpperCase() || "U"}
             </Text>
           </View>
-          <View style={postItemStyles.userDetails}>
-            <Text style={postItemStyles.name}>
+          <View style={styles.userDetails}>
+            <Text style={styles.name}>
               {item.createdBy?.name || "Anonymous"}
             </Text>
             {item.isCommunity && item.communityName && (
-              <Text style={postItemStyles.communityName}>
+              <Text style={styles.communityName}>
                 in {item.communityName}
               </Text>
             )}
-            <Text style={postItemStyles.timestamp}>2h ago</Text>
+            <Text style={styles.timestamp}>2h ago</Text>
           </View>
         </View>
         <TouchableOpacity
-          style={postItemStyles.moreButton}
+          style={styles.moreButton}
           onPress={() => onToggleDropdown(item._id)}
         >
-          <Text style={postItemStyles.moreText}>⋯</Text>
+          <Text style={styles.moreText}>⋯</Text>
         </TouchableOpacity>
       </View>
 
@@ -55,32 +55,32 @@ const PostItem = ({
       {showDropdown && (
         <>
           <TouchableOpacity
-            style={postItemStyles.dropdownOverlay}
+            style={styles.dropdownOverlay}
             onPress={onCloseDropdown}
             activeOpacity={1}
           />
-          <View style={postItemStyles.dropdownMenu}>
+          <View style={styles.dropdownMenu}>
             {isOwner ? (
               <>
                 <TouchableOpacity
-                  style={postItemStyles.dropdownItem}
-                  onPress={() => onEdit(item._id)}
+                  style={styles.dropdownItem}
+                  onPress={() => onEdit(item)}
                 >
-                  <Text style={postItemStyles.dropdownIcon}>✏️</Text>
-                  <Text style={postItemStyles.dropdownText}>Edit Post</Text>
+                  <Text style={styles.dropdownIcon}>✏️</Text>
+                  <Text style={styles.dropdownText}>Edit Post</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[
-                    postItemStyles.dropdownItem,
-                    postItemStyles.deleteItem,
+                    styles.dropdownItem,
+                    styles.deleteItem,
                   ]}
                   onPress={() => onDelete(item._id)}
                 >
-                  <Text style={postItemStyles.dropdownIcon}>🗑️</Text>
+                  <Text style={styles.dropdownIcon}>🗑️</Text>
                   <Text
                     style={[
-                      postItemStyles.dropdownText,
-                      postItemStyles.deleteText,
+                      styles.dropdownText,
+                      styles.deleteText,
                     ]}
                   >
                     Delete Post
@@ -89,11 +89,11 @@ const PostItem = ({
               </>
             ) : (
               <TouchableOpacity
-                style={postItemStyles.dropdownItem}
+                style={styles.dropdownItem}
                 onPress={() => onReport(item._id)}
               >
-                <Text style={postItemStyles.dropdownIcon}>🚨</Text>
-                <Text style={postItemStyles.dropdownText}>Report Post</Text>
+                <Text style={styles.dropdownIcon}>🚨</Text>
+                <Text style={styles.dropdownText}>Report Post</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -101,20 +101,20 @@ const PostItem = ({
       )}
 
       {/* Post Content */}
-      <View style={postItemStyles.postContent}>
+      <View style={styles.postContent}>
         {item.title && (
-          <Text style={postItemStyles.postTitle}>{item.title}</Text>
+          <Text style={styles.postTitle}>{item.title}</Text>
         )}
-        <Text style={postItemStyles.postCaption}>{item.caption}</Text>
+        <Text style={styles.postCaption}>{item.caption}</Text>
       </View>
 
       {/* Images */}
       {item.images?.length > 0 && (
-        <View style={postItemStyles.imageContainer}>
+        <View style={styles.imageContainer}>
           {item.images.length === 1 ? (
             <Image
               source={{ uri: item.images[0].url }}
-              style={postItemStyles.singleImage}
+              style={styles.singleImage}
               resizeMode="cover"
             />
           ) : (
@@ -126,34 +126,34 @@ const PostItem = ({
               renderItem={({ item: img }) => (
                 <Image
                   source={{ uri: img.url }}
-                  style={postItemStyles.multipleImage}
+                  style={styles.multipleImage}
                   resizeMode="cover"
                 />
               )}
-              style={postItemStyles.imageList}
+              style={styles.imageList}
             />
           )}
         </View>
       )}
 
       {/* Action Buttons */}
-      <View style={postItemStyles.actionBar}>
+      <View style={styles.actionBar}>
         <TouchableOpacity
-          style={postItemStyles.actionButton}
+          style={styles.actionButton}
           onPress={() => onLike(item._id)}
         >
           <Text
             style={[
-              postItemStyles.actionIcon,
-              isLiked && postItemStyles.likedIcon,
+              styles.actionIcon,
+              isLiked && styles.likedIcon,
             ]}
           >
             {isLiked ? "❤️" : "🤍"}
           </Text>
           <Text
             style={[
-              postItemStyles.actionText,
-              isLiked && postItemStyles.likedText,
+              styles.actionText,
+              isLiked && styles.likedText,
             ]}
           >
             {likesCount}
@@ -161,21 +161,21 @@ const PostItem = ({
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={postItemStyles.actionButton}
+          style={styles.actionButton}
           onPress={() => onComment(item._id)}
         >
-          <Text style={postItemStyles.actionIcon}>💬</Text>
-          <Text style={postItemStyles.actionText}>
+          <Text style={styles.actionIcon}>💬</Text>
+          <Text style={styles.actionText}>
             {item.comments?.length || 0}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={postItemStyles.actionButton}
+          style={styles.actionButton}
           onPress={() => onShare(item._id)}
         >
-          <Text style={postItemStyles.actionIcon}>📤</Text>
-          <Text style={postItemStyles.actionText}>Share</Text>
+          <Text style={styles.actionIcon}>📤</Text>
+          <Text style={styles.actionText}>Share</Text>
         </TouchableOpacity>
       </View>
     </View>

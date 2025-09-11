@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { createPostStyles as styles } from "../../styles/CreatePostStyles";
 import {
   handlePickImages,
-  formatDate,
   handleRemoveImage,
 } from "../../utils/helpers";
 import { createPosts } from "../../redux/actions/postAction";
@@ -80,11 +79,11 @@ const CreatePost = ({ visible, onClose }) => {
             <View style={styles.modalUserInfo}>
               <View style={styles.modalAvatar}>
                 <Text style={styles.modalAvatarText}>
-                  {user?.username?.charAt(0).toUpperCase() || "U"}
+                  {user?.name?.charAt(0).toUpperCase() || "U"}
                 </Text>
               </View>
               <Text style={styles.modalUsername}>
-                {user?.username || "Anonymous"}
+                {user?.name || "Anonymous"}
               </Text>
             </View>
 
