@@ -40,9 +40,9 @@ export const createPosts = createAsyncThunk('posts/createPosts', async (data, th
 export const updatePost = createAsyncThunk('posts/updatePost', async (data, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
-        const {id} = data;
+        const {_id} = data;
 
-        const response = await axios.put(`${apiKey}/api/v1/post/${id}`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/post/${_id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
