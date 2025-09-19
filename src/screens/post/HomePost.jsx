@@ -15,6 +15,7 @@ import { styles } from "../../styles/HomePostStyles";
 import WhatsOnMind from "../../components/posts/WhatsOnMind";
 import CreatePostModal from "../../components/posts/CreatePost";
 import PostItem from "../../components/posts/PostItem";
+import EditPost from "../../components/posts/EditPost";
 
 const HomePost = () => {
   const dispatch = useDispatch();
@@ -22,11 +23,13 @@ const HomePost = () => {
     (state) => state.posts
   );
   const { user } = useSelector((state) => state.auth);
-  
+
   const [refreshing, setRefreshing] = useState(false);
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -36,7 +39,7 @@ const HomePost = () => {
   };
 
   const handleLike = (postId) => {
-    setLikedPosts(prev => {
+    setLikedPosts((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(postId)) {
         newSet.delete(postId);
@@ -66,45 +69,44 @@ const HomePost = () => {
     setActiveDropdown(null);
   };
 
-  const handleEdit = (postId) => {
+  const handleEdit = (item) => {
+    setEditItem(item); 
+    setShowEditModal(true); 
     setActiveDropdown(null);
-    Alert.alert("Edit Post", "Navigate to edit post screen");
-    // Navigate to edit screen or open edit modal
-    // navigation.navigate('EditPost', { postId });
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditItem(null); 
   };
 
   const handleDelete = (postId) => {
     setActiveDropdown(null);
-    Alert.alert(
-      "Delete Post",
-      "Are you sure you want to delete this post?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive",
-          onPress: () => {
-            // Dispatch delete action
-            // dispatch(deletePost(postId));
-            Alert.alert("Success", "Post deleted successfully");
-          }
-        }
-      ]
-    );
+    Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          // Dispatch delete action
+          // dispatch(deletePost(postId));
+          Alert.alert("Success", "Post deleted successfully");
+        },
+      },
+    ]);
   };
 
   const handleReport = (postId) => {
     setActiveDropdown(null);
-    Alert.alert(
-      "Report Post",
-      "Why are you reporting this post?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Spam", onPress: () => submitReport(postId, "spam") },
-        { text: "Inappropriate Content", onPress: () => submitReport(postId, "inappropriate") },
-        { text: "Harassment", onPress: () => submitReport(postId, "harassment") },
-      ]
-    );
+    Alert.alert("Report Post", "Why are you reporting this post?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Spam", onPress: () => submitReport(postId, "spam") },
+      {
+        text: "Inappropriate Content",
+        onPress: () => submitReport(postId, "inappropriate"),
+      },
+      { text: "Harassment", onPress: () => submitReport(postId, "harassment") },
+    ]);
   };
 
   const submitReport = (postId, reason) => {
@@ -121,7 +123,6 @@ const HomePost = () => {
     setShowCreateModal(false);
   };
 
-  // Handle effects
   useEffect(() => {
     if (error) {
       Alert.alert("Error", error);
@@ -160,8 +161,8 @@ const HomePost = () => {
   );
 
   return (
-    <TouchableOpacity 
-      style={styles.container} 
+    <TouchableOpacity
+      style={styles.container}
       activeOpacity={1}
       onPress={closeDropdown}
     >
@@ -173,19 +174,23 @@ const HomePost = () => {
         renderItem={renderPost}
         contentContainerStyle={styles.listContainer}
         refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
+          <RefreshControl
+            refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#1DA1F2']}
+            colors={["#1DA1F2"]}
             tintColor="#1DA1F2"
           />
         }
         showsVerticalScrollIndicator={false}
       />
 
-      <CreatePostModal
-        visible={showCreateModal}
-        onClose={closeCreateModal}
+      <CreatePostModal visible={showCreateModal} onClose={closeCreateModal} />
+
+      {/* Add the EditPost modal */}
+      <EditPost
+        visible={showEditModal}
+        onClose={closeEditModal}
+        item={editItem}
       />
     </TouchableOpacity>
   );
