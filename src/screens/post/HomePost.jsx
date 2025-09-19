@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { getHomePosts } from "../../redux/actions/postAction";
+import { getHomePosts, deletePost } from "../../redux/actions/postAction";
 import { clearMessage, clearSuccess } from "../../redux/slices/postSlice";
 import { styles } from "../../styles/HomePostStyles";
 
@@ -88,8 +88,7 @@ const HomePost = () => {
         text: "Delete",
         style: "destructive",
         onPress: () => {
-          // Dispatch delete action
-          // dispatch(deletePost(postId));
+          dispatch(deletePost(postId));
           Alert.alert("Success", "Post deleted successfully");
         },
       },
