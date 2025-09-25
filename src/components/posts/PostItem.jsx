@@ -22,14 +22,33 @@ const PostItem = ({
     String(user._id) === String(item.createdBy?._id || item.createdBy);
   const showDropdown = activeDropdown === item._id;
 
+  const handlePostPress = () => {
+    if (showDropdown) {
+      onCloseDropdown();
+    }
+  };
+
   return (
-    <View style={styles.postContainer}>
+    <TouchableOpacity 
+      style={styles.postContainer} 
+      activeOpacity={1} 
+      onPress={handlePostPress}
+    >
       <View style={styles.postHeader}>
         <View style={styles.userInfo}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {item.createdBy?.name?.charAt(0).toUpperCase() || "U"}
-            </Text>
+            {item.createdBy?.avatar?.url ? (
+              <Image
+                source={{
+                  uri: item.createdBy?.avatar?.url,
+                }}
+                style={styles.avatarImage}
+              />
+            ) : (
+              <Text style={styles.avatarText}>
+                {item.createdBy?.name?.charAt(0).toUpperCase() || "U"}
+              </Text>
+            )}
           </View>
           <View style={styles.userDetails}>
             <Text style={styles.name}>
@@ -45,7 +64,10 @@ const PostItem = ({
         </View>
         <TouchableOpacity
           style={styles.moreButton}
-          onPress={() => onToggleDropdown(item._id)}
+          onPress={(e) => {
+            e.stopPropagation();
+            onToggleDropdown(item._id);
+          }}
         >
           <Text style={styles.moreText}>⋯</Text>
         </TouchableOpacity>
@@ -53,51 +75,53 @@ const PostItem = ({
 
       {/* Dropdown Menu */}
       {showDropdown && (
-        <>
-          <TouchableOpacity
-            style={styles.dropdownOverlay}
-            onPress={onCloseDropdown}
-            activeOpacity={1}
-          />
-          <View style={styles.dropdownMenu}>
-            {isOwner ? (
-              <>
-                <TouchableOpacity
-                  style={styles.dropdownItem}
-                  onPress={() => onEdit(item)}
-                >
-                  <Text style={styles.dropdownIcon}>✏️</Text>
-                  <Text style={styles.dropdownText}>Edit Post</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.dropdownItem,
-                    styles.deleteItem,
-                  ]}
-                  onPress={() => onDelete(item._id)}
-                >
-                  <Text style={styles.dropdownIcon}>🗑️</Text>
-                  <Text
-                    style={[
-                      styles.dropdownText,
-                      styles.deleteText,
-                    ]}
-                  >
-                    Delete Post
-                  </Text>
-                </TouchableOpacity>
-              </>
-            ) : (
+        <View style={styles.dropdownMenu}>
+          {isOwner ? (
+            <>
               <TouchableOpacity
                 style={styles.dropdownItem}
-                onPress={() => onReport(item._id)}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onEdit(item);
+                }}
               >
-                <Text style={styles.dropdownIcon}>🚨</Text>
-                <Text style={styles.dropdownText}>Report Post</Text>
+                <Text style={styles.dropdownIcon}>✏️</Text>
+                <Text style={styles.dropdownText}>Edit Post</Text>
               </TouchableOpacity>
-            )}
-          </View>
-        </>
+              <TouchableOpacity
+                style={[
+                  styles.dropdownItem,
+                  styles.deleteItem,
+                ]}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onDelete(item._id);
+                }}
+              >
+                <Text style={styles.dropdownIcon}>🗑️</Text>
+                <Text
+                  style={[
+                    styles.dropdownText,
+                    styles.deleteText,
+                  ]}
+                >
+                  Delete Post
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity
+              style={styles.dropdownItem}
+              onPress={(e) => {
+                e.stopPropagation();
+                onReport(item._id);
+              }}
+            >
+              <Text style={styles.dropdownIcon}>🚨</Text>
+              <Text style={styles.dropdownText}>Report Post</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       )}
 
       {/* Post Content */}
@@ -140,7 +164,10 @@ const PostItem = ({
       <View style={styles.actionBar}>
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => onLike(item._id)}
+          onPress={(e) => {
+            e.stopPropagation();
+            onLike(item._id);
+          }}
         >
           <Text
             style={[
@@ -162,7 +189,10 @@ const PostItem = ({
 
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => onComment(item._id)}
+          onPress={(e) => {
+            e.stopPropagation();
+            onComment(item._id);
+          }}
         >
           <Text style={styles.actionIcon}>💬</Text>
           <Text style={styles.actionText}>
@@ -172,13 +202,16 @@ const PostItem = ({
 
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => onShare(item._id)}
+          onPress={(e) => {
+            e.stopPropagation();
+            onShare(item._id);
+          }}
         >
           <Text style={styles.actionIcon}>📤</Text>
           <Text style={styles.actionText}>Share</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

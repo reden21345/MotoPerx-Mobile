@@ -4,7 +4,7 @@ import {
   ActivityIndicator,
   Alert,
   RefreshControl,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   FlatList,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -160,11 +160,7 @@ const HomePost = () => {
   );
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      activeOpacity={1}
-      onPress={closeDropdown}
-    >
+    <View style={styles.container}>
       <WhatsOnMind onPress={openCreateModal} />
 
       <FlatList
@@ -181,6 +177,7 @@ const HomePost = () => {
           />
         }
         showsVerticalScrollIndicator={false}
+        onScrollBeginDrag={closeDropdown}
       />
 
       <CreatePostModal visible={showCreateModal} onClose={closeCreateModal} />
@@ -191,7 +188,7 @@ const HomePost = () => {
         onClose={closeEditModal}
         item={editItem}
       />
-    </TouchableOpacity>
+    </View>
   );
 };
 

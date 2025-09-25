@@ -36,6 +36,12 @@ export const postItemStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   avatarText: {
     color: "#ffffff",
@@ -44,6 +50,12 @@ export const postItemStyles = StyleSheet.create({
   },
   userDetails: {
     flex: 1,
+  },
+  name: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#14171a",
+    marginBottom: 2,
   },
   username: {
     fontSize: 15,
