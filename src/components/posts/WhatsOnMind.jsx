@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useSelector } from "react-redux";
 import { whatsOnMindStyles as styles } from "../../styles/WhatsOnMindStyles";
+import { postItemStyles as styles2 } from "../../styles/PostItemStyles";
 
 const WhatsOnMind = ({ onPress }) => {
   const { user } = useSelector((state) => state.auth);
@@ -10,18 +11,25 @@ const WhatsOnMind = ({ onPress }) => {
     <View style={styles.createPostSection}>
       <View style={styles.createPostContainer}>
         <View style={styles.createPostAvatar}>
-          <Text style={styles.createPostAvatarText}>
-            {user?.username?.charAt(0).toUpperCase() || 'U'}
-          </Text>
+          {user?.avatar?.url ? (
+            <Image
+              source={{
+                uri: user?.avatar?.url,
+              }}
+              style={styles2.avatarImage}
+            />
+          ) : (
+            <Text style={styles2.avatarText}>
+              {user?.name?.charAt(0).toUpperCase() || "U"}
+            </Text>
+          )}
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.createPostInput}
           onPress={onPress}
           activeOpacity={0.7}
         >
-          <Text style={styles.createPostPlaceholder}>
-            What's on your mind?
-          </Text>
+          <Text style={styles.createPostPlaceholder}>What's on your mind?</Text>
         </TouchableOpacity>
       </View>
     </View>

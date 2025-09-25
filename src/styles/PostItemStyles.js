@@ -169,6 +169,8 @@ export const postItemStyles = StyleSheet.create({
   },
   actionBar: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderTopWidth: 0.5,
@@ -179,6 +181,18 @@ export const postItemStyles = StyleSheet.create({
     alignItems: "center",
     marginRight: 32,
     paddingVertical: 4,
+  },
+  viewPostButton: {
+    backgroundColor: "#1DA1F2",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginLeft: "auto",
+  },
+  viewPostText: {
+    color: "#ffffff",
+    fontSize: 13,
+    fontWeight: "600",
   },
   actionIcon: {
     fontSize: 18,

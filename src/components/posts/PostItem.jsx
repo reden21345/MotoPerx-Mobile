@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { postItemStyles as styles } from "../../styles/PostItemStyles";
+import { formatDateWithAgo } from "../../utils/helpers";
 
 const PostItem = ({
   item,
@@ -9,12 +10,12 @@ const PostItem = ({
   activeDropdown,
   onLike,
   onComment,
-  onShare,
   onToggleDropdown,
   onEdit,
   onDelete,
   onReport,
   onCloseDropdown,
+  onViewPost,
 }) => {
   const isLiked = likedPosts.has(item._id);
   const likesCount = (item.likes?.length || 0) + (isLiked ? 1 : 0);
@@ -59,7 +60,7 @@ const PostItem = ({
                 in {item.communityName}
               </Text>
             )}
-            <Text style={styles.timestamp}>2h ago</Text>
+            <Text style={styles.timestamp}>{formatDateWithAgo(item.createdAt)}</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -201,14 +202,13 @@ const PostItem = ({
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.actionButton}
+          style={styles.viewPostButton}
           onPress={(e) => {
             e.stopPropagation();
-            onShare(item._id);
+            onViewPost(item._id);
           }}
         >
-          <Text style={styles.actionIcon}>📤</Text>
-          <Text style={styles.actionText}>Share</Text>
+          <Text style={styles.viewPostText}>View post</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

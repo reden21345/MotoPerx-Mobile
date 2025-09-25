@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   Alert,
   RefreshControl,
-  TouchableWithoutFeedback,
   FlatList,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -57,8 +56,11 @@ const HomePost = () => {
     Alert.alert("Comments", "Open comments for this post");
   };
 
-  const handleShare = (postId) => {
-    Alert.alert("Share", "Share this post");
+  const handleViewPost = (postId) => {
+    // Navigate to ViewPost screen
+    // You can use your navigation method here
+    Alert.alert("View Post", `Navigate to view post with ID: ${postId}`);
+    // Example: navigation.navigate('ViewPost', { postId });
   };
 
   const toggleDropdown = (postId) => {
@@ -150,7 +152,7 @@ const HomePost = () => {
       activeDropdown={activeDropdown}
       onLike={handleLike}
       onComment={handleComment}
-      onShare={handleShare}
+      onViewPost={handleViewPost}
       onToggleDropdown={toggleDropdown}
       onEdit={handleEdit}
       onDelete={handleDelete}
