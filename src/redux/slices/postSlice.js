@@ -19,7 +19,7 @@ const postSlice = createSlice({
     error: null,
   },
   reducers: {
-    clearPostDetails: (state) => {
+    clearPostState: (state) => {
       state.allPosts = [];
       state.homePosts = [];
       state.count = 0;
@@ -95,6 +95,6 @@ const postSlice = createSlice({
       });
   },
 });
-export const { clearPostDetails, clearSuccess, clearMessage } =
+export const { clearPostState, clearSuccess, clearMessage } =
   postSlice.actions;
 export default postSlice.reducer;

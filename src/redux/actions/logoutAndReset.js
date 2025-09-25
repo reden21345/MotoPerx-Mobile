@@ -9,6 +9,9 @@ import { clearAdminState } from '../slices/adminSlice';
 import { clearNotifs } from '../slices/notifSlice';
 import { clearProductState } from '../slices/producSlice';
 import { clearTrackingState } from '../slices/trackingSlice';
+import { clearPostState } from '../slices/postSlice';
+import { clearCommentState } from '../slices/commentSlice';
+import { clearCommunityState } from '../slices/communitySlice';
 
 export const logoutAndReset = () => async (dispatch) => {
   try {
@@ -23,6 +26,9 @@ export const logoutAndReset = () => async (dispatch) => {
     dispatch(clearNotifs());
     dispatch(clearProductState());
     dispatch(clearTrackingState());
+    dispatch(clearPostState());
+    dispatch(clearCommentState());
+    dispatch(clearCommunityState());
     dispatch(resetData());
   } catch (error) {
     console.log('Logout failed:', error); 
