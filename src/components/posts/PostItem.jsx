@@ -17,11 +17,11 @@ const PostItem = ({
   onCloseDropdown,
   onViewPost,
 }) => {
-  const isLiked = likedPosts.has(item._id);
-  const likesCount = (item.likes?.length || 0) + (isLiked ? 1 : 0);
+  const isLiked = likedPosts.has(item?._id);
+  const likesCount = (item?.likes?.length || 0) + (isLiked ? 1 : 0);
   const isOwner =
-    String(user._id) === String(item.createdBy?._id || item.createdBy);
-  const showDropdown = activeDropdown === item._id;
+    String(user._id) === String(item?.createdBy?._id || item?.createdBy);
+  const showDropdown = activeDropdown === item?._id;
 
   const handlePostPress = () => {
     if (showDropdown) {
@@ -38,36 +38,36 @@ const PostItem = ({
       <View style={styles.postHeader}>
         <View style={styles.userInfo}>
           <View style={styles.avatar}>
-            {item.createdBy?.avatar?.url ? (
+            {item?.createdBy?.avatar?.url ? (
               <Image
                 source={{
-                  uri: item.createdBy?.avatar?.url,
+                  uri: item?.createdBy?.avatar?.url,
                 }}
                 style={styles.avatarImage}
               />
             ) : (
               <Text style={styles.avatarText}>
-                {item.createdBy?.name?.charAt(0).toUpperCase() || "U"}
+                {item?.createdBy?.name?.charAt(0).toUpperCase() || "U"}
               </Text>
             )}
           </View>
           <View style={styles.userDetails}>
             <Text style={styles.name}>
-              {item.createdBy?.name || "Anonymous"}
+              {item?.createdBy?.name || "Anonymous"}
             </Text>
-            {item.isCommunity && item.communityName && (
+            {item?.isCommunity && item?.communityName && (
               <Text style={styles.communityName}>
-                in {item.communityName}
+                in {item?.communityName}
               </Text>
             )}
-            <Text style={styles.timestamp}>{formatDateWithAgo(item.createdAt)}</Text>
+            <Text style={styles.timestamp}>{formatDateWithAgo(item?.createdAt)}</Text>
           </View>
         </View>
         <TouchableOpacity
           style={styles.moreButton}
           onPress={(e) => {
             e.stopPropagation();
-            onToggleDropdown(item._id);
+            onToggleDropdown(item?._id);
           }}
         >
           <Text style={styles.moreText}>⋯</Text>
@@ -96,7 +96,7 @@ const PostItem = ({
                 ]}
                 onPress={(e) => {
                   e.stopPropagation();
-                  onDelete(item._id);
+                  onDelete(item?._id);
                 }}
               >
                 <Text style={styles.dropdownIcon}>🗑️</Text>
@@ -115,7 +115,7 @@ const PostItem = ({
               style={styles.dropdownItem}
               onPress={(e) => {
                 e.stopPropagation();
-                onReport(item._id);
+                onReport(item?._id);
               }}
             >
               <Text style={styles.dropdownIcon}>🚨</Text>
@@ -127,24 +127,24 @@ const PostItem = ({
 
       {/* Post Content */}
       <View style={styles.postContent}>
-        {item.title && (
-          <Text style={styles.postTitle}>{item.title}</Text>
+        {item?.title && (
+          <Text style={styles.postTitle}>{item?.title}</Text>
         )}
-        <Text style={styles.postCaption}>{item.caption}</Text>
+        <Text style={styles.postCaption}>{item?.caption}</Text>
       </View>
 
       {/* Images */}
-      {item.images?.length > 0 && (
+      {item?.images?.length > 0 && (
         <View style={styles.imageContainer}>
-          {item.images.length === 1 ? (
+          {item?.images.length === 1 ? (
             <Image
-              source={{ uri: item.images[0].url }}
+              source={{ uri: item?.images[0].url }}
               style={styles.singleImage}
               resizeMode="cover"
             />
           ) : (
             <FlatList
-              data={item.images}
+              data={item?.images}
               horizontal
               showsHorizontalScrollIndicator={false}
               keyExtractor={(img, index) => index.toString()}
@@ -167,7 +167,7 @@ const PostItem = ({
           style={styles.actionButton}
           onPress={(e) => {
             e.stopPropagation();
-            onLike(item._id);
+            onLike(item?._id);
           }}
         >
           <Text
@@ -192,12 +192,12 @@ const PostItem = ({
           style={styles.actionButton}
           onPress={(e) => {
             e.stopPropagation();
-            onComment(item._id);
+            onComment(item?._id);
           }}
         >
           <Text style={styles.actionIcon}>💬</Text>
           <Text style={styles.actionText}>
-            {item.comments?.length || 0}
+            {item?.comments?.length || 0}
           </Text>
         </TouchableOpacity>
 
@@ -205,7 +205,7 @@ const PostItem = ({
           style={styles.viewPostButton}
           onPress={(e) => {
             e.stopPropagation();
-            onViewPost(item._id);
+            onViewPost(item?._id);
           }}
         >
           <Text style={styles.viewPostText}>View post</Text>

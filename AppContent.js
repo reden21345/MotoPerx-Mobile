@@ -48,6 +48,7 @@ import EditPartner from "./src/screens/partner/EditPartner";
 
 // Post Imports
 import HomePosts from "./src/screens/post/HomePost";
+import PostDetails from "./src/screens/post/PostDetails";
 
 // Dashboard
 import Shop from "./src/screens/dashboard/PartnerDashboard";
@@ -146,6 +147,7 @@ const AppContent = () => {
 
         {/* Partner Screens */}
         <Stack.Screen name="HomePosts" component={HomePosts} />
+        <Stack.Screen name="PostDetails" component={PostDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );

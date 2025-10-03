@@ -15,8 +15,9 @@ import WhatsOnMind from "../../components/posts/WhatsOnMind";
 import CreatePostModal from "../../components/posts/CreatePost";
 import PostItem from "../../components/posts/PostItem";
 import EditPost from "../../components/posts/EditPost";
+import CreateComment from "../../components/posts/CreateComment";
 
-const HomePost = () => {
+const HomePost = ({ navigation }) => {
   const dispatch = useDispatch();
   const { homePosts, loading, error, message } = useSelector(
     (state) => state.posts
@@ -28,7 +29,9 @@ const HomePost = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddComment, setShowAddComment] = useState(false);
   const [editItem, setEditItem] = useState(null);
+  const [postId, setPostId] = useState(null);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -52,15 +55,12 @@ const HomePost = () => {
   };
 
   const handleComment = (postId) => {
-    // Navigate to comments or open comment modal
-    Alert.alert("Comments", "Open comments for this post");
+    setPostId(postId);
+    setShowAddComment(true);
   };
 
   const handleViewPost = (postId) => {
-    // Navigate to ViewPost screen
-    // You can use your navigation method here
-    Alert.alert("View Post", `Navigate to view post with ID: ${postId}`);
-    // Example: navigation.navigate('ViewPost', { postId });
+    navigation.navigate("PostDetails", { postId });
   };
 
   const toggleDropdown = (postId) => {
@@ -72,14 +72,14 @@ const HomePost = () => {
   };
 
   const handleEdit = (item) => {
-    setEditItem(item); 
-    setShowEditModal(true); 
+    setEditItem(item);
+    setShowEditModal(true);
     setActiveDropdown(null);
   };
 
   const closeEditModal = () => {
     setShowEditModal(false);
-    setEditItem(null); 
+    setEditItem(null);
   };
 
   const handleDelete = (postId) => {
@@ -184,11 +184,16 @@ const HomePost = () => {
 
       <CreatePostModal visible={showCreateModal} onClose={closeCreateModal} />
 
-      {/* Add the EditPost modal */}
       <EditPost
         visible={showEditModal}
         onClose={closeEditModal}
         item={editItem}
+      />
+
+      <CreateComment
+        visible={showAddComment}
+        onClose={() => setShowAddComment(false)}
+        postId={postId}
       />
     </View>
   );
