@@ -118,9 +118,61 @@ export const handlePickImages = async (setImages) => {
   }
 };
 
+export const handlePickSingleImage = async (setImage) => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== "granted") {
+    Alert.alert(
+      "Permission Denied",
+      "You need to grant camera roll permissions to upload an image."
+    );
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsMultipleSelection: false, // ✅ Single image only
+    quality: 1,
+  });
+
+  if (!result.canceled && result.assets?.length > 0) {
+    try {
+      const asset = result.assets[0];
+
+      // 🗜 Resize and compress
+      const compressed = await ImageManipulator.manipulateAsync(
+        asset.uri,
+        [{ resize: { width: 800 } }],
+        { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+      // 📥 Convert to base64
+      const base64 = await FileSystem.readAsStringAsync(compressed.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const dataUri = `data:image/jpeg;base64,${base64}`;
+
+      // Warn if still too large
+      if (dataUri.length > 1500000) {
+        Alert.alert("Image too large", "Please choose a smaller image.");
+        return;
+      }
+
+      setImage(dataUri); // ✅ Set single image
+    } catch (error) {
+      console.error("Image processing error:", error);
+    }
+  }
+};
+
 // Remove image from the array
 export const handleRemoveImage = (index, setImages) => {
   setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+};
+
+// Remove single image (reset to null)
+export const handleRemoveSingleImage = (setImage) => {
+  setImage(null);
 };
 
 // Format Date
