@@ -23,7 +23,7 @@ const communitySlice = createSlice({
     error: null,
   },
   reducers: {
-    clearCommunities: (state) => {
+    clearCommunityState: (state) => {
       state.error = null;
       state.message = null;
       state.communities = [];
@@ -161,6 +161,6 @@ const communitySlice = createSlice({
       });
   },
 });
-export const { clearCommunities, clearMessage, clearCommunityData } =
+export const { clearCommunityState, clearMessage, clearCommunityData } =
   communitySlice.actions;
 export default communitySlice.reducer;

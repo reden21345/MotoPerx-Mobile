@@ -11,6 +11,7 @@ import productReducer from './slices/producSlice';
 import gearReducer from './slices/gearSlice';
 import trackReducer from './slices/trackingSlice';
 import postReducer from './slices/postSlice';
+import commentReducer from './slices/commentSlice';
 import communityReducer from './slices/communitySlice';
 
 export const store = configureStore({
@@ -27,6 +28,7 @@ export const store = configureStore({
     gears: gearReducer,
     tracks: trackReducer,
     posts: postReducer,
+    comments: commentReducer,
     communities: communityReducer,
   },
 });
