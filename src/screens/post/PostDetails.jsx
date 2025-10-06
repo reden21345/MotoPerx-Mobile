@@ -1,16 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   ScrollView,
-  Image,
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
-  FlatList,
+  Alert,
 } from "react-native";
 import { postDetailStyles as styles } from "../../styles/PostDetailStyles";
 import CreateComment from "../../components/posts/CreateComment";
+import PostHeader from "../../components/posts/PostHeader";
+import UserInfoSection from "../../components/posts/UserInfoSection";
+import ImageCarousel from "../../components/posts/ImageCarousel";
+import ActionBar from "../../components/posts/ActionBar";
+import CommentsSection from "../../components/posts/CommentsSection";
 import { useSelector, useDispatch } from "react-redux";
 import { getComments } from "../../redux/actions/commentAction";
 import { clearCommentSuccess } from "../../redux/slices/commentSlice";
@@ -21,11 +25,11 @@ const PostDetails = ({ route, navigation }) => {
   const { postDetails, loading, error, successComment } = useSelector(
     (state) => state.comments
   );
+  const { user } = useSelector((state) => state.auth);
 
   const [likedPosts, setLikedPosts] = useState(new Set());
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const flatListRef = useRef(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingComment, setEditingComment] = useState(null);
 
   const isLiked = likedPosts.has(postDetails?._id);
   const likesCount = (postDetails?.likes?.length || 0) + (isLiked ? 1 : 0);
@@ -55,88 +59,41 @@ const PostDetails = ({ route, navigation }) => {
     });
   };
 
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
-    if (viewableItems.length > 0) {
-      setCurrentImageIndex(viewableItems[0].index);
-    }
-  }).current;
+  const handleEditComment = (comment) => {
+    setEditingComment(comment);
+    setShowAddModal(true);
+  };
 
-  const viewabilityConfig = useRef({
-    itemVisiblePercentThreshold: 50,
-  }).current;
-
-  const renderImage = ({ item, index }) => (
-    <View style={styles.imageSlide}>
-      <Image
-        source={{ uri: item.url }}
-        style={styles.postImage}
-        resizeMode="cover"
-      />
-    </View>
-  );
-
-  const renderImageIndicators = () => {
-    if (!postDetails?.images || postDetails.images.length <= 1) return null;
-
-    return (
-      <View style={styles.indicatorContainer}>
-        {postDetails.images.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.indicator,
-              index === currentImageIndex && styles.activeIndicator,
-            ]}
-          />
-        ))}
-      </View>
+  const handleDeleteComment = (commentId) => {
+    Alert.alert(
+      "Delete Comment",
+      "Are you sure you want to delete this comment?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            // Dispatch delete comment action here
+            // dispatch(deleteComment(commentId));
+            console.log("Deleting comment:", commentId);
+          },
+        },
+      ]
     );
   };
 
-  const renderComment = ({ item }) => (
-    <View style={styles.commentContainer}>
-      <View style={styles.commentAvatar}>
-        {item.createdBy?.avatar?.url ? (
-          <Image
-            source={{ uri: item.createdBy.avatar.url }}
-            style={styles.commentAvatarImage}
-          />
-        ) : (
-          <Text style={styles.commentAvatarText}>
-            {item.createdBy?.name?.charAt(0).toUpperCase() || "?"}
-          </Text>
-        )}
-      </View>
-      <View style={styles.commentContent}>
-        <Text style={styles.commentUserName}>
-          {item.createdBy?.name || "Anonymous"}
-        </Text>
-        <Text style={styles.commentText}>{item.text}</Text>
-        {item.image?.url && (
-          <Image
-            source={{ uri: item.image.url }}
-            style={styles.commentImage}
-            resizeMode="cover"
-          />
-        )}
-      </View>
-    </View>
-  );
+  const handleCloseModal = () => {
+    setShowAddModal(false);
+    setEditingComment(null);
+  };
 
-  // Show error state
+  // Error state
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Post</Text>
-        </View>
+        <PostHeader onBack={() => navigation.goBack()} />
         <View style={styles.errorContainer}>
           <Text style={styles.errorTitle}>Error Loading Post</Text>
           <Text style={styles.errorMessage}>
@@ -153,19 +110,12 @@ const PostDetails = ({ route, navigation }) => {
     );
   }
 
+  // Loading state
   if (loading || !postDetails) {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Post</Text>
-        </View>
+        <PostHeader onBack={() => navigation.goBack()} />
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>
             {loading ? "Loading..." : "No post data available"}
@@ -179,47 +129,19 @@ const PostDetails = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Post</Text>
-        <TouchableOpacity style={styles.moreButton}>
-          <Text style={styles.moreButtonText}>⋯</Text>
-        </TouchableOpacity>
-      </View>
+      <PostHeader
+        onBack={() => navigation.goBack()}
+        onMore={() => console.log("More options")}
+      />
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* User Info */}
-        <View style={styles.userSection}>
-          <View style={styles.avatar}>
-            {postDetails.createdBy?.avatar?.url ? (
-              <Image
-                source={{ uri: postDetails.createdBy.avatar.url }}
-                style={styles.avatarImage}
-              />
-            ) : (
-              <Text style={styles.avatarText}>
-                {postDetails.createdBy?.name?.charAt(0).toUpperCase() || "U"}
-              </Text>
-            )}
-          </View>
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>
-              {postDetails.createdBy?.name || "Anonymous"}
-            </Text>
-            <Text style={styles.timestamp}>
-              {new Date(postDetails.createdAt).toLocaleDateString()}
-            </Text>
-          </View>
-        </View>
+        <UserInfoSection
+          createdBy={postDetails.createdBy}
+          createdAt={postDetails.createdAt}
+        />
 
         {/* Post Content */}
         <View style={styles.contentSection}>
@@ -229,58 +151,22 @@ const PostDetails = ({ route, navigation }) => {
           <Text style={styles.postCaption}>{postDetails.caption}</Text>
         </View>
 
-        {/* Images */}
-        {postDetails.images && postDetails.images.length > 0 && (
-          <View style={styles.imageSection}>
-            <FlatList
-              ref={flatListRef}
-              data={postDetails.images}
-              renderItem={renderImage}
-              keyExtractor={(item, index) => index.toString()}
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              onViewableItemsChanged={onViewableItemsChanged}
-              viewabilityConfig={viewabilityConfig}
-            />
-            {renderImageIndicators()}
-          </View>
-        )}
+        <ImageCarousel images={postDetails.images} />
 
-        {/* Action Bar */}
-        <View style={styles.actionBar}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-            <Text style={[styles.actionIcon, isLiked && styles.likedIcon]}>
-              {isLiked ? "❤️" : "🤍"}
-            </Text>
-            <Text style={[styles.actionText, isLiked && styles.likedText]}>
-              {likesCount}
-            </Text>
-          </TouchableOpacity>
+        <ActionBar
+          isLiked={isLiked}
+          likesCount={likesCount}
+          commentsCount={postDetails.comments?.length || 0}
+          onLike={handleLike}
+        />
 
-          <View style={styles.actionButton}>
-            <Text style={styles.actionIcon}>💬</Text>
-            <Text style={styles.actionText}>
-              {postDetails.comments?.length || 0}
-            </Text>
-          </View>
-        </View>
+        <CommentsSection
+          comments={postDetails.comments}
+          currentUserId={user?._id}
+          onEditComment={handleEditComment}
+          onDeleteComment={handleDeleteComment}
+        />
 
-        {/* Comments Section */}
-        <View style={styles.commentsSection}>
-          <Text style={styles.commentsTitle}>
-            Comments ({postDetails.comments?.length || 0})
-          </Text>
-          {postDetails.comments && postDetails.comments.length > 0 ? (
-            postDetails.comments.map((comment) => (
-              <View key={comment._id}>{renderComment({ item: comment })}</View>
-            ))
-          ) : (
-            <Text style={styles.noCommentsText}>No comments yet</Text>
-          )}
-        </View>
-
-        {/* Add Comment */}
         <TouchableOpacity
           style={styles.addCommentButton}
           onPress={() => setShowAddModal(true)}
@@ -291,8 +177,9 @@ const PostDetails = ({ route, navigation }) => {
 
       <CreateComment
         visible={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        onClose={handleCloseModal}
         postId={postDetails._id}
+        editingComment={editingComment}
       />
     </SafeAreaView>
   );

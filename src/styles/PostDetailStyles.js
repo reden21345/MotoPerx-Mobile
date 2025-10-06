@@ -300,4 +300,50 @@ export const postDetailStyles = StyleSheet.create({
     color: "#657786",
     fontStyle: "italic",
   },
+  commentHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  commentMenuButton: {
+    padding: 4,
+  },
+  commentMenuIcon: {
+    fontSize: 18,
+    color: "#666",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    minWidth: 200,
+    paddingVertical: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  menuItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  menuItemText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  deleteText: {
+    color: "#ff3b30",
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: "#e0e0e0",
+    marginVertical: 4,
+  },
 });
