@@ -60,6 +60,7 @@ const postSlice = createSlice({
         state.loading = false;
         state.postDetails = action.payload.post;
         state.message = action.payload.message;
+        state.success = action.payload.success;
       })
       .addCase(createPosts.rejected, (state, action) => {
         state.loading = false;
@@ -74,6 +75,7 @@ const postSlice = createSlice({
         state.loading = false;
         state.postDetails = action.payload.post;
         state.message = action.payload.message;
+        state.success = action.payload.success;
       })
       .addCase(updatePost.rejected, (state, action) => {
         state.loading = false;

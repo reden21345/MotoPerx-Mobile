@@ -12,10 +12,8 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { createPostStyles as styles } from "../../styles/CreatePostStyles";
-import {
-  handlePickImages,
-  handleRemoveImage,
-} from "../../utils/helpers";
+import { postItemStyles as styles2 } from "../../styles/PostItemStyles";
+import { handlePickImages, handleRemoveImage } from "../../utils/helpers";
 import { createPosts } from "../../redux/actions/postAction";
 
 const CreatePost = ({ visible, onClose }) => {
@@ -46,10 +44,7 @@ const CreatePost = ({ visible, onClose }) => {
     };
 
     dispatch(createPosts(data)).then(() => {
-      Alert.alert(
-        "Success",
-        "Post created successfully"
-      );
+      Alert.alert("Success", "Post created successfully");
       closeModal();
     });
   };
@@ -78,9 +73,18 @@ const CreatePost = ({ visible, onClose }) => {
             {/* User Info */}
             <View style={styles.modalUserInfo}>
               <View style={styles.modalAvatar}>
-                <Text style={styles.modalAvatarText}>
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
-                </Text>
+                {user?.avatar?.url ? (
+                  <Image
+                    source={{
+                      uri: user?.avatar?.url,
+                    }}
+                    style={styles2.avatarImage}
+                  />
+                ) : (
+                  <Text style={styles.modalAvatarText}>
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
+                  </Text>
+                )}
               </View>
               <Text style={styles.modalUsername}>
                 {user?.name || "Anonymous"}

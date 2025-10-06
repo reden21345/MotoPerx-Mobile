@@ -19,7 +19,7 @@ import CreateComment from "../../components/posts/CreateComment";
 
 const HomePost = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { homePosts, loading, error, message } = useSelector(
+  const { homePosts, loading, error, message, success } = useSelector(
     (state) => state.posts
   );
   const { user } = useSelector((state) => state.auth);
@@ -125,16 +125,19 @@ const HomePost = ({ navigation }) => {
   };
 
   useEffect(() => {
+    if (success) {
+      dispatch(getHomePosts()).then(() => dispatch(clearSuccess()));
+    } else if (message) {
+      Alert.alert("Success", message);
+      dispatch(clearMessage());
+    }
+  }, [message, success, dispatch]);
+
+  useEffect(() => {
     if (error) {
       Alert.alert("Error", error);
     }
   }, [error]);
-
-  useEffect(() => {
-    if (message) {
-      Alert.alert("Success", message);
-    }
-  }, [message]);
 
   if (loading) {
     return (
