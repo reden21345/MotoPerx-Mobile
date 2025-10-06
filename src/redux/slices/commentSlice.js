@@ -14,7 +14,7 @@ const commentSlice = createSlice({
     count: 0,
     message: null,
     loading: false,
-    success: false,
+    successComment: false,
     error: null,
   },
   reducers: {
@@ -22,15 +22,15 @@ const commentSlice = createSlice({
       state.postDetails = null;
       state.commentDetails = null;
       state.count = 0;
-      state.success = false;
+      state.successComment = false;
       state.error = null;
     },
     clearMessage: (state) => {
-      state.success = false;
+      state.successComment = false;
       state.message = null;
     },
-    clearSuccess: (state) => {
-      state.success = false;
+    clearCommentSuccess: (state) => {
+      state.successComment = false;
       state.error = null;
     },
   },
@@ -58,6 +58,7 @@ const commentSlice = createSlice({
         state.loading = false;
         state.postDetails = action.payload.post;
         state.message = action.payload.message;
+        state.successComment = action.payload.success;
       })
       .addCase(addComment.rejected, (state, action) => {
         state.loading = false;
@@ -72,6 +73,7 @@ const commentSlice = createSlice({
         state.loading = false;
         state.postDetails = action.payload.post;
         state.message = action.payload.message;
+        state.successComment = action.payload.success;
       })
       .addCase(updateComment.rejected, (state, action) => {
         state.loading = false;
@@ -84,7 +86,7 @@ const commentSlice = createSlice({
       })
       .addCase(deleteComment.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload.success;
+        state.successComment = action.payload.success;
         state.message = action.payload.message;
       })
       .addCase(deleteComment.rejected, (state, action) => {
@@ -93,6 +95,6 @@ const commentSlice = createSlice({
       });
   },
 });
-export const { clearCommentState, clearSuccess, clearMessage } =
+export const { clearCommentState, clearCommentSuccess, clearMessage } =
   commentSlice.actions;
 export default commentSlice.reducer;

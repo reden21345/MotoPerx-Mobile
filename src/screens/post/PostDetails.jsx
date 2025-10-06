@@ -13,11 +13,12 @@ import { postDetailStyles as styles } from "../../styles/PostDetailStyles";
 import CreateComment from "../../components/posts/CreateComment";
 import { useSelector, useDispatch } from "react-redux";
 import { getComments } from "../../redux/actions/commentAction";
+import { clearCommentSuccess } from "../../redux/slices/commentSlice";
 
 const PostDetails = ({ route, navigation }) => {
   const { postId } = route.params;
   const dispatch = useDispatch();
-  const { postDetails, loading, error } = useSelector(
+  const { postDetails, loading, error, successComment } = useSelector(
     (state) => state.comments
   );
 
@@ -34,6 +35,13 @@ const PostDetails = ({ route, navigation }) => {
       dispatch(getComments(postId));
     }
   }, [dispatch, postId]);
+
+  useEffect(() => {
+    if (successComment) {
+      dispatch(getComments(postId));
+      dispatch(clearCommentSuccess());
+    }
+  }, [dispatch, postId, successComment]);
 
   const handleLike = () => {
     setLikedPosts((prev) => {
@@ -104,6 +112,13 @@ const PostDetails = ({ route, navigation }) => {
           {item.createdBy?.name || "Anonymous"}
         </Text>
         <Text style={styles.commentText}>{item.text}</Text>
+        {item.image?.url && (
+          <Image
+            source={{ uri: item.image.url }}
+            style={styles.commentImage}
+            resizeMode="cover"
+          />
+        )}
       </View>
     </View>
   );
@@ -138,7 +153,6 @@ const PostDetails = ({ route, navigation }) => {
     );
   }
 
-  // Show loading or empty states
   if (loading || !postDetails) {
     return (
       <SafeAreaView style={styles.container}>

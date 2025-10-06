@@ -9,6 +9,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { getHomePosts, deletePost } from "../../redux/actions/postAction";
 import { clearMessage, clearSuccess } from "../../redux/slices/postSlice";
+import { clearCommentSuccess } from "../../redux/slices/commentSlice";
 import { styles } from "../../styles/HomePostStyles";
 
 import WhatsOnMind from "../../components/posts/WhatsOnMind";
@@ -22,6 +23,7 @@ const HomePost = ({ navigation }) => {
   const { homePosts, loading, error, message, success } = useSelector(
     (state) => state.posts
   );
+  const { successComment } = useSelector((state) => state.comments);
   const { user } = useSelector((state) => state.auth);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -126,12 +128,25 @@ const HomePost = ({ navigation }) => {
 
   useEffect(() => {
     if (success) {
-      dispatch(getHomePosts()).then(() => dispatch(clearSuccess()));
-    } else if (message) {
+      dispatch(getHomePosts());
+      dispatch(clearSuccess());
+    }
+  }, [success, dispatch]);
+
+  useEffect(() => {
+    if (successComment) {
+      dispatch(getHomePosts());
+      dispatch(clearCommentSuccess());
+      setShowAddComment(false);
+    }
+  }, [successComment, dispatch]);
+
+  useEffect(() => {
+    if (message) {
       Alert.alert("Success", message);
       dispatch(clearMessage());
     }
-  }, [message, success, dispatch]);
+  }, [message, dispatch]);
 
   useEffect(() => {
     if (error) {

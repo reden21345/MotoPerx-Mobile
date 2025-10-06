@@ -88,7 +88,7 @@ const CreateComment = ({ visible, onClose, postId }) => {
             {/* Title Input */}
             <TextInput
               style={styles.modalTitleInput}
-              placeholder="Add a text"
+              placeholder="Add a comment"
               placeholderTextColor="#657786"
               value={text}
               onChangeText={setText}

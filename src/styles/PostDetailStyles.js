@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 export const postDetailStyles = StyleSheet.create({
   container: {
@@ -43,7 +43,7 @@ export const postDetailStyles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  
+
   // Error state styles
   errorContainer: {
     flex: 1,
@@ -107,7 +107,7 @@ export const postDetailStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   avatarImage: {
     width: 50,
@@ -150,12 +150,12 @@ export const postDetailStyles = StyleSheet.create({
   },
   imageSection: {
     marginBottom: 16,
-    position: 'relative',
+    position: "relative",
   },
   imageSlide: {
     width: width,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   postImage: {
     width: width,
@@ -163,20 +163,20 @@ export const postDetailStyles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
   },
   indicatorContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 12,
   },
   indicator: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#d1d8da',
+    backgroundColor: "#d1d8da",
     marginHorizontal: 4,
   },
   activeIndicator: {
-    backgroundColor: '#1DA1F2',
+    backgroundColor: "#1DA1F2",
     width: 20,
   },
   actionBar: {
@@ -242,7 +242,7 @@ export const postDetailStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   commentAvatarImage: {
     width: 36,
@@ -271,6 +271,12 @@ export const postDetailStyles = StyleSheet.create({
     fontSize: 14,
     color: "#14171a",
     lineHeight: 20,
+  },
+  commentImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 8,
+    marginTop: 8,
   },
   noCommentsText: {
     fontSize: 16,
