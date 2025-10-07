@@ -118,8 +118,12 @@ const HomePost = ({ navigation }) => {
     Alert.alert("Thank you", "Your report has been submitted");
   };
 
-  const openCreateModal = () => {
+  const handleCreatePost = () => {
     setShowCreateModal(true);
+  };
+
+  const handleCommunityPress = () => {
+    navigation.navigate("Communities");
   };
 
   const closeCreateModal = () => {
@@ -181,7 +185,10 @@ const HomePost = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <WhatsOnMind onPress={openCreateModal} />
+      <WhatsOnMind
+        onPress={handleCreatePost}
+        onCommunityPress={handleCommunityPress}
+      />
 
       <FlatList
         data={homePosts}

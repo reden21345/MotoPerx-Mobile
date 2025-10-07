@@ -49,7 +49,7 @@ const Header = ({ navigation }) => {
     <SafeAreaView style={{ backgroundColor: "#000" }} edges={["top"]}>
       <View style={styles.header}>
         {/* Left: User Info */}
-        <View style={styles.userInfo}>
+        <TouchableOpacity style={styles.userInfo} onPress={() => navigation.navigate("Profile")}>
           <Image
             source={{
               uri: user?.avatar?.url || "https://via.placeholder.com/150",
@@ -57,7 +57,7 @@ const Header = ({ navigation }) => {
             style={styles.profileImage}
           />
           <Text style={styles.userName}>{user?.name}</Text>
-        </View>
+        </TouchableOpacity>
 
         {/* Center: Logo */}
         <View style={styles.logoContainer}>

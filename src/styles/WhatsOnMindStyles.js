@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
 
 export const whatsOnMindStyles = StyleSheet.create({
-  // Create Post Section Styles
   createPostSection: {
     backgroundColor: "#ffffff",
     marginBottom: 8,
@@ -42,5 +41,28 @@ export const whatsOnMindStyles = StyleSheet.create({
   createPostPlaceholder: {
     color: "#657786",
     fontSize: 16,
+  },
+  actionButtonsContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
+  },
+  communityButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: "#f0f2f5",
+    gap: 6,
+  },
+  communityButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#1877f2",
+    marginLeft: 6,
   },
 });

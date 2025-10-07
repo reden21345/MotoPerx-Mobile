@@ -21,6 +21,7 @@ const communitySlice = createSlice({
     count: 0,
     loading: false,
     error: null,
+    success: false,
   },
   reducers: {
     clearCommunityState: (state) => {
@@ -29,9 +30,11 @@ const communitySlice = createSlice({
       state.communities = [];
       state.community = null;
       state.count = 0;
+      state.success = false;
     },
     clearMessage: (state) => {
       state.error = null;
+      state.success = false;
       state.message = null;
     },
     clearCommunityData: (state) => {

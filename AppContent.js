@@ -50,6 +50,9 @@ import EditPartner from "./src/screens/partner/EditPartner";
 import HomePosts from "./src/screens/post/HomePost";
 import PostDetails from "./src/screens/post/PostDetails";
 
+// Community Imports
+import Communities from "./src/screens/community/Communities";
+
 // Dashboard
 import Shop from "./src/screens/dashboard/PartnerDashboard";
 
@@ -148,6 +151,9 @@ const AppContent = () => {
         {/* Partner Screens */}
         <Stack.Screen name="HomePosts" component={HomePosts} />
         <Stack.Screen name="PostDetails" component={PostDetails} />
+
+        {/* Community Screens */}
+        <Stack.Screen name="Communities" component={Communities} />
       </Stack.Navigator>
     </NavigationContainer>
   );
