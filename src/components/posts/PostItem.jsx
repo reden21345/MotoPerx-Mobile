@@ -20,7 +20,7 @@ const PostItem = ({
   const isLiked = likedPosts.has(item?._id);
   const likesCount = (item?.likes?.length || 0) + (isLiked ? 1 : 0);
   const isOwner =
-    String(user._id) === String(item?.createdBy?._id || item?.createdBy);
+    String(user?._id) === String(item?.createdBy?._id || item?.createdBy);
   const showDropdown = activeDropdown === item?._id;
 
   const handlePostPress = () => {

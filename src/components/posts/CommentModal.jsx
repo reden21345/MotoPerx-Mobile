@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,15 +16,24 @@ import {
   handlePickSingleImage,
   handleRemoveSingleImage,
 } from "../../utils/helpers";
-import { addComment } from "../../redux/actions/commentAction";
+import { addComment, updateComment } from "../../redux/actions/commentAction";
 import { postItemStyles as styles2 } from "../../styles/PostItemStyles";
 
-const CreateComment = ({ visible, onClose, postId }) => {
+const CommentModal = ({ visible, onClose, postId, editingComment }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
 
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    if (visible) {
+      if (editingComment) {
+        setText(editingComment.text || "");
+        setImage(editingComment.image?.url || null);
+      }
+    }
+  }, [editingComment, visible]);
 
   const closeModal = () => {
     setText("");
@@ -32,16 +41,25 @@ const CreateComment = ({ visible, onClose, postId }) => {
     onClose();
   };
 
-  const handleCreateComment = () => {
+  const handleComment = () => {
     if (!text.trim() && !image) {
       Alert.alert("Error", "Please add a text or image to your comment.");
       return;
     }
 
-    dispatch(addComment({ postId, text, image })).then(() => {
-      Alert.alert("Success", "Comment added successfully");
-      closeModal();
-    });
+    if (editingComment) {
+      dispatch(updateComment({ commentId: editingComment._id, text, image })).then(
+        () => {
+          Alert.alert("Success", "Comment updated successfully");
+          closeModal();
+        }
+      );
+    } else {
+      dispatch(addComment({ postId, text, image })).then(() => {
+        Alert.alert("Success", "Comment added successfully");
+        closeModal();
+      });
+    }
   };
 
   return (
@@ -58,7 +76,7 @@ const CreateComment = ({ visible, onClose, postId }) => {
             <TouchableOpacity onPress={closeModal}>
               <Text style={styles.modalCancelText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleCreateComment}>
+            <TouchableOpacity onPress={handleComment}>
               <Text style={styles.modalPostText}>Comment</Text>
             </TouchableOpacity>
           </View>
@@ -101,7 +119,9 @@ const CreateComment = ({ visible, onClose, postId }) => {
               onPress={() => handlePickSingleImage(setImage)}
             >
               <Text style={styles.imageIcon}>📷</Text>
-              <Text style={styles.imageSelectionText}>Add Photo</Text>
+              <Text style={styles.imageSelectionText}>
+                {image ? "Change" : "Add"} Photo
+              </Text>
             </TouchableOpacity>
 
             {image && (
@@ -130,4 +150,4 @@ const CreateComment = ({ visible, onClose, postId }) => {
   );
 };
 
-export default CreateComment;
+export default CommentModal;

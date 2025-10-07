@@ -16,7 +16,7 @@ import WhatsOnMind from "../../components/posts/WhatsOnMind";
 import CreatePostModal from "../../components/posts/CreatePost";
 import PostItem from "../../components/posts/PostItem";
 import EditPost from "../../components/posts/EditPost";
-import CreateComment from "../../components/posts/CreateComment";
+import CommentModal from "../../components/posts/CommentModal";
 
 const HomePost = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -208,10 +208,11 @@ const HomePost = ({ navigation }) => {
         item={editItem}
       />
 
-      <CreateComment
+      <CommentModal
         visible={showAddComment}
         onClose={() => setShowAddComment(false)}
         postId={postId}
+        editingComment={null}
       />
     </View>
   );

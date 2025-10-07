@@ -29,7 +29,7 @@ export const addComment = createAsyncThunk('comments/addComment', async (data, t
                 Authorization: `Bearer ${token}`,
             },
         });
-
+        console.log(response.data);
         return response.data;
     } catch (error) {
         
@@ -41,9 +41,9 @@ export const addComment = createAsyncThunk('comments/addComment', async (data, t
 export const updateComment = createAsyncThunk('comments/updateComment', async (data, thunkAPI) => {
     try {
         const token = await AsyncStorage.getItem('token');
-        const {_id} = data;
+        const {commentId} = data;
 
-        const response = await axios.put(`${apiKey}/api/v1/comment/${_id}`, data, {
+        const response = await axios.put(`${apiKey}/api/v1/comment/${commentId}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

@@ -14,7 +14,7 @@ const commentSlice = createSlice({
     count: 0,
     message: null,
     loading: false,
-    successComment: false,
+    commentSuccess: false,
     error: null,
   },
   reducers: {
@@ -22,15 +22,15 @@ const commentSlice = createSlice({
       state.postDetails = null;
       state.commentDetails = null;
       state.count = 0;
-      state.successComment = false;
+      state.commentSuccess = false;
       state.error = null;
     },
     clearMessage: (state) => {
-      state.successComment = false;
+      state.commentSuccess = false;
       state.message = null;
     },
     clearCommentSuccess: (state) => {
-      state.successComment = false;
+      state.commentSuccess = false;
       state.error = null;
     },
   },
@@ -58,7 +58,7 @@ const commentSlice = createSlice({
         state.loading = false;
         state.postDetails = action.payload.post;
         state.message = action.payload.message;
-        state.successComment = action.payload.success;
+        state.commentSuccess = action.payload.success;
       })
       .addCase(addComment.rejected, (state, action) => {
         state.loading = false;
@@ -71,9 +71,9 @@ const commentSlice = createSlice({
       })
       .addCase(updateComment.fulfilled, (state, action) => {
         state.loading = false;
-        state.postDetails = action.payload.post;
+        state.commentSuccess = action.payload.success;
+        state.commentDetails = action.payload.comment;
         state.message = action.payload.message;
-        state.successComment = action.payload.success;
       })
       .addCase(updateComment.rejected, (state, action) => {
         state.loading = false;
@@ -86,7 +86,7 @@ const commentSlice = createSlice({
       })
       .addCase(deleteComment.fulfilled, (state, action) => {
         state.loading = false;
-        state.successComment = action.payload.success;
+        state.commentSuccess = action.payload.success;
         state.message = action.payload.message;
       })
       .addCase(deleteComment.rejected, (state, action) => {

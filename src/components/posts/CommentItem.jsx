@@ -5,7 +5,7 @@ import { postDetailStyles as styles } from "../../styles/PostDetailStyles";
 const CommentItem = ({ comment, currentUserId, onEdit, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
   const isOwner = comment.createdBy?._id === currentUserId;
-
+  
   return (
     <View style={styles.commentContainer}>
       <View style={styles.commentAvatar}>

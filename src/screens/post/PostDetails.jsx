@@ -9,20 +9,20 @@ import {
   Alert,
 } from "react-native";
 import { postDetailStyles as styles } from "../../styles/PostDetailStyles";
-import CreateComment from "../../components/posts/CreateComment";
+import CommentModal from "../../components/posts/CommentModal";
 import PostHeader from "../../components/posts/PostHeader";
 import UserInfoSection from "../../components/posts/UserInfoSection";
 import ImageCarousel from "../../components/posts/ImageCarousel";
 import ActionBar from "../../components/posts/ActionBar";
 import CommentsSection from "../../components/posts/CommentsSection";
 import { useSelector, useDispatch } from "react-redux";
-import { getComments } from "../../redux/actions/commentAction";
+import { getComments, deleteComment } from "../../redux/actions/commentAction";
 import { clearCommentSuccess } from "../../redux/slices/commentSlice";
 
 const PostDetails = ({ route, navigation }) => {
   const { postId } = route.params;
   const dispatch = useDispatch();
-  const { postDetails, loading, error, successComment } = useSelector(
+  const { postDetails, loading, error, commentSuccess } = useSelector(
     (state) => state.comments
   );
   const { user } = useSelector((state) => state.auth);
@@ -41,11 +41,12 @@ const PostDetails = ({ route, navigation }) => {
   }, [dispatch, postId]);
 
   useEffect(() => {
-    if (successComment) {
-      dispatch(getComments(postId));
-      dispatch(clearCommentSuccess());
+    if (commentSuccess) {
+      dispatch(getComments(postId)).then(() => {
+        dispatch(clearCommentSuccess());
+      });
     }
-  }, [dispatch, postId, successComment]);
+  }, [dispatch, postId, commentSuccess]);
 
   const handleLike = () => {
     setLikedPosts((prev) => {
@@ -74,9 +75,8 @@ const PostDetails = ({ route, navigation }) => {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            // Dispatch delete comment action here
-            // dispatch(deleteComment(commentId));
-            console.log("Deleting comment:", commentId);
+            dispatch(deleteComment(commentId));
+            Alert.alert("Success", "Comment deleted successfully");
           },
         },
       ]
@@ -110,7 +110,6 @@ const PostDetails = ({ route, navigation }) => {
     );
   }
 
-  // Loading state
   if (loading || !postDetails) {
     return (
       <SafeAreaView style={styles.container}>
@@ -143,7 +142,6 @@ const PostDetails = ({ route, navigation }) => {
           createdAt={postDetails.createdAt}
         />
 
-        {/* Post Content */}
         <View style={styles.contentSection}>
           {postDetails.title && (
             <Text style={styles.postTitle}>{postDetails.title}</Text>
@@ -175,7 +173,7 @@ const PostDetails = ({ route, navigation }) => {
         </TouchableOpacity>
       </ScrollView>
 
-      <CreateComment
+      <CommentModal
         visible={showAddModal}
         onClose={handleCloseModal}
         postId={postDetails._id}
