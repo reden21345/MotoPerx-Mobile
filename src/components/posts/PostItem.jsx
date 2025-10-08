@@ -7,6 +7,7 @@ const PostItem = ({
   item,
   user,
   likedPosts,
+  localLikeCounts,
   activeDropdown,
   onLike,
   onComment,
@@ -18,7 +19,8 @@ const PostItem = ({
   onViewPost,
 }) => {
   const isLiked = likedPosts.has(item?._id);
-  const likesCount = item?.likes?.length || 0;
+  const likesCount = localLikeCounts[item?._id] ?? (item?.likes?.length || 0);
+
   const isOwner =
     String(user?._id) === String(item?.createdBy?._id || item?.createdBy);
   const showDropdown = activeDropdown === item?._id;

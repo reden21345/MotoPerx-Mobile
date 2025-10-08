@@ -95,19 +95,6 @@ const postSlice = createSlice({
       .addCase(deletePost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-
-      .addCase(likePost.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(likePost.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = action.payload.success;
-      })
-      .addCase(likePost.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       });
   },
 });

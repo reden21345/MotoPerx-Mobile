@@ -31,13 +31,14 @@ const HomePost = ({ navigation }) => {
   const { user } = useSelector((state) => state.auth);
 
   const [refreshing, setRefreshing] = useState(false);
-  const [likedPosts, setLikedPosts] = useState(new Set());
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [postId, setPostId] = useState(null);
+  const [likedPosts, setLikedPosts] = useState(new Set());
+  const [localLikeCounts, setLocalLikeCounts] = useState({});
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -49,26 +50,39 @@ const HomePost = ({ navigation }) => {
   useEffect(() => {
     if (homePosts?.length && user?._id) {
       const likedSet = new Set();
+      const likeCounts = {};
 
       homePosts.forEach((post) => {
         const isLiked = post.likes?.some((like) => like.user === user._id);
         if (isLiked) likedSet.add(post._id);
+        likeCounts[post._id] = post.likes?.length || 0;
       });
 
       setLikedPosts(likedSet);
+      setLocalLikeCounts(likeCounts);
     }
   }, [homePosts, user]);
 
   const handleLike = (postId) => {
-    setLikedPosts((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(postId)) {
-        newSet.delete(postId);
-      } else {
-        newSet.add(postId);
-      }
+    setLikedPosts((prevLiked) => {
+      const newSet = new Set(prevLiked);
+      const alreadyLiked = newSet.has(postId);
+
+      // Update local like count in parallel
+      setLocalLikeCounts((prevCounts) => {
+        const newCounts = { ...prevCounts };
+        newCounts[postId] = (newCounts[postId] || 0) + (alreadyLiked ? -1 : 1);
+        return newCounts;
+      });
+
+      // Toggle liked state
+      if (alreadyLiked) newSet.delete(postId);
+      else newSet.add(postId);
+
       return newSet;
     });
+
+    // Dispatch async toggle to backend
     dispatch(likePost(postId));
   };
 
@@ -187,6 +201,7 @@ const HomePost = ({ navigation }) => {
       item={item}
       user={user}
       likedPosts={likedPosts}
+      localLikeCounts={localLikeCounts}
       activeDropdown={activeDropdown}
       onLike={handleLike}
       onComment={handleComment}

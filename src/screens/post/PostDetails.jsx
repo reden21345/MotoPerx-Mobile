@@ -18,21 +18,31 @@ import CommentsSection from "../../components/posts/CommentsSection";
 import { useSelector, useDispatch } from "react-redux";
 import { getComments, deleteComment } from "../../redux/actions/commentAction";
 import { clearCommentSuccess } from "../../redux/slices/commentSlice";
+import { getHomePosts, likePost } from "../../redux/actions/postAction";
 
 const PostDetails = ({ route, navigation }) => {
   const { postId } = route.params;
   const dispatch = useDispatch();
+
   const { postDetails, loading, error, commentSuccess } = useSelector(
     (state) => state.comments
   );
   const { user } = useSelector((state) => state.auth);
 
-  const [likedPosts, setLikedPosts] = useState(new Set());
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingComment, setEditingComment] = useState(null);
 
-  const isLiked = likedPosts.has(postDetails?._id);
-  const likesCount = (postDetails?.likes?.length || 0) + (isLiked ? 1 : 0);
+  useEffect(() => {
+    if (postDetails && user?._id) {
+      const isLiked = postDetails.likes?.some(
+        (like) => like.user === user._id
+      );
+      setLiked(isLiked);
+      setLikeCount(postDetails.likes?.length || 0);
+    }
+  }, [postDetails, user]);
 
   useEffect(() => {
     if (postId) {
@@ -49,14 +59,11 @@ const PostDetails = ({ route, navigation }) => {
   }, [dispatch, postId, commentSuccess]);
 
   const handleLike = () => {
-    setLikedPosts((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(postDetails._id)) {
-        newSet.delete(postDetails._id);
-      } else {
-        newSet.add(postDetails._id);
-      }
-      return newSet;
+    setLiked((prevLiked) => {
+      const newLiked = !prevLiked;
+      setLikeCount((prevCount) => prevCount + (newLiked ? 1 : -1));
+      dispatch(likePost(postDetails._id));
+      return newLiked;
     });
   };
 
@@ -66,21 +73,17 @@ const PostDetails = ({ route, navigation }) => {
   };
 
   const handleDeleteComment = (commentId) => {
-    Alert.alert(
-      "Delete Comment",
-      "Are you sure you want to delete this comment?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            dispatch(deleteComment(commentId));
-            Alert.alert("Success", "Comment deleted successfully");
-          },
+    Alert.alert("Delete Comment", "Are you sure you want to delete this comment?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          dispatch(deleteComment(commentId));
+          Alert.alert("Success", "Comment deleted successfully");
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleCloseModal = () => {
@@ -129,31 +132,29 @@ const PostDetails = ({ route, navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
       <PostHeader
-        onBack={() => navigation.goBack()}
+        onBack={() => {
+          dispatch(getHomePosts());
+          navigation.goBack();
+        }}
         onMore={() => console.log("More options")}
       />
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <UserInfoSection
           createdBy={postDetails.createdBy}
           createdAt={postDetails.createdAt}
         />
 
         <View style={styles.contentSection}>
-          {postDetails.title && (
-            <Text style={styles.postTitle}>{postDetails.title}</Text>
-          )}
+          {postDetails.title && <Text style={styles.postTitle}>{postDetails.title}</Text>}
           <Text style={styles.postCaption}>{postDetails.caption}</Text>
         </View>
 
         <ImageCarousel images={postDetails.images} />
 
         <ActionBar
-          isLiked={isLiked}
-          likesCount={likesCount}
+          isLiked={liked}
+          likesCount={likeCount}
           commentsCount={postDetails.comments?.length || 0}
           onLike={handleLike}
         />
