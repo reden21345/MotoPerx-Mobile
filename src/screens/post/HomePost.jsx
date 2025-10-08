@@ -7,7 +7,11 @@ import {
   FlatList,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { getHomePosts, deletePost } from "../../redux/actions/postAction";
+import {
+  getHomePosts,
+  deletePost,
+  likePost,
+} from "../../redux/actions/postAction";
 import { clearMessage, clearSuccess } from "../../redux/slices/postSlice";
 import { clearCommentSuccess } from "../../redux/slices/commentSlice";
 import { styles } from "../../styles/HomePostStyles";
@@ -42,6 +46,19 @@ const HomePost = ({ navigation }) => {
     dispatch(clearMessage());
   };
 
+  useEffect(() => {
+    if (homePosts?.length && user?._id) {
+      const likedSet = new Set();
+
+      homePosts.forEach((post) => {
+        const isLiked = post.likes?.some((like) => like.user === user._id);
+        if (isLiked) likedSet.add(post._id);
+      });
+
+      setLikedPosts(likedSet);
+    }
+  }, [homePosts, user]);
+
   const handleLike = (postId) => {
     setLikedPosts((prev) => {
       const newSet = new Set(prev);
@@ -52,8 +69,7 @@ const HomePost = ({ navigation }) => {
       }
       return newSet;
     });
-    // Here you can dispatch an action to update likes on server
-    // dispatch(likePost(postId));
+    dispatch(likePost(postId));
   };
 
   const handleComment = (postId) => {

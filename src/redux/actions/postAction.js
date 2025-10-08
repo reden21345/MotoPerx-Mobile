@@ -72,3 +72,21 @@ export const deletePost = createAsyncThunk('posts/deletePost', async (id, thunkA
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to delete post');
     }
 });
+
+// Like Post
+export const likePost = createAsyncThunk('posts/likePost', async (id, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await axios.patch(`${apiKey}/api/v1/post/${id}`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to like post');
+    }
+}); 

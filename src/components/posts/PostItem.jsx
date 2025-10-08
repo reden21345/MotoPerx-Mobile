@@ -18,7 +18,7 @@ const PostItem = ({
   onViewPost,
 }) => {
   const isLiked = likedPosts.has(item?._id);
-  const likesCount = (item?.likes?.length || 0) + (isLiked ? 1 : 0);
+  const likesCount = item?.likes?.length || 0;
   const isOwner =
     String(user?._id) === String(item?.createdBy?._id || item?.createdBy);
   const showDropdown = activeDropdown === item?._id;
@@ -30,9 +30,9 @@ const PostItem = ({
   };
 
   return (
-    <TouchableOpacity 
-      style={styles.postContainer} 
-      activeOpacity={1} 
+    <TouchableOpacity
+      style={styles.postContainer}
+      activeOpacity={1}
       onPress={handlePostPress}
     >
       <View style={styles.postHeader}>
@@ -56,11 +56,11 @@ const PostItem = ({
               {item?.createdBy?.name || "Anonymous"}
             </Text>
             {item?.isCommunity && item?.communityName && (
-              <Text style={styles.communityName}>
-                in {item?.communityName}
-              </Text>
+              <Text style={styles.communityName}>in {item?.communityName}</Text>
             )}
-            <Text style={styles.timestamp}>{formatDateWithAgo(item?.createdAt)}</Text>
+            <Text style={styles.timestamp}>
+              {formatDateWithAgo(item?.createdAt)}
+            </Text>
           </View>
         </View>
         <TouchableOpacity
@@ -90,22 +90,14 @@ const PostItem = ({
                 <Text style={styles.dropdownText}>Edit Post</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[
-                  styles.dropdownItem,
-                  styles.deleteItem,
-                ]}
+                style={[styles.dropdownItem, styles.deleteItem]}
                 onPress={(e) => {
                   e.stopPropagation();
                   onDelete(item?._id);
                 }}
               >
                 <Text style={styles.dropdownIcon}>🗑️</Text>
-                <Text
-                  style={[
-                    styles.dropdownText,
-                    styles.deleteText,
-                  ]}
-                >
+                <Text style={[styles.dropdownText, styles.deleteText]}>
                   Delete Post
                 </Text>
               </TouchableOpacity>
@@ -127,9 +119,7 @@ const PostItem = ({
 
       {/* Post Content */}
       <View style={styles.postContent}>
-        {item?.title && (
-          <Text style={styles.postTitle}>{item?.title}</Text>
-        )}
+        {item?.title && <Text style={styles.postTitle}>{item?.title}</Text>}
         <Text style={styles.postCaption}>{item?.caption}</Text>
       </View>
 
@@ -170,20 +160,10 @@ const PostItem = ({
             onLike(item?._id);
           }}
         >
-          <Text
-            style={[
-              styles.actionIcon,
-              isLiked && styles.likedIcon,
-            ]}
-          >
+          <Text style={[styles.actionIcon, isLiked && styles.likedIcon]}>
             {isLiked ? "❤️" : "🤍"}
           </Text>
-          <Text
-            style={[
-              styles.actionText,
-              isLiked && styles.likedText,
-            ]}
-          >
+          <Text style={[styles.actionText, isLiked && styles.likedText]}>
             {likesCount}
           </Text>
         </TouchableOpacity>
@@ -196,9 +176,7 @@ const PostItem = ({
           }}
         >
           <Text style={styles.actionIcon}>💬</Text>
-          <Text style={styles.actionText}>
-            {item?.comments?.length || 0}
-          </Text>
+          <Text style={styles.actionText}>{item?.comments?.length || 0}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
