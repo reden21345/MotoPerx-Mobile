@@ -6,11 +6,11 @@ import Geocoder from "react-native-geocoding";
 import { Alert } from "react-native";
 import Constants from "expo-constants";
 
-const googleKey = 
+const googleKey =
   Constants.expoConfig?.extra?.GOOGLE_MAPS_API ||
   Constants.manifest?.extra?.GOOGLE_MAPS_API ||
   Constants.manifest2.extra?.GOOGLE_MAPS_API;
-  
+
 Geocoder.init(`${googleKey}`);
 
 // Pick and compress avatar image
@@ -276,38 +276,47 @@ export const formatDuration = (seconds) => {
 };
 
 export const formatDateWithAgo = (input) => {
-    const date = new Date(input);
-    const now = new Date();
+  const date = new Date(input);
+  const now = new Date();
 
-    if (isNaN(date.getTime())) return "Invalid date";
+  if (isNaN(date.getTime())) return "Invalid date";
 
-    const seconds = Math.floor((now - date) / 1000);
+  const seconds = Math.floor((now - date) / 1000);
 
-    const pad = (n) => (n < 10 ? "0" + n : n);
-    const formattedDate = `${pad(date.getMonth() + 1)}/${pad(
-      date.getDate()
-    )}/${date.getFullYear()}`;
+  const pad = (n) => (n < 10 ? "0" + n : n);
+  const formattedDate = `${pad(date.getMonth() + 1)}/${pad(
+    date.getDate()
+  )}/${date.getFullYear()}`;
 
-    let ago = "Just now";
-    if (seconds >= 1) {
-      const intervals = [
-        { label: "year", seconds: 31536000 },
-        { label: "month", seconds: 2592000 },
-        { label: "week", seconds: 604800 },
-        { label: "day", seconds: 86400 },
-        { label: "hour", seconds: 3600 },
-        { label: "minute", seconds: 60 },
-        { label: "second", seconds: 1 },
-      ];
+  let ago = "Just now";
+  if (seconds >= 1) {
+    const intervals = [
+      { label: "year", seconds: 31536000 },
+      { label: "month", seconds: 2592000 },
+      { label: "week", seconds: 604800 },
+      { label: "day", seconds: 86400 },
+      { label: "hour", seconds: 3600 },
+      { label: "minute", seconds: 60 },
+      { label: "second", seconds: 1 },
+    ];
 
-      for (const interval of intervals) {
-        const count = Math.floor(seconds / interval.seconds);
-        if (count >= 1) {
-          ago = `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
-          break;
-        }
+    for (const interval of intervals) {
+      const count = Math.floor(seconds / interval.seconds);
+      if (count >= 1) {
+        ago = `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+        break;
       }
     }
+  }
 
-    return `${formattedDate} • ${ago}`;
-  };
+  return `${formattedDate} • ${ago}`;
+};
+
+export const getInitials = (name) => {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
