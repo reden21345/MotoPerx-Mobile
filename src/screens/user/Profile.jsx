@@ -158,7 +158,7 @@ const Profile = ({ navigation }) => {
             style={styles.actionItem}
             onPress={() => navigation.navigate("MyGears")}
           >
-            <Ionicons name="settings-outline" size={20} />
+            <MaterialIcons name="sports-motorsports" size={20} />
             <Text style={styles.actionText}>MY GEARS</Text>
           </TouchableOpacity>
 

@@ -234,25 +234,6 @@ const Home = ({ navigation }) => {
             />
           </View>
         </View>
-
-        {/* LATEST BLOGS (Horizontally scrollable) */}
-        <View style={styles.blogContainer}>
-          <View style={styles.storeHeader}>
-            <Text style={styles.blogTitle}>POSTS</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("HomePosts")}>
-              <Text style={styles.viewAllText}>VIEW ALL</Text>
-            </TouchableOpacity>
-          </View>
-          <FlatList
-            data={homePosts}
-            keyExtractor={(item) => item._id.toString()}
-            renderItem={renderPostItem}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.blogList}
-            contentContainerStyle={{ paddingHorizontal: 10 }}
-          />
-        </View>
       </ScrollView>
     </View>
   );

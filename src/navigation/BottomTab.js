@@ -7,7 +7,7 @@ import CustomTabBar from "./CustomTabBar";
 // Screens
 import HomeTab from "../screens/Home";
 import Deals from "../screens/Deals";
-import Profile from "../screens/user/Profile";
+import HomePost from "../screens/post/HomePost";
 import GpsLocation from "../screens/user/GpsLocation";
 
 // Admin Screens
@@ -24,7 +24,6 @@ import Products from "../screens/partner/ProductServices";
 
 const Tab = createBottomTabNavigator();
 
-const DummyScreen = () => null;
 const BottomTab = () => {
   const { user } = useSelector((state) => state.auth);
 
@@ -56,13 +55,7 @@ const BottomTab = () => {
             <Tab.Screen name="Broadcast" component={NotifyUsers} />
           </>
         )}
-        <Tab.Screen name="Profile" component={Profile} />
-
-        <Tab.Screen
-          name="ShowQRButton"
-          component={DummyScreen}
-          options={{ tabBarButton: () => null }}
-        />
+        <Tab.Screen name="Post" component={HomePost} />
       </Tab.Navigator>
     </SafeAreaView>
   );

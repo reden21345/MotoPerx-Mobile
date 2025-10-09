@@ -77,14 +77,17 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
         </TouchableOpacity>
 
         {/* Profile */}
-        <View style={styles.profileSection}>
+        <TouchableOpacity
+          style={styles.profileSection}
+          onPress={() => navigation.navigate("Profile")}
+        >
           {user?.avatar?.url ? (
             <Image source={{ uri: user.avatar.url }} style={styles.avatar} />
           ) : (
             <Ionicons name="person-circle" size={60} color="#fff" />
           )}
-          <Text style={styles.name}>{user?.name || "Juan Dela Cruz"}</Text>
-        </View>
+          <Text style={styles.name}>{user?.name || "Anonymous"}</Text>
+        </TouchableOpacity>
 
         {/* Navigation Links */}
         <View style={styles.links}>
