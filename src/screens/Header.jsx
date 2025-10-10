@@ -49,14 +49,19 @@ const Header = ({ navigation }) => {
     <SafeAreaView style={{ backgroundColor: "#000" }} edges={["top"]}>
       <View style={styles.header}>
         {/* Left: User Info */}
-        <TouchableOpacity style={styles.userInfo} onPress={() => navigation.navigate("Profile")}>
+        <TouchableOpacity
+          style={styles.userInfo}
+          onPress={() => navigation.navigate("Profile")}
+        >
           <Image
             source={{
               uri: user?.avatar?.url || "https://via.placeholder.com/150",
             }}
             style={styles.profileImage}
           />
-          <Text style={styles.userName}>{user?.name}</Text>
+          <Text style={styles.userName}>
+            {user?.name ? user.name.split(" ")[0] : ""}
+          </Text>
         </TouchableOpacity>
 
         {/* Center: Logo */}

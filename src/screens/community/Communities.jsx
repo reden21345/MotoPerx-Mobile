@@ -21,7 +21,7 @@ const Communities = ({ navigation }) => {
     (state) => state.communities
   );
   const [refreshing, setRefreshing] = useState(false);
-
+  console.log("Data:", communities);
   useEffect(() => {
     dispatch(getApprovedCommunities());
   }, [dispatch]);
@@ -67,9 +67,16 @@ const Communities = ({ navigation }) => {
       >
         <View style={styles.cardHeader}>
           <View style={styles.avatarContainer}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{getInitials(item.name)}</Text>
-            </View>
+            {item.avatar ? (
+              <Image 
+                source={{ uri: item.avatar?.url }} 
+                style={styles.avatar}
+              />
+            ) : (
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>{getInitials(item.name)}</Text>
+              </View>
+            )}
           </View>
 
           <View style={styles.headerInfo}>
@@ -84,7 +91,11 @@ const Communities = ({ navigation }) => {
               )}
             </View>
 
-            <Text style={styles.description} numberOfLines={2}>
+            <Text 
+              style={styles.description} 
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {item.description}
             </Text>
           </View>
@@ -110,15 +121,11 @@ const Communities = ({ navigation }) => {
           <View style={styles.divider} />
 
           <View style={styles.statItem}>
-            <Text style={styles.creatorLabel}>Created by</Text>
+            <Text style={styles.creatorLabel}>Privacy</Text>
             <Text style={styles.creatorName} numberOfLines={1}>
-              {item.creator?.name || "Unknown"}
+              {isPrivate ? "Private" : "Public"}
             </Text>
           </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.statusText}>✓ Approved</Text>
         </View>
       </TouchableOpacity>
     );
