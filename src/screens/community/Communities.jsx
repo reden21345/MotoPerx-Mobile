@@ -60,7 +60,9 @@ const Communities = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => console.log(item)}
+        onPress={() =>
+          navigation.navigate("CommunityDetails", { communityId: item._id })
+        }
         activeOpacity={0.7}
       >
         <View style={styles.cardHeader}>
@@ -69,7 +71,7 @@ const Communities = ({ navigation }) => {
               <Text style={styles.avatarText}>{getInitials(item.name)}</Text>
             </View>
           </View>
-          
+
           <View style={styles.headerInfo}>
             <View style={styles.titleRow}>
               <Text style={styles.communityName} numberOfLines={1}>
@@ -81,7 +83,7 @@ const Communities = ({ navigation }) => {
                 </View>
               )}
             </View>
-            
+
             <Text style={styles.description} numberOfLines={2}>
               {item.description}
             </Text>
@@ -95,18 +97,18 @@ const Communities = ({ navigation }) => {
               {memberCount === 1 ? "Member" : "Members"}
             </Text>
           </View>
-          
+
           <View style={styles.divider} />
-          
+
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>{postCount}</Text>
             <Text style={styles.statLabel}>
               {postCount === 1 ? "Post" : "Posts"}
             </Text>
           </View>
-          
+
           <View style={styles.divider} />
-          
+
           <View style={styles.statItem}>
             <Text style={styles.creatorLabel}>Created by</Text>
             <Text style={styles.creatorName} numberOfLines={1}>
