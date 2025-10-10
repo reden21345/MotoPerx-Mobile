@@ -61,7 +61,7 @@ export const homeStyles = StyleSheet.create({
     justifyContent: "center",
   },
   viewHistoryButton: {
-    backgroundColor: "#000000",
+    backgroundColor: "#98DB52",
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,

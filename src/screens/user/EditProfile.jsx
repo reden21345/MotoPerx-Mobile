@@ -269,6 +269,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#98DB52",
   },
   row: {
     flexDirection: "row",
@@ -279,7 +280,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 45,
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderWidth: 2,
     borderRadius: 8,
     marginBottom: 15,
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
   },
   birthday: {
     height: 50,
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderWidth: 2,
     borderRadius: 8,
     marginBottom: 15,
@@ -332,8 +333,8 @@ const styles = StyleSheet.create({
     maxWidth: 200,
   },
   button: {
-    backgroundColor: "#000",
-    borderColor: "#000",
+    backgroundColor: "#98DB52",
+    borderColor: "#98DB52",
     borderWidth: 2,
     padding: 15,
     borderRadius: 8,
@@ -359,7 +360,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     alignSelf: "center",
-    backgroundColor: "#424242",
+    backgroundColor: "#98DB52",
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -386,7 +387,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   searchButton: {
-    backgroundColor: "#424242",
+    backgroundColor: "#98DB52",
     padding: 10,
     marginLeft: 5,
     borderRadius: 5,

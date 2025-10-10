@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: "#ccc",
+    borderColor: "#98DB52",
     borderWidth: 1,
     marginBottom: 15,
     borderRadius: 6,
@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderColor: "#ccc",
+    borderColor: "#98DB52",
     borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -74,8 +74,8 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   signUpButton: {
-    backgroundColor: "#000",
-    borderColor: "#98DB52",
+    backgroundColor: "#98DB52",
+    borderColor: "#000",
     borderWidth: 1,
     borderRadius: 6,
     paddingVertical: 15,
@@ -93,7 +93,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   locBtn: {
-    backgroundColor: "#424242",
+    backgroundColor: "#98DB52",
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 10,

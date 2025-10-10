@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: "#98DB52",
   },
   
   inputWrapper: {
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     top: 13,
   },
   button: {
-    backgroundColor: "#000",
+    backgroundColor: "#98DB52",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",

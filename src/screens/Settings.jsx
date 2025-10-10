@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 30,
+    color: "#98DB52",
   },
   list: {
     gap: 15,

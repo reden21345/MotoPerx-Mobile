@@ -40,7 +40,7 @@ const ForgotPassword = ({ navigation }) => {
           style={styles.arrowButton}
           onPress={() => navigation.navigate("Login")}
         >
-          <Ionicons name="arrow-back" size={28} color="#000" />
+          <Ionicons name="arrow-back" size={28} color="#98DB52" />
         </TouchableOpacity>
       </View>
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "600",
     marginBottom: 30,
-    color: "#000",
+    color: "#98DB52",
   },
   error: {
     color: "red",
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: "#ccc",
+    borderColor: "#98DB52",
     borderWidth: 1,
     marginBottom: 15,
     borderRadius: 6,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   submitButton: {
-    backgroundColor: "#000",
+    backgroundColor: "#98DB52",
     borderRadius: 6,
     paddingVertical: 15,
     alignItems: "center",

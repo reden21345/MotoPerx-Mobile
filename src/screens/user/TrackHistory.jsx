@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#121212",
+    color: "#98DB52",
     marginBottom: 20,
   },
   card: {

@@ -37,7 +37,7 @@ export const communitiesStyles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#98DB52",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -113,7 +113,7 @@ export const communitiesStyles = StyleSheet.create({
   },
   divider: {
     width: 1,
-    backgroundColor: "#E5E5EA",
+    backgroundColor: "#98DB52",
     marginHorizontal: 12,
   },
   footer: {

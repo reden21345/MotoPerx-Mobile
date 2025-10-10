@@ -43,7 +43,7 @@ const WhatsOnMind = ({ onPress, onCommunityPress }) => {
           onPress={onCommunityPress}
           activeOpacity={0.7}
         >
-          <Ionicons name="people" size={20} color="#1877f2" />
+          <Ionicons name="people" size={20} color="#ffffff" />
           <Text style={styles.communityButtonText}>Community</Text>
         </TouchableOpacity>
       </View>

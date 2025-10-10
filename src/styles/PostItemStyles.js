@@ -32,7 +32,7 @@ export const postItemStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#1DA1F2",
+    backgroundColor: "#98DB52",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -183,7 +183,7 @@ export const postItemStyles = StyleSheet.create({
     paddingVertical: 4,
   },
   viewPostButton: {
-    backgroundColor: "#1DA1F2",
+    backgroundColor: "#98DB52",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,

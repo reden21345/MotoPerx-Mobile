@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   card: {
     width: "100%",
     backgroundColor: "#fff",
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderWidth: 1,
     borderRadius: 12,
     padding: 20,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 12,
     borderWidth: 2,
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderRadius: 10,
     marginBottom: 15,
     fontSize: 16,
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   avatarText: {
-    color: "#98DB52",
+    color: "#000",
     textAlign: "center",
   },
   map: {

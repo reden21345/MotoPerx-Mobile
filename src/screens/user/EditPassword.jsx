@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "#000"
+    color: "#98DB52"
   },
   inputWrapper: {
     position: "relative",
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderWidth: 2,
     borderRadius: 8,
     paddingHorizontal: 15,
@@ -129,12 +129,12 @@ const styles = StyleSheet.create({
     top: 13,
   },
   button: {
-    backgroundColor: "#000",
+    backgroundColor: "#98DB52",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
     marginTop: 10,
-    borderColor: "#000",
+    borderColor: "#98DB52",
     borderWidth: 2,
   },
   buttonText: {
