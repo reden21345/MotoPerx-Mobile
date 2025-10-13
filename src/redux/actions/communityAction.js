@@ -7,17 +7,6 @@ const apiKey =
   Constants.manifest?.extra?.EXPO_URL ||
   Constants.manifest2.extra?.EXPO_URL;
 
-// Get approved communities
-export const getApprovedCommunities = createAsyncThunk('communities/getApprovedCommunities', async (_, thunkAPI) => {
-    try {
-        const response = await axios.get(`${apiKey}/api/v1/communities/approved`);
-        return response.data;
-    } catch (error) {
-        
-        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get all communities');
-    }
-});
-
 // Create Community
 export const createCommunity = createAsyncThunk('community/createCommunity', async (data, thunkAPI) => {
     try {
@@ -156,5 +145,15 @@ export const changeMemberRole = createAsyncThunk('community/changeMemberRole', a
         return response.data;
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});
+
+// Get communities for user
+export const getCommunitiesForUser = createAsyncThunk('communities/getCommunitiesForUser', async (_, thunkAPI) => {
+    try {
+        const response = await axios.get(`${apiKey}/api/v1/communities/user`);
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get user communities');
     }
 });

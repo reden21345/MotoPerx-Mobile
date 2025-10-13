@@ -7,28 +7,33 @@ import {
   RefreshControl,
   FlatList,
   TouchableOpacity,
-  Image,
+  TextInput,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { getApprovedCommunities } from "../../redux/actions/communityAction";
+import { getCommunitiesForUser } from "../../redux/actions/communityAction";
 import { clearMessage } from "../../redux/slices/communitySlice";
 import { communitiesStyles as styles } from "../../styles/CommunitiesStyles";
-import { getInitials } from "../../utils/helpers";
+import CommunitiesCard from "../../components/communities/CommunitiesCard";
+import FilterSection from "../../components/communities/FilterSection";
 
 const Communities = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { communities, loading, error, message, success } = useSelector(
-    (state) => state.communities
-  );
+  const {
+    communities,
+    joinedCommunities,
+    createdCommunities,
+    loading,
+    error,
+    message,
+    success,
+  } = useSelector((state) => state.communities);
   const [refreshing, setRefreshing] = useState(false);
-  console.log("Data:", communities);
-  useEffect(() => {
-    dispatch(getApprovedCommunities());
-  }, [dispatch]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [privacyFilter, setPrivacyFilter] = useState("all");
 
   const onRefresh = async () => {
     setRefreshing(true);
-    dispatch(getApprovedCommunities()).finally(() => setRefreshing(false));
+    dispatch(getCommunitiesForUser()).finally(() => setRefreshing(false));
     dispatch(clearMessage());
   };
 
@@ -52,104 +57,75 @@ const Communities = ({ navigation }) => {
     }
   }, [error]);
 
+  // Filter communities based on search and privacy
+  const filteredCommunities = communities.filter((community) => {
+    const matchesSearch = community.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    
+    const matchesPrivacy =
+      privacyFilter === "all" ||
+      (privacyFilter === "public" && !community.isPrivate) ||
+      (privacyFilter === "private" && community.isPrivate);
+
+    return matchesSearch && matchesPrivacy;
+  });
+
+  // Determine community status for each community
+  const getCommunityStatus = (communityId) => {
+    if (createdCommunities.includes(communityId)) {
+      return "creator";
+    } else if (joinedCommunities.includes(communityId)) {
+      return "joined";
+    }
+    return "available";
+  };
+
   const renderCommunityCard = ({ item }) => {
-    const memberCount = item.members?.length || 0;
-    const postCount = item.posts?.length || 0;
-    const isPrivate = item.isPrivate;
-
+    const status = getCommunityStatus(item._id);
     return (
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() =>
-          navigation.navigate("CommunityDetails", { communityId: item._id })
-        }
-        activeOpacity={0.7}
-      >
-        <View style={styles.cardHeader}>
-          <View style={styles.avatarContainer}>
-            {item.avatar ? (
-              <Image 
-                source={{ uri: item.avatar?.url }} 
-                style={styles.avatar}
-              />
-            ) : (
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{getInitials(item.name)}</Text>
-              </View>
-            )}
-          </View>
-
-          <View style={styles.headerInfo}>
-            <View style={styles.titleRow}>
-              <Text style={styles.communityName} numberOfLines={1}>
-                {item.name}
-              </Text>
-              {isPrivate && (
-                <View style={styles.privateBadge}>
-                  <Text style={styles.privateBadgeText}>🔒 Private</Text>
-                </View>
-              )}
-            </View>
-
-            <Text 
-              style={styles.description} 
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {item.description}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{memberCount}</Text>
-            <Text style={styles.statLabel}>
-              {memberCount === 1 ? "Member" : "Members"}
-            </Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>{postCount}</Text>
-            <Text style={styles.statLabel}>
-              {postCount === 1 ? "Post" : "Posts"}
-            </Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.statItem}>
-            <Text style={styles.creatorLabel}>Privacy</Text>
-            <Text style={styles.creatorName} numberOfLines={1}>
-              {isPrivate ? "Private" : "Public"}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <CommunitiesCard
+        item={item}
+        navigation={navigation}
+        status={status}
+      />
     );
   };
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Text style={styles.emptyIcon}>🏘️</Text>
-      <Text style={styles.emptyTitle}>No Communities Yet</Text>
+      <Text style={styles.emptyTitle}>
+        {searchQuery || privacyFilter !== "all"
+          ? "No Communities Found"
+          : "No Communities Yet"}
+      </Text>
       <Text style={styles.emptyDescription}>
-        Communities that are approved will appear here
+        {searchQuery || privacyFilter !== "all"
+          ? "Try adjusting your search or filters"
+          : "Communities that are approved will appear here"}
       </Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
+      {/* Search Bar with Create Button */}
+      <FilterSection
+        navigation={navigation}
+        setSearchQuery={setSearchQuery}
+        searchQuery={searchQuery}
+        setPrivacyFilter={setPrivacyFilter}
+        privacyFilter={privacyFilter}
+      />
+
       {loading && !refreshing ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
         </View>
       ) : (
         <FlatList
-          data={communities}
+          data={filteredCommunities}
           renderItem={renderCommunityCard}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.listContainer}

@@ -4,17 +4,19 @@ import {
     changeMemberRole,
     createCommunity,
     deleteCommunity,
-    getApprovedCommunities,
     getCommunityById,
     removeMember,
     updateCommunity,
-    updateStatus
+    updateStatus,   
+    getCommunitiesForUser
  } from "../actions/communityAction";
 
 const communitySlice = createSlice({
   name: "communities",
   initialState: {
     communities: [],
+    joinedCommunities: [],
+    createdCommunities: [],
     community: null,
     message: null,
     nearby: null,
@@ -28,6 +30,8 @@ const communitySlice = createSlice({
       state.error = null;
       state.message = null;
       state.communities = [];
+      state.joinedCommunities = [];
+      state.createdCommunities = [];
       state.community = null;
       state.count = 0;
       state.success = false;
@@ -71,15 +75,18 @@ const communitySlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(getApprovedCommunities.pending, (state) => {
+      .addCase(getCommunitiesForUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getApprovedCommunities.fulfilled, (state, action) => {
+      .addCase(getCommunitiesForUser.fulfilled, (state, action) => {
         state.loading = false;
         state.communities = action.payload.communities;
+        state.count = action.payload.count;
+        state.joinedCommunities = action.payload.joinedCommunities;
+        state.createdCommunities = action.payload.createdCommunities;
       })
-      .addCase(getApprovedCommunities.rejected, (state, action) => {
+      .addCase(getCommunitiesForUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
