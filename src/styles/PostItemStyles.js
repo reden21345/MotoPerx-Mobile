@@ -65,8 +65,19 @@ export const postItemStyles = StyleSheet.create({
   },
   communityName: {
     fontSize: 13,
-    color: "#657786",
-    marginBottom: 2,
+    fontWeight: "600",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: "#E8F5FD",
+    borderRadius: 16,
+    overflow: "hidden",
+    alignSelf: "flex-start",
+    marginLeft: 16,
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  adminBadge: {
+    backgroundColor: "#FEE",
   },
   timestamp: {
     fontSize: 13,

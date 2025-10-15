@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { postItemStyles as styles } from "../../styles/PostItemStyles";
+import { useSelector } from "react-redux";
 import { formatDateWithAgo } from "../../utils/helpers";
 
 const PostItem = ({
@@ -20,6 +21,7 @@ const PostItem = ({
 }) => {
   const isLiked = likedPosts.has(item?._id);
   const likesCount = localLikeCounts[item?._id] ?? (item?.likes?.length || 0);
+  const { communities } = useSelector((state) => state.communities);
 
   const isOwner =
     String(user?._id) === String(item?.createdBy?._id || item?.createdBy);
@@ -31,20 +33,42 @@ const PostItem = ({
     }
   };
 
+  const community =
+    item?.postType === "community"
+      ? communities.find(
+          (comm) =>
+            String(comm._id) === String(item.community || item.communityId)
+        )
+      : null;
+
   return (
     <TouchableOpacity
       style={styles.postContainer}
       activeOpacity={1}
       onPress={handlePostPress}
     >
+      {item?.postType === "community" && community && (
+        <Text style={[styles.communityName, { color: "#1DA1F2" }]}>
+          in {community.name}
+        </Text>
+      )}
+      {item?.postType === "admin" && (
+        <Text
+          style={[
+            styles.communityName,
+            styles.adminBadge,
+            { color: "#e63946" },
+          ]}
+        >
+          Admin Post
+        </Text>
+      )}
       <View style={styles.postHeader}>
         <View style={styles.userInfo}>
           <View style={styles.avatar}>
             {item?.createdBy?.avatar?.url ? (
               <Image
-                source={{
-                  uri: item?.createdBy?.avatar?.url,
-                }}
+                source={{ uri: item?.createdBy?.avatar?.url }}
                 style={styles.avatarImage}
               />
             ) : (
@@ -53,18 +77,18 @@ const PostItem = ({
               </Text>
             )}
           </View>
+
           <View style={styles.userDetails}>
             <Text style={styles.name}>
               {item?.createdBy?.name || "Anonymous"}
             </Text>
-            {item?.isCommunity && item?.communityName && (
-              <Text style={styles.communityName}>in {item?.communityName}</Text>
-            )}
+
             <Text style={styles.timestamp}>
               {formatDateWithAgo(item?.createdAt)}
             </Text>
           </View>
         </View>
+
         <TouchableOpacity
           style={styles.moreButton}
           onPress={(e) => {
@@ -170,16 +194,18 @@ const PostItem = ({
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={(e) => {
-            e.stopPropagation();
-            onComment(item?._id);
-          }}
-        >
-          <Text style={styles.actionIcon}>💬</Text>
-          <Text style={styles.actionText}>{item?.comments?.length || 0}</Text>
-        </TouchableOpacity>
+        {item?.postType === "community" && (
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              onComment(item?._id);
+            }}
+          >
+            <Text style={styles.actionIcon}>💬</Text>
+            <Text style={styles.actionText}>{item?.comments?.length || 0}</Text>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity
           style={styles.viewPostButton}

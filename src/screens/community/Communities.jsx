@@ -6,8 +6,6 @@ import {
   Alert,
   RefreshControl,
   FlatList,
-  TouchableOpacity,
-  TextInput,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { getCommunitiesForUser } from "../../redux/actions/communityAction";

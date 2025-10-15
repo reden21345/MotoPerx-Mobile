@@ -113,7 +113,7 @@ export const createPostStyles = StyleSheet.create({
     fontSize: 14,
     color: "#1DA1F2",
     fontWeight: "500",
-    marginBottom: 10
+    marginBottom: 10,
   },
   previewRow: {
     flexDirection: "row",
@@ -139,5 +139,30 @@ export const createPostStyles = StyleSheet.create({
     right: -6,
     backgroundColor: "#fff",
     borderRadius: 12,
+  },
+
+  // Community Selection Styles
+  communitySelector: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#F5F8FA",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#E1E8ED",
+  },
+  communitySelectorContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  communitySelectorText: {
+    marginLeft: 10,
+    fontSize: 15,
+    color: "#14171A",
+    fontWeight: "500",
   },
 });
