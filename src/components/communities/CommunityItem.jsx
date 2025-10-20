@@ -11,39 +11,37 @@ import { useDispatch } from "react-redux";
 import { Swipeable } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { updateStatus } from "../../redux/actions/partnerAction";
-import { getAddress, getStatusStyle } from "../../utils/helpers";
-import { deletePartner, getAllPartners } from "../../redux/actions/adminAction";
+import { updateStatus } from "../../redux/actions/communityAction";
+import { getStatusStyle } from "../../utils/helpers";
+import {
+  deletePartner,
+  getAllCommunities,
+} from "../../redux/actions/adminAction";
 import { sendSingleUserNotif } from "../../redux/actions/notifAction";
-import { clearMessage } from "../../redux/slices/partnerSlice";
+import { clearMessage } from "../../redux/slices/communitySlice";
 
-const PartnerItem = ({ item, admin }) => {
+const CommunityItem = ({ item }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const createdAt = new Date(item.createdAt).toLocaleDateString() || null;
   const pending = item.status === "Pending" || null;
-  const [address, setAddress] = useState(null);
-
-  useEffect(() => {
-    getAddress(item?.location?.coordinates, setAddress);
-  }, [item.location.coordinates]);
 
   const handleEdit = () => {
     navigation.navigate("EditPartner", { partner: item, admin: true });
   };
 
-  const handlePartnerStatus = async (stat) => {
+  const handleCommunityStatus = async (stat) => {
     const data = {
       id: item._id,
       status: stat ? "Approved" : "Disapproved",
     };
 
     const notifData = {
-      title: "Partnership update",
+      title: "Community update",
       body: stat
-        ? "Congratulations! Your application of partnership is approved"
-        : "We are sorry to inform you that your application of partnership is disapproved",
-      userId: item.owner?._id,
+        ? "Congratulations! Your application of community creation is approved"
+        : "We are sorry to inform you that your application of community creation is disapproved",
+      userId: item.creator?._id,
     };
 
     try {
@@ -52,11 +50,11 @@ const PartnerItem = ({ item, admin }) => {
       if (updateStatus.fulfilled.match(resultAction)) {
         dispatch(sendSingleUserNotif(notifData));
         dispatch(clearMessage());
-        dispatch(getAllPartners());
+        dispatch(getAllCommunities());
       } else {
         Alert.alert(
           "Update Failed",
-          resultAction.payload || "Failed to update partner status."
+          resultAction.payload || "Failed to update community status."
         );
       }
     } catch (err) {
@@ -74,24 +72,25 @@ const PartnerItem = ({ item, admin }) => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            try {
-              const resultAction = await dispatch(deletePartner(id));
+            // try {
+            //   const resultAction = await dispatch(deletePartner(id));
 
-              if (deletePartner.fulfilled.match(resultAction)) {
-                Alert.alert("Success", "Partner store deleted successfully");
-                dispatch(getAllPartners());
-              } else {
-                Alert.alert(
-                  "Deletion Failed",
-                  resultAction.payload || "Something went wrong."
-                );
-              }
-            } catch (err) {
-              Alert.alert(
-                "Deletion Failed",
-                err.message || "Something went wrong."
-              );
-            }
+            //   if (deletePartner.fulfilled.match(resultAction)) {
+            //     Alert.alert("Success", "Partner store deleted successfully");
+            //     dispatch(getAllPartners());
+            //   } else {
+            //     Alert.alert(
+            //       "Deletion Failed",
+            //       resultAction.payload || "Something went wrong."
+            //     );
+            //   }
+            // } catch (err) {
+            //   Alert.alert(
+            //     "Deletion Failed",
+            //     err.message || "Something went wrong."
+            //   );
+            // }
+            console.log("Delete community with id:", id);
           },
         },
       ]
@@ -101,18 +100,18 @@ const PartnerItem = ({ item, admin }) => {
   const handleApproval = () => {
     Alert.alert(
       "Approval",
-      "Do you want to approve this application for partnership?",
+      "Do you want to approve this community application?",
       [
         { text: "Cancel", style: "cancel" },
         {
           text: "No",
           style: "destructive",
-          onPress: () => handlePartnerStatus(false),
+          onPress: () => handleCommunityStatus(false),
         },
         {
           text: "Yes",
           style: "default",
-          onPress: () => handlePartnerStatus(true),
+          onPress: () => handleCommunityStatus(true),
         },
       ]
     );
@@ -144,36 +143,31 @@ const PartnerItem = ({ item, admin }) => {
   );
 
   return (
-    <Swipeable renderRightActions={() => (admin ? renderRightActions() : null)}>
+    <Swipeable renderRightActions={() => renderRightActions()}>
       <TouchableOpacity
         style={styles.card}
-        onPress={() => navigation.navigate("PartnerDetails", { item })}
+        onPress={() => console.log("Community pressed: ", item)}
       >
         {item.avatar?.url ? (
           <Image source={{ uri: item.avatar.url }} style={styles.avatar} />
         ) : (
           <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarText}>{item.storeName[0]}</Text>
+            <Text style={styles.avatarText}>{item.name[0]}</Text>
           </View>
         )}
         <View style={styles.info}>
-          {admin && <Text style={styles.name}>Owner: {item.owner.name}</Text>}
-          <Text style={styles.name}>{item.storeName}</Text>
-          <Text style={styles.email}>Address: {address || "Loading..."}</Text>
-          {admin && (
-            <>
-              <Text style={[styles.role, getStatusStyle(item.status)]}>
-                Status: {item.status}
-              </Text>
-              <Text style={styles.created}>
-                {item.status === "Pending"
-                  ? `Created At: ${createdAt}`
-                  : item.status === "Disapproved"
-                  ? `Declined: ${createdAt}`
-                  : `Joined: ${createdAt}`}
-              </Text>
-            </>
-          )}
+          <Text style={styles.name}>Creator: {item.creator?.name}</Text>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={[styles.role, getStatusStyle(item.status)]}>
+            Status: {item.status}
+          </Text>
+          <Text style={styles.created}>
+            {item.status === "Pending"
+              ? `Created At: ${createdAt}`
+              : item.status === "Disapproved"
+              ? `Declined: ${createdAt}`
+              : `Approved: ${createdAt}`}
+          </Text>
         </View>
       </TouchableOpacity>
     </Swipeable>
@@ -265,4 +259,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PartnerItem;
+export default CommunityItem;

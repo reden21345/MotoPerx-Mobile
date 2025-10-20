@@ -153,7 +153,7 @@ const HomePost = ({ navigation }) => {
   };
 
   const handleCommunityPress = () => {
-    navigation.navigate("Communities");
+    navigation.navigate("UsersCommunities");
   };
 
   const closeCreateModal = () => {

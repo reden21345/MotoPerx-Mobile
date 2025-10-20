@@ -23,7 +23,7 @@ const CommunityDetails = ({ route, navigation }) => {
   const { communityId } = route.params;
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("posts");
-  
+
   const { community, loading, error, success } = useSelector(
     (state) => state.communities
   );
@@ -119,13 +119,13 @@ const CommunityDetails = ({ route, navigation }) => {
     );
   }
 
-  const approvedMembers = community.members?.filter(m => m.isApproved) || [];
-  
+  const approvedMembers = community.members?.filter((m) => m.isApproved) || [];
+
   // Check if current user is a member of the community
-  const isMember = approvedMembers.some(
-    member => member.user?._id === user?._id
-  );
-  
+  const isMember =
+    community.creator?._id === user?._id ||
+    approvedMembers.some((member) => member.user?._id === user?._id);
+
   // Determine if user can view posts
   const canViewPosts = !community.isPrivate || isMember;
 
@@ -133,11 +133,11 @@ const CommunityDetails = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a73e8" />
       <CommunityHeader onBack={() => navigation.goBack()} />
-      
+
       <ScrollView style={styles.scrollView}>
         <CommunityCover communityName={community.name} />
 
-        <CommunityInfo 
+        <CommunityInfo
           community={community}
           approvedMembersCount={approvedMembers.length}
           isMember={isMember}
@@ -146,14 +146,11 @@ const CommunityDetails = ({ route, navigation }) => {
           onJoin={handleJoin}
         />
 
-        <CommunityTabs 
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
+        <CommunityTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
         <View style={styles.tabContent}>
           {activeTab === "posts" && (
-            <PostsTab 
+            <PostsTab
               canViewPosts={canViewPosts}
               posts={community.posts}
               user={user}
@@ -165,16 +162,14 @@ const CommunityDetails = ({ route, navigation }) => {
           )}
 
           {activeTab === "members" && (
-            <MembersTab 
+            <MembersTab
               members={approvedMembers}
               currentUserId={user?._id}
               onRemoveMember={handleRemoveMember}
             />
           )}
 
-          {activeTab === "about" && (
-            <AboutTab community={community} />
-          )}
+          {activeTab === "about" && <AboutTab community={community} />}
         </View>
       </ScrollView>
     </SafeAreaView>

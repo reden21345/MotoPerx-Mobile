@@ -51,7 +51,7 @@ import HomePosts from "./src/screens/post/HomePost";
 import PostDetails from "./src/screens/post/PostDetails";
 
 // Community Imports
-import Communities from "./src/screens/community/Communities";
+import UsersCommunities from "./src/screens/community/Communities";
 import CommunityDetails from "./src/screens/community/CommuniyDetails";
 import CreateCommunity from "./src/screens/community/CreateCommunity";
 
@@ -155,7 +155,7 @@ const AppContent = () => {
         <Stack.Screen name="PostDetails" component={PostDetails} />
 
         {/* Community Screens */}
-        <Stack.Screen name="Communities" component={Communities} />
+        <Stack.Screen name="UsersCommunities" component={UsersCommunities} />
         <Stack.Screen name="CommunityDetails" component={CommunityDetails} />
         <Stack.Screen name="CreateCommunity" component={CreateCommunity} />
       </Stack.Navigator>

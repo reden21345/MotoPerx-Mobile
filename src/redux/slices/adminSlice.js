@@ -1,11 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deletePartner, deleteUser, editUser, getAllPartners, getAllUsers } from "../actions/adminAction";
+import {
+  deletePartner,
+  deleteUser,
+  editUser,
+  getAllPartners,
+  getAllUsers,
+  getAllCommunities
+} from "../actions/adminAction";
 
 const amdinSlice = createSlice({
   name: "admins",
   initialState: {
     users: [],
     partners: [],
+    communities: [],
     count: 0,
     loading: false,
     message: null,
@@ -16,6 +24,7 @@ const amdinSlice = createSlice({
     clearAdminState: (state) => {
       state.users = [];
       state.partners = [],
+      state.communities = [],
       state.count = 0;
       state.message = null,
       state.success = false,
@@ -78,7 +87,6 @@ const amdinSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
       .addCase(deletePartner.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -88,6 +96,19 @@ const amdinSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(deletePartner.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getAllCommunities.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllCommunities.fulfilled, (state, action) => {
+        state.loading = false;
+        state.count = action.payload.count;
+        state.communities = action.payload.communities;
+      })
+      .addCase(getAllCommunities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

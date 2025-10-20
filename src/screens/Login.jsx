@@ -85,6 +85,7 @@ const Login = ({ navigation }) => {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            autoCapitalize="none"
             style={styles.input}
           />
           <Ionicons

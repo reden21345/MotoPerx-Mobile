@@ -121,11 +121,11 @@ const renderTabItem = (route, index, state, descriptors, navigation) => {
     iconName = isFocused ? "scan" : "scan-outline";
   } else if (route.name === "Badges") {
     iconName = isFocused ? "medal" : "medal-outline";
-  } else if (route.name === "Profile") {
+  } else if (route.name === "Users" || route.name === "Employees") {
     iconName = isFocused ? "person" : "person-outline";
   } else if (route.name === "Shop") {
     iconName = isFocused ? "storefront" : "storefront-outline";
-  } else if (route.name === "Users" || route.name === "Employees") {
+  } else if (route.name === "Communities") {
     iconName = isFocused ? "people" : "people-outline";
   } else if (route.name === "Partners") {
     iconName = isFocused ? "business" : "business-outline";
