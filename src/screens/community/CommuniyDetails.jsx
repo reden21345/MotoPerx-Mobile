@@ -57,10 +57,6 @@ const CommunityDetails = ({ route, navigation }) => {
     console.log("Join community");
   };
 
-  const handleRequestJoin = () => {
-    // Request to join private community
-    console.log("Request to join");
-  };
 
   const handleLike = (post) => {
     // Handle like post
@@ -154,7 +150,7 @@ const CommunityDetails = ({ route, navigation }) => {
               canViewPosts={canViewPosts}
               posts={community.posts}
               user={user}
-              onRequestJoin={handleRequestJoin}
+              onRequestJoin={handleJoin}
               onLike={handleLike}
               onComment={handleComment}
               onShare={handleShare}

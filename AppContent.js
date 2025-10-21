@@ -55,6 +55,10 @@ import UsersCommunities from "./src/screens/community/Communities";
 import CommunityDetails from "./src/screens/community/CommuniyDetails";
 import CreateCommunity from "./src/screens/community/CreateCommunity";
 
+// Game Imports
+import GameMenu from "./src/screens/games/GameMenu";
+import ReactionGame from "./src/screens/games/ReactionGame";
+
 // Dashboard
 import Shop from "./src/screens/dashboard/PartnerDashboard";
 
@@ -158,6 +162,10 @@ const AppContent = () => {
         <Stack.Screen name="UsersCommunities" component={UsersCommunities} />
         <Stack.Screen name="CommunityDetails" component={CommunityDetails} />
         <Stack.Screen name="CreateCommunity" component={CreateCommunity} />
+
+        {/* Game Screens */}
+        <Stack.Screen name="GameMenu" component={GameMenu} />
+        <Stack.Screen name="ReactionGame" component={ReactionGame} />
       </Stack.Navigator>
     </NavigationContainer>
   );

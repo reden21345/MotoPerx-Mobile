@@ -13,6 +13,7 @@ import trackReducer from './slices/trackingSlice';
 import postReducer from './slices/postSlice';
 import commentReducer from './slices/commentSlice';
 import communityReducer from './slices/communitySlice';
+import gameReducer from './slices/gameSlice';
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ export const store = configureStore({
     posts: postReducer,
     comments: commentReducer,
     communities: communityReducer,
+    games: gameReducer,
   },
 });
 

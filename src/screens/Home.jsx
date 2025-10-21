@@ -234,6 +234,62 @@ const Home = ({ navigation }) => {
             />
           </View>
         </View>
+
+        {/* RIDER GAMES SECTION */}
+        <View style={styles.gamesSection}>
+          <View style={styles.gamesGradient}>
+            <View style={styles.gamesHeader}>
+              <Ionicons name="game-controller" size={40} color="#FFF" />
+              <View style={styles.gamesHeaderText}>
+                <Text style={styles.gamesTitle}>RIDER GAMES</Text>
+                <Text style={styles.gamesSubtitle}>
+                  Test Your Skills & Win Rewards
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.gamesIconRow}>
+              <View style={styles.gameIconItem}>
+                <Ionicons name="flash" size={24} color="#FFF" />
+              </View>
+              <View style={styles.gameIconItem}>
+                <Ionicons name="book" size={24} color="#FFF" />
+              </View>
+              <View style={styles.gameIconItem}>
+                <Ionicons name="speedometer" size={24} color="#FFF" />
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.playGamesButton}
+              onPress={() => navigation.navigate("GameMenu")}
+            >
+              <Text style={styles.playGamesButtonText}>PLAY GAMES</Text>
+              <Ionicons name="arrow-forward" size={20} color="#98DB52" />
+            </TouchableOpacity>
+
+            <View style={styles.gamesFeaturesList}>
+              <View style={styles.gamesFeatureItem}>
+                <Ionicons name="trophy" size={16} color="#FFD700" />
+                <Text style={styles.gamesFeatureText}>
+                  Compete for High Scores
+                </Text>
+              </View>
+              <View style={styles.gamesFeatureItem}>
+                <Ionicons name="people" size={16} color="#FFD700" />
+                <Text style={styles.gamesFeatureText}>
+                  Challenge Other Riders
+                </Text>
+              </View>
+              <View style={styles.gamesFeatureItem}>
+                <Ionicons name="gift" size={16} color="#FFD700" />
+                <Text style={styles.gamesFeatureText}>
+                  Earn Exclusive Rewards
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
