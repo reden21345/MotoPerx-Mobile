@@ -6,7 +6,12 @@ import {
   getQuizQuestions,
   submitQuizAnswers,
   getUserQuizHistory,
-  getQuizLeaderboard
+  getQuizLeaderboard,
+  getFuelChallenge,
+  submitFuelChallenge,
+  getUserFuelHistory,
+  getFuelLeaderboard,
+  getUserFuelStats,
 } from "../actions/gameAction";
 
 const gameSlice = createSlice({
@@ -17,8 +22,14 @@ const gameSlice = createSlice({
     quizQuestions: null,
     quizHistory: null,
     quizLeaderboard: null,
-    weekStart: null,
     quizResult: null,
+    fuelChallenge: null,
+    fuelResult: null,
+    fuelHistory: null,
+    fuelLeaderboard: null,
+    userBestScore: null,
+    weekStart: null,
+    pagination: null,
     count: null,
     message: null,
     loading: false,
@@ -47,7 +58,7 @@ const gameSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    // Reaction game slices
+      // Reaction game slices
       .addCase(saveReactionTime.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -90,7 +101,6 @@ const gameSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
 
       // Quiz game slices
       .addCase(getQuizQuestions.pending, (state) => {
@@ -152,6 +162,81 @@ const gameSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      // Fuel Game Slices
+      .addCase(getFuelChallenge.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getFuelChallenge.fulfilled, (state, action) => {
+        state.loading = false;
+        state.fuelChallenge = action.payload.challenge;
+        state.success = action.payload.success;
+      })
+      .addCase(getFuelChallenge.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(submitFuelChallenge.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(submitFuelChallenge.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        state.fuelResult = action.payload.result;
+        state.success = action.payload.success;
+      })
+      .addCase(submitFuelChallenge.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getUserFuelHistory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserFuelHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.fuelHistory = action.payload.history;
+        state.pagination = action.payload.pagination;
+        state.success = action.payload.success;
+      })
+      .addCase(getUserFuelHistory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getFuelLeaderboard.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getFuelLeaderboard.fulfilled, (state, action) => {
+        state.loading = false;
+        state.weekStart = action.payload.weekStart;
+        state.fuelLeaderboard = action.payload.leaderboard;
+        state.userBestScore = action.payload.currentUser;
+        state.success = action.payload.success;
+      })
+      .addCase(getFuelLeaderboard.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getUserFuelStats.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserFuelStats.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userFuelStats = action.payload.stats || action.payload;
+        state.success = action.payload.success;
+      })
+      .addCase(getUserFuelStats.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 export const { clearMessage, clearGameState } = gameSlice.actions;

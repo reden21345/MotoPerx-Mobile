@@ -107,3 +107,92 @@ export const getQuizLeaderboard = createAsyncThunk(
     }
   }
 );
+
+// Get Fuel Challenge Scenario
+export const getFuelChallenge = createAsyncThunk(
+  "fuel/getFuelChallenge",
+  async ({ isCompetitive = false }, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${apiKey}/api/v1/fuel/challenge?isCompetitive=${isCompetitive}`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.errMessage || "Failed to get fuel challenge"
+      );
+    }
+  }
+);
+
+// Submit Fuel Challenge
+export const submitFuelChallenge = createAsyncThunk(
+  "fuel/submitFuelChallenge",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        `${apiKey}/api/v1/fuel/submit`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.errMessage || "Failed to submit fuel challenge"
+      );
+    }
+  }
+);
+
+// Get User Fuel History
+export const getUserFuelHistory = createAsyncThunk(
+  "fuel/getUserFuelHistory",
+  async ({ page = 1, limit = 10, isCompetitive }, thunkAPI) => {
+    try {
+      let url = `${apiKey}/api/v1/fuel/history?page=${page}&limit=${limit}`;
+      if (isCompetitive !== undefined) {
+        url += `&isCompetitive=${isCompetitive}`;
+      }
+      
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.errMessage || "Failed to get fuel history"
+      );
+    }
+  }
+);
+
+// Get Fuel Leaderboard
+export const getFuelLeaderboard = createAsyncThunk(
+  "fuel/getFuelLeaderboard",
+  async ({ limit = 10 }, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${apiKey}/api/v1/fuel/leaderboard?limit=${limit}`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.errMessage || "Failed to get fuel leaderboard"
+      );
+    }
+  }
+);
+
+// Get User Fuel Stats
+export const getUserFuelStats = createAsyncThunk(
+  "fuel/getUserFuelStats",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${apiKey}/api/v1/fuel/stats`
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.errMessage || "Failed to get user fuel stats"
+      );
+    }
+  }
+);

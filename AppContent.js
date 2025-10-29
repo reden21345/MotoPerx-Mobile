@@ -59,6 +59,7 @@ import CreateCommunity from "./src/screens/community/CreateCommunity";
 import GameMenu from "./src/screens/games/GameMenu";
 import ReactionGame from "./src/screens/games/ReactionGame";
 import QuizGame from "./src/screens/games/QuizGame";
+import FuelGame from "./src/screens/games/FuelGame";
 
 // Dashboard
 import Shop from "./src/screens/dashboard/PartnerDashboard";
@@ -165,9 +166,26 @@ const AppContent = () => {
         <Stack.Screen name="CreateCommunity" component={CreateCommunity} />
 
         {/* Game Screens */}
-        <Stack.Screen name="GameMenu" component={GameMenu} />
-        <Stack.Screen name="ReactionGame" component={ReactionGame} />
-        <Stack.Screen name="QuizGame" component={QuizGame} />
+        <Stack.Screen
+          name="GameMenu"
+          component={GameMenu}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ReactionGame"
+          component={ReactionGame}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="QuizGame"
+          component={QuizGame}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FuelGame"
+          component={FuelGame}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
