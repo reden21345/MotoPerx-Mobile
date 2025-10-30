@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getCommunityById,
   deleteCommunity,
-  getCommunitiesForUser
+  getCommunitiesForUser,
 } from "../../redux/actions/communityAction";
 import {
   clearMessage,
@@ -69,8 +69,8 @@ const CommunityDetails = ({ route, navigation }) => {
 
   const handleBack = () => {
     navigation.goBack();
-    dispatch(getCommunitiesForUser())
-  }
+    dispatch(getCommunitiesForUser());
+  };
   // Handler functions
   const handleCreatePost = () => {
     // Navigate to create post screen
@@ -184,6 +184,10 @@ const CommunityDetails = ({ route, navigation }) => {
     community.creator?._id === user?._id ||
     approvedMembers.some((member) => member.user?._id === user?._id);
 
+  const isPendingMember = community.members?.some(
+    (member) => member.user?._id === user?._id && !member.isApproved
+  );
+
   const canViewPosts = !community.isPrivate || isMember;
 
   const isOwner = String(user?._id) === String(community?.creator?._id);
@@ -206,6 +210,7 @@ const CommunityDetails = ({ route, navigation }) => {
           community={community}
           approvedMembersCount={approvedMembers.length}
           isMember={isMember}
+          isPendingMember={isPendingMember}
           onCreatePost={handleCreatePost}
           onInvite={handleInvite}
           onJoin={handleJoin}
@@ -227,6 +232,7 @@ const CommunityDetails = ({ route, navigation }) => {
               canViewPosts={canViewPosts}
               posts={community.posts}
               user={user}
+              isPendingMember={isPendingMember}
               onRequestJoin={handleJoin}
               onLike={handleLike}
               onComment={handleComment}

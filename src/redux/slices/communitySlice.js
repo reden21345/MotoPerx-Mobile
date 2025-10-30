@@ -8,7 +8,8 @@ import {
     removeMember,
     updateCommunity,
     updateStatus,   
-    getCommunitiesForUser
+    getCommunitiesForUser,
+    joinCommunity
  } from "../actions/communityAction";
 
 const communitySlice = createSlice({
@@ -125,6 +126,20 @@ const communitySlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(removeMember.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(joinCommunity.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(joinCommunity.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = action.payload.success;
+        state.message = action.payload.message;
+      })
+      .addCase(joinCommunity.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

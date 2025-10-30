@@ -1,23 +1,31 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
 import PostCard from "./PostCard";
 
-const PostsTab = ({ 
-  canViewPosts, 
-  posts, 
+const PostsTab = ({
+  canViewPosts,
+  posts,
   user,
+  isPendingMember,
   onRequestJoin,
   onLike,
   onComment,
-  onShare 
+  onShare,
 }) => {
   if (!canViewPosts) {
+    if (isPendingMember) {
+      return (
+        <View style={styles.restrictedState}>
+          <Text style={styles.restrictedIcon}>⏳</Text>
+          <Text style={styles.restrictedTitle}>Pending Approval</Text>
+          <Text style={styles.restrictedText}>
+            Your request to join is pending. Please wait for the community moderator
+            to approve your membership.
+          </Text>
+        </View>
+      );
+    }
     return (
       <View style={styles.restrictedState}>
         <Text style={styles.restrictedIcon}>🔒</Text>
@@ -25,10 +33,7 @@ const PostsTab = ({
         <Text style={styles.restrictedText}>
           This is a private community. You need to join to see posts.
         </Text>
-        <TouchableOpacity 
-          style={styles.joinButton}
-          onPress={onRequestJoin}
-        >
+        <TouchableOpacity style={styles.joinButton} onPress={onRequestJoin}>
           <Text style={styles.joinButtonText}>Request to Join</Text>
         </TouchableOpacity>
       </View>
@@ -51,8 +56,8 @@ const PostsTab = ({
     <FlatList
       data={posts}
       renderItem={({ item }) => (
-        <PostCard 
-          item={item} 
+        <PostCard
+          item={item}
           user={user}
           onLike={onLike}
           onComment={onComment}

@@ -8,7 +8,7 @@ import {
   FlatList,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { getCommunitiesForUser } from "../../redux/actions/communityAction";
+import { getCommunitiesForUser, joinCommunity } from "../../redux/actions/communityAction";
 import { clearMessage } from "../../redux/slices/communitySlice";
 import { communitiesStyles as styles } from "../../styles/CommunitiesStyles";
 import CommunitiesCard from "../../components/communities/CommunitiesCard";
@@ -79,6 +79,10 @@ const Communities = ({ navigation }) => {
     return "available";
   };
 
+  const handleJoinPress = (communityId) => {
+    dispatch(joinCommunity(communityId));
+  }
+
   const renderCommunityCard = ({ item }) => {
     const status = getCommunityStatus(item._id);
     return (
@@ -86,6 +90,7 @@ const Communities = ({ navigation }) => {
         item={item}
         navigation={navigation}
         status={status}
+        onJoin={handleJoinPress}
       />
     );
   };

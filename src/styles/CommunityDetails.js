@@ -41,7 +41,7 @@ export const communityDetailStyles = StyleSheet.create({
     color: "#666666",
     fontWeight: "bold",
   },
-  
+
   // Cover Section
   coverSection: {
     height: 180,
@@ -100,6 +100,27 @@ export const communityDetailStyles = StyleSheet.create({
     color: "#666666",
     textAlign: "center",
     marginBottom: 16,
+    lineHeight: 20,
+  },
+  pendingContainer: {
+    backgroundColor: "#fff3cd",
+    borderWidth: 1,
+    borderColor: "#ffc107",
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pendingIcon: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  pendingText: {
+    fontSize: 15,
+    color: "#856404",
+    textAlign: "center",
+    fontWeight: "500",
     lineHeight: 20,
   },
 

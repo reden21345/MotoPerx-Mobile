@@ -1,26 +1,21 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
 
-const CommunityInfo = ({ 
-  community, 
-  approvedMembersCount, 
+const CommunityInfo = ({
+  community,
+  approvedMembersCount,
   isMember,
+  isPendingMember,
   onCreatePost,
   onInvite,
-  onJoin 
+  onJoin,
 }) => {
   return (
     <View style={styles.infoSection}>
       <Text style={styles.communityName}>{community.name}</Text>
-      <Text style={styles.communityDescription}>
-        {community.description}
-      </Text>
-      
+      <Text style={styles.communityDescription}>{community.description}</Text>
+
       <View style={styles.statsContainer}>
         <View style={styles.statItem}>
           <Text style={styles.statNumber}>{approvedMembersCount}</Text>
@@ -48,26 +43,25 @@ const CommunityInfo = ({
       <View style={styles.actionButtonsContainer}>
         {isMember ? (
           <>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.primaryButton}
               onPress={onCreatePost}
             >
-              <Text style={styles.primaryButtonText}>
-                ➕ Create Post
-              </Text>
+              <Text style={styles.primaryButtonText}>➕ Create Post</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.secondaryButton}
-              onPress={onInvite}
-            >
+            <TouchableOpacity style={styles.secondaryButton} onPress={onInvite}>
               <Text style={styles.secondaryButtonText}>Invite</Text>
             </TouchableOpacity>
           </>
+        ) : isPendingMember ? (
+          <View style={styles.pendingContainer}>
+            <Text style={styles.pendingIcon}>⏳</Text>
+            <Text style={styles.pendingText}>
+              Your request to join is pending approval
+            </Text>
+          </View>
         ) : (
-          <TouchableOpacity 
-            style={styles.primaryButton}
-            onPress={onJoin}
-          >
+          <TouchableOpacity style={styles.primaryButton} onPress={onJoin}>
             <Text style={styles.primaryButtonText}>
               {community.isPrivate ? "🔒 Request to Join" : "➕ Join Community"}
             </Text>

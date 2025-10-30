@@ -157,3 +157,20 @@ export const getCommunitiesForUser = createAsyncThunk('communities/getCommunitie
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get user communities');
     }
 });
+
+// Join community
+export const joinCommunity = createAsyncThunk('community/joinCommunity', async (communityId, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        
+        const response = await axios.patch(`${apiKey}/api/v1/community/${communityId}/join`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
+    }
+});
