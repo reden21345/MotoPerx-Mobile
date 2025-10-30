@@ -118,7 +118,7 @@ export const deleteCommunity = createAsyncThunk('admins/deleteCommunity', async 
     try {
         const token = await AsyncStorage.getItem('token');
 
-        const response = await axios.delete(`${apiKey}/api/v1/community/${id}`, data, {
+        const response = await axios.delete(`${apiKey}/api/v1/community/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
