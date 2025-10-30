@@ -57,7 +57,6 @@ const CommunityDetails = ({ route, navigation }) => {
     console.log("Join community");
   };
 
-
   const handleLike = (post) => {
     // Handle like post
     console.log("Like post", post._id);
@@ -128,7 +127,10 @@ const CommunityDetails = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a73e8" />
-      <CommunityHeader onBack={() => navigation.goBack()} />
+      <CommunityHeader
+        onBack={() => navigation.goBack()}
+        onMore={() => console.log("More options")}
+      />
 
       <ScrollView style={styles.scrollView}>
         <CommunityCover communityName={community.name} />

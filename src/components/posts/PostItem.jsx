@@ -3,6 +3,7 @@ import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { postItemStyles as styles } from "../../styles/PostItemStyles";
 import { useSelector } from "react-redux";
 import { formatDateWithAgo } from "../../utils/helpers";
+import DropdownAction from "../../components/DropdownAction";
 
 const PostItem = ({
   item,
@@ -80,7 +81,7 @@ const PostItem = ({
 
           <View style={styles.userDetails}>
             <Text style={styles.name}>
-              {item?.createdBy?.name || "Anonymous"}
+              {item?.postType === "admin" ? "Admin" : item?.createdBy?.name}
             </Text>
 
             <Text style={styles.timestamp}>
@@ -101,47 +102,13 @@ const PostItem = ({
       </View>
 
       {/* Dropdown Menu */}
-      {showDropdown && (
-        <View style={styles.dropdownMenu}>
-          {isOwner ? (
-            <>
-              <TouchableOpacity
-                style={styles.dropdownItem}
-                onPress={(e) => {
-                  e.stopPropagation();
-                  onEdit(item);
-                }}
-              >
-                <Text style={styles.dropdownIcon}>✏️</Text>
-                <Text style={styles.dropdownText}>Edit Post</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dropdownItem, styles.deleteItem]}
-                onPress={(e) => {
-                  e.stopPropagation();
-                  onDelete(item?._id);
-                }}
-              >
-                <Text style={styles.dropdownIcon}>🗑️</Text>
-                <Text style={[styles.dropdownText, styles.deleteText]}>
-                  Delete Post
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <TouchableOpacity
-              style={styles.dropdownItem}
-              onPress={(e) => {
-                e.stopPropagation();
-                onReport(item?._id);
-              }}
-            >
-              <Text style={styles.dropdownIcon}>🚨</Text>
-              <Text style={styles.dropdownText}>Report Post</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+      <DropdownAction
+        visible={showDropdown}
+        isOwner={isOwner}
+        onEdit={() => onEdit(item)}
+        onDelete={() => onDelete(item?._id)}
+        onReport={() => onReport(item?._id)}
+      />
 
       {/* Post Content */}
       <View style={styles.postContent}>

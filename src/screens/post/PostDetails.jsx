@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { postDetailStyles as styles } from "../../styles/PostDetailStyles";
 import CommentModal from "../../components/posts/CommentModal";
@@ -15,10 +16,16 @@ import UserInfoSection from "../../components/posts/UserInfoSection";
 import ImageCarousel from "../../components/posts/ImageCarousel";
 import ActionBar from "../../components/posts/ActionBar";
 import CommentsSection from "../../components/posts/CommentsSection";
+import EditPost from "../../components/posts/EditPost";
+import DropdownAction from "../../components/DropdownAction";
 import { useSelector, useDispatch } from "react-redux";
 import { getComments, deleteComment } from "../../redux/actions/commentAction";
 import { clearCommentSuccess } from "../../redux/slices/commentSlice";
-import { getHomePosts, likePost } from "../../redux/actions/postAction";
+import {
+  getHomePosts,
+  likePost,
+  deletePost,
+} from "../../redux/actions/postAction";
 
 const PostDetails = ({ route, navigation }) => {
   const { postId } = route.params;
@@ -33,14 +40,19 @@ const PostDetails = ({ route, navigation }) => {
   const [likeCount, setLikeCount] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingComment, setEditingComment] = useState(null);
+  const [activeDropdown, setActiveDropdown] = useState(false);
+  const [showEditPost, setShowEditPost] = useState(false);
+  const [editPost, setEditPost] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const isOwner = String(user?._id) === String(postDetails?.createdBy?._id);
 
   useEffect(() => {
     if (postDetails && user?._id) {
-      const isLiked = postDetails.likes?.some(
-        (like) => like.user === user._id
-      );
+      const isLiked = postDetails.likes?.some((like) => like.user === user._id);
       setLiked(isLiked);
       setLikeCount(postDetails.likes?.length || 0);
+      setEditPost(postDetails);
     }
   }, [postDetails, user]);
 
@@ -58,6 +70,17 @@ const PostDetails = ({ route, navigation }) => {
     }
   }, [dispatch, postId, commentSuccess]);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await dispatch(getComments(postId));
+    } catch (error) {
+      console.error("Error refreshing:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const handleLike = () => {
     setLiked((prevLiked) => {
       const newLiked = !prevLiked;
@@ -73,25 +96,59 @@ const PostDetails = ({ route, navigation }) => {
   };
 
   const handleDeleteComment = (commentId) => {
-    Alert.alert("Delete Comment", "Are you sure you want to delete this comment?", [
+    Alert.alert(
+      "Delete Comment",
+      "Are you sure you want to delete this comment?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            dispatch(deleteComment(commentId));
+            Alert.alert("Success", "Comment deleted successfully");
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDeletePost = () => {
+    setActiveDropdown(false);
+    Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",
         style: "destructive",
         onPress: () => {
-          dispatch(deleteComment(commentId));
-          Alert.alert("Success", "Comment deleted successfully");
+          dispatch(deletePost(postId)).then(() => {
+            navigation.goBack();
+          });
+          Alert.alert("Success", "Post deleted successfully");
         },
       },
     ]);
   };
 
-  const handleCloseModal = () => {
+  const handleEditPost = () => {
+    setShowEditPost(true);
+    setActiveDropdown(null);
+  };
+
+  const closeEditPost = () => {
+    setShowEditPost(false);
+  };
+
+  const closeCommentModal = () => {
     setShowAddModal(false);
     setEditingComment(null);
   };
 
-  // Error state
+  const toggleDropdown = () => {
+    if (activeDropdown) setActiveDropdown(false);
+    else setActiveDropdown(true);
+  };
+
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
@@ -136,21 +193,42 @@ const PostDetails = ({ route, navigation }) => {
           dispatch(getHomePosts());
           navigation.goBack();
         }}
-        onMore={() => console.log("More options")}
+        onMore={() => toggleDropdown()}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#007AFF"]}
+            tintColor="#007AFF"
+          />
+        }
+      >
         <UserInfoSection
           createdBy={postDetails.createdBy}
           createdAt={postDetails.createdAt}
         />
 
         <View style={styles.contentSection}>
-          {postDetails.title && <Text style={styles.postTitle}>{postDetails.title}</Text>}
+          {postDetails.title && (
+            <Text style={styles.postTitle}>{postDetails.title}</Text>
+          )}
           <Text style={styles.postCaption}>{postDetails.caption}</Text>
         </View>
 
         <ImageCarousel images={postDetails.images} />
+
+        <DropdownAction
+          visible={activeDropdown}
+          isOwner={isOwner}
+          onEdit={() => handleEditPost()}
+          onDelete={() => handleDeletePost()}
+          onReport={() => console.log("Report Post")}
+        />
 
         <ActionBar
           isLiked={liked}
@@ -174,9 +252,15 @@ const PostDetails = ({ route, navigation }) => {
         </TouchableOpacity>
       </ScrollView>
 
+      <EditPost
+        visible={showEditPost}
+        onClose={closeEditPost}
+        item={editPost}
+      />
+
       <CommentModal
         visible={showAddModal}
-        onClose={handleCloseModal}
+        onClose={closeCommentModal}
         postId={postDetails._id}
         editingComment={editingComment}
       />
