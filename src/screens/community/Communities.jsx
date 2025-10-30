@@ -37,7 +37,7 @@ const Communities = ({ navigation }) => {
 
   useEffect(() => {
     if (success) {
-      dispatch(getApprovedCommunities());
+      dispatch(getCommunitiesForUser());
       dispatch(clearMessage());
     }
   }, [success, dispatch]);

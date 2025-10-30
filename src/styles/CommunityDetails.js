@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const communityDetailStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f2f5",
+    backgroundColor: "#ffffff",
   },
   scrollView: {
     flex: 1,
@@ -15,7 +15,7 @@ export const communityDetailStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#e1e8ed",
+    borderBottomColor: "#e0e0e0",
     backgroundColor: "#ffffff",
   },
   backButton: {
@@ -24,13 +24,13 @@ export const communityDetailStyles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 24,
-    color: "#14171a",
+    color: "#000000",
     fontWeight: "bold",
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#14171a",
+    color: "#000000",
   },
   moreButton: {
     padding: 8,
@@ -38,18 +38,18 @@ export const communityDetailStyles = StyleSheet.create({
   },
   moreButtonText: {
     fontSize: 20,
-    color: "#657786",
+    color: "#666666",
     fontWeight: "bold",
   },
   
   // Cover Section
   coverSection: {
     height: 180,
-    backgroundColor: "#1a73e8",
+    backgroundColor: "#98DB52",
   },
   coverGradient: {
     height: "100%",
-    backgroundColor: "linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%)",
+    backgroundColor: "#98DB52",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -71,7 +71,12 @@ export const communityDetailStyles = StyleSheet.create({
   communityIcon: {
     fontSize: 48,
     fontWeight: "bold",
-    color: "#1a73e8",
+    color: "#98DB52",
+  },
+  communityAvatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 50,
   },
 
   // Info Section
@@ -86,13 +91,13 @@ export const communityDetailStyles = StyleSheet.create({
   communityName: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1c1e21",
+    color: "#000000",
     marginBottom: 8,
     textAlign: "center",
   },
   communityDescription: {
     fontSize: 15,
-    color: "#65676b",
+    color: "#666666",
     textAlign: "center",
     marginBottom: 16,
     lineHeight: 20,
@@ -104,7 +109,7 @@ export const communityDetailStyles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     paddingVertical: 16,
-    backgroundColor: "#f7f8fa",
+    backgroundColor: "#f5f5f5",
     borderRadius: 12,
     marginBottom: 16,
   },
@@ -115,22 +120,22 @@ export const communityDetailStyles = StyleSheet.create({
   statNumber: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#1a73e8",
+    color: "#98DB52",
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 13,
-    color: "#65676b",
+    color: "#666666",
   },
   statBadge: {
     fontSize: 14,
-    color: "#65676b",
+    color: "#666666",
     fontWeight: "600",
   },
   statDivider: {
     width: 1,
     height: 30,
-    backgroundColor: "#dadde1",
+    backgroundColor: "#e0e0e0",
   },
 
   // Creator Info
@@ -142,11 +147,11 @@ export const communityDetailStyles = StyleSheet.create({
   },
   creatorLabel: {
     fontSize: 14,
-    color: "#65676b",
+    color: "#666666",
   },
   creatorName: {
     fontSize: 14,
-    color: "#1a73e8",
+    color: "#98DB52",
     fontWeight: "600",
   },
 
@@ -157,11 +162,11 @@ export const communityDetailStyles = StyleSheet.create({
   },
   primaryButton: {
     flex: 1,
-    backgroundColor: "#1a73e8",
+    backgroundColor: "#98DB52",
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
-    shadowColor: "#1a73e8",
+    shadowColor: "#98DB52",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -176,12 +181,12 @@ export const communityDetailStyles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
-    backgroundColor: "#e7f3ff",
+    backgroundColor: "#f0f0f0",
     alignItems: "center",
     justifyContent: "center",
   },
   secondaryButtonText: {
-    color: "#1a73e8",
+    color: "#98DB52",
     fontSize: 15,
     fontWeight: "600",
   },
@@ -191,7 +196,7 @@ export const communityDetailStyles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
-    borderBottomColor: "#dadde1",
+    borderBottomColor: "#e0e0e0",
   },
   tab: {
     flex: 1,
@@ -201,15 +206,15 @@ export const communityDetailStyles = StyleSheet.create({
     borderBottomColor: "transparent",
   },
   activeTab: {
-    borderBottomColor: "#1a73e8",
+    borderBottomColor: "#98DB52",
   },
   tabText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#65676b",
+    color: "#666666",
   },
   activeTabText: {
-    color: "#1a73e8",
+    color: "#98DB52",
   },
 
   // Tab Content
@@ -229,6 +234,8 @@ export const communityDetailStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
   postHeader: {
     flexDirection: "row",
@@ -239,7 +246,7 @@ export const communityDetailStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#e4e6eb",
+    backgroundColor: "#f0f0f0",
   },
   postHeaderInfo: {
     marginLeft: 12,
@@ -248,31 +255,31 @@ export const communityDetailStyles = StyleSheet.create({
   postAuthor: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#1c1e21",
+    color: "#000000",
     marginBottom: 2,
   },
   postTime: {
     fontSize: 13,
-    color: "#65676b",
+    color: "#666666",
   },
   postMenuButton: {
     padding: 4,
   },
   postMenuIcon: {
     fontSize: 20,
-    color: "#65676b",
+    color: "#666666",
     fontWeight: "bold",
   },
   postTitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#1c1e21",
+    color: "#000000",
     marginBottom: 8,
     lineHeight: 22,
   },
   postContent: {
     fontSize: 15,
-    color: "#1c1e21",
+    color: "#000000",
     lineHeight: 20,
     marginBottom: 12,
   },
@@ -283,7 +290,7 @@ export const communityDetailStyles = StyleSheet.create({
     width: 320,
     height: 250,
     borderRadius: 8,
-    backgroundColor: "#f0f2f5",
+    backgroundColor: "#f5f5f5",
     marginRight: 8,
   },
   postImageMultiple: {
@@ -292,11 +299,11 @@ export const communityDetailStyles = StyleSheet.create({
   linkPreview: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f7f8fa",
+    backgroundColor: "#f5f5f5",
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e4e6eb",
+    borderColor: "#e0e0e0",
     marginBottom: 12,
   },
   linkIcon: {
@@ -306,7 +313,7 @@ export const communityDetailStyles = StyleSheet.create({
   linkText: {
     flex: 1,
     fontSize: 14,
-    color: "#1a73e8",
+    color: "#98DB52",
     fontWeight: "500",
   },
   postStats: {
@@ -315,17 +322,17 @@ export const communityDetailStyles = StyleSheet.create({
     paddingBottom: 8,
     marginBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#e4e6eb",
+    borderBottomColor: "#f0f0f0",
   },
   postStatsText: {
     fontSize: 13,
-    color: "#65676b",
+    color: "#666666",
     marginRight: 16,
   },
   postActions: {
     flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: "#e4e6eb",
+    borderTopColor: "#f0f0f0",
     paddingTop: 8,
     gap: 8,
   },
@@ -337,11 +344,11 @@ export const communityDetailStyles = StyleSheet.create({
   },
   actionText: {
     fontSize: 14,
-    color: "#65676b",
+    color: "#666666",
     fontWeight: "500",
   },
   actionTextActive: {
-    color: "#1a73e8",
+    color: "#98DB52",
     fontWeight: "600",
   },
 
@@ -359,12 +366,14 @@ export const communityDetailStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
   memberAvatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#e4e6eb",
+    backgroundColor: "#f0f0f0",
   },
   memberInfo: {
     marginLeft: 12,
@@ -373,27 +382,27 @@ export const communityDetailStyles = StyleSheet.create({
   memberName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1c1e21",
+    color: "#000000",
     marginBottom: 2,
   },
   memberRole: {
     fontSize: 13,
-    color: "#1a73e8",
+    color: "#98DB52",
     fontWeight: "500",
     marginBottom: 2,
   },
   memberJoinDate: {
     fontSize: 12,
-    color: "#65676b",
+    color: "#666666",
   },
   removeButton: {
-    backgroundColor: "#e7f3ff",
+    backgroundColor: "#f0f0f0",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,
   },
   removeButtonText: {
-    color: "#1a73e8",
+    color: "#98DB52",
     fontSize: 14,
     fontWeight: "600",
   },
@@ -410,13 +419,15 @@ export const communityDetailStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
   aboutItem: {
     marginBottom: 20,
   },
   aboutLabel: {
     fontSize: 13,
-    color: "#65676b",
+    color: "#666666",
     fontWeight: "600",
     marginBottom: 6,
     textTransform: "uppercase",
@@ -424,12 +435,12 @@ export const communityDetailStyles = StyleSheet.create({
   },
   aboutValue: {
     fontSize: 16,
-    color: "#1c1e21",
+    color: "#000000",
     fontWeight: "500",
   },
   aboutDescription: {
     fontSize: 15,
-    color: "#1c1e21",
+    color: "#000000",
     lineHeight: 22,
   },
 
@@ -447,12 +458,12 @@ export const communityDetailStyles = StyleSheet.create({
   emptyStateText: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#1c1e21",
+    color: "#000000",
     marginBottom: 8,
   },
   emptyStateSubtext: {
     fontSize: 14,
-    color: "#65676b",
+    color: "#666666",
     textAlign: "center",
   },
 
@@ -471,6 +482,8 @@ export const communityDetailStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
   restrictedIcon: {
     fontSize: 64,
@@ -479,22 +492,22 @@ export const communityDetailStyles = StyleSheet.create({
   restrictedTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#1c1e21",
+    color: "#000000",
     marginBottom: 8,
   },
   restrictedText: {
     fontSize: 15,
-    color: "#65676b",
+    color: "#666666",
     textAlign: "center",
     marginBottom: 24,
     lineHeight: 22,
   },
   joinButton: {
-    backgroundColor: "#1a73e8",
+    backgroundColor: "#98DB52",
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 8,
-    shadowColor: "#1a73e8",
+    shadowColor: "#98DB52",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -515,7 +528,7 @@ export const communityDetailStyles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: "#65676b",
+    color: "#666666",
   },
   errorContainer: {
     flex: 1,
@@ -526,17 +539,17 @@ export const communityDetailStyles = StyleSheet.create({
   errorTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#1c1e21",
+    color: "#000000",
     marginBottom: 8,
   },
   errorMessage: {
     fontSize: 15,
-    color: "#65676b",
+    color: "#666666",
     textAlign: "center",
     marginBottom: 24,
   },
   retryButton: {
-    backgroundColor: "#1a73e8",
+    backgroundColor: "#98DB52",
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 8,
