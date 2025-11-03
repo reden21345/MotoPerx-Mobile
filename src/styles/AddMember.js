@@ -39,6 +39,36 @@ export const addMemberStyles = StyleSheet.create({
     color: "#666",
     fontWeight: "600",
   },
+  // New styles for member info
+  memberInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+  },
+  memberAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 16,
+  },
+  memberDetails: {
+    flex: 1,
+  },
+  memberName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+    marginBottom: 4,
+  },
+  currentRole: {
+    fontSize: 14,
+    color: "#666",
+  },
   inputContainer: {
     marginBottom: 24,
   },

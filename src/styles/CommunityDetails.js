@@ -374,6 +374,7 @@ export const communityDetailStyles = StyleSheet.create({
   },
 
   // Member Card
+  // Member Card
   memberCard: {
     backgroundColor: "#ffffff",
     marginHorizontal: 12,
@@ -416,16 +417,24 @@ export const communityDetailStyles = StyleSheet.create({
     fontSize: 12,
     color: "#666666",
   },
-  removeButton: {
-    backgroundColor: "#f0f0f0",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 6,
+  actionButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
-  removeButtonText: {
-    color: "#98DB52",
-    fontSize: 14,
-    fontWeight: "600",
+  roleButton: {
+    backgroundColor: "#f0f0f0",
+    padding: 10,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  removeButton: {
+    backgroundColor: "#FFE5E5",
+    padding: 10,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   // About Section

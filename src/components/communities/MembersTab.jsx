@@ -7,7 +7,7 @@ import {
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
 import MemberCard from "./MemberCard";
 
-const MembersTab = ({ members, currentUserId, canRemove, onRemoveMember }) => {
+const MembersTab = ({ members, currentUserId, canRemove, isOwner, onRemoveMember, onChangeRole }) => {
   if (!members || members.length === 0) {
     return (
       <View style={styles.emptyState}>
@@ -25,7 +25,9 @@ const MembersTab = ({ members, currentUserId, canRemove, onRemoveMember }) => {
           item={item}
           currentUserId={currentUserId}
           canRemove={canRemove}
+          isOwner={isOwner}
           onRemove={onRemoveMember}
+          onChangeRole={onChangeRole}
         />
       )}
       keyExtractor={(item) => item._id}

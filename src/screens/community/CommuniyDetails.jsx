@@ -20,6 +20,7 @@ import MembersTab from "../../components/communities/MembersTab";
 import AboutTab from "../../components/communities/AboutTab";
 import DropdownAction from "../../components/DropdownAction";
 import AddMember from "../../components/communities/AddMember";
+import ChangeRole from "../../components/communities/ChangeRole";
 import EditCommunity from "../../components/communities/EditCommunity";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -40,8 +41,10 @@ const CommunityDetails = ({ route, navigation }) => {
   const [activeTab, setActiveTab] = useState("posts");
   const [showEditCommunity, setShowEditCommunity] = useState(false);
   const [showAddMember, setShowAddMember] = useState(false);
+  const [showChangeRole, setChangeRole] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [memberRoleChange, setMemberRoleChange] = useState(null);
 
   const { community, loading, error, success } = useSelector(
     (state) => state.communities
@@ -96,6 +99,12 @@ const CommunityDetails = ({ route, navigation }) => {
 
   const handleInvite = () => {
     setShowAddMember(true);
+  };
+
+  const handleChangeMemberRole = (member) => {
+    setMemberRoleChange(member);
+    setChangeRole(true);
+    console.log("Change role for member", member);
   };
 
   const handleJoin = () => {
@@ -283,7 +292,9 @@ const CommunityDetails = ({ route, navigation }) => {
               members={approvedMembers}
               currentUserId={user?._id}
               canRemove={canModify}
+              isOwner={isOwner}
               onRemoveMember={handleRemoveMember}
+              onChangeRole={handleChangeMemberRole}
             />
           )}
 
@@ -296,6 +307,13 @@ const CommunityDetails = ({ route, navigation }) => {
         onClose={() => setShowAddMember(false)}
         communityId={communityId}
         isOwner={isOwner}
+      />
+
+      <ChangeRole
+        visible={showChangeRole}
+        onClose={() => setChangeRole(false)}
+        communityId={communityId}
+        member={memberRoleChange}
       />
 
       <EditCommunity
