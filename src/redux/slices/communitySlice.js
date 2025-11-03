@@ -115,6 +115,7 @@ const communitySlice = createSlice({
       })
       .addCase(addMember.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
       })
 
       .addCase(removeMember.pending, (state) => {

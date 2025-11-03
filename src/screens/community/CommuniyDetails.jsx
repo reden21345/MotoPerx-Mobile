@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
@@ -18,6 +19,7 @@ import PostsTab from "../../components/communities/PostsTab";
 import MembersTab from "../../components/communities/MembersTab";
 import AboutTab from "../../components/communities/AboutTab";
 import DropdownAction from "../../components/DropdownAction";
+import AddMember from "../../components/communities/AddMember";
 import EditCommunity from "../../components/communities/EditCommunity";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -36,13 +38,15 @@ const CommunityDetails = ({ route, navigation }) => {
 
   const [activeTab, setActiveTab] = useState("posts");
   const [showEditCommunity, setShowEditCommunity] = useState(false);
+  const [showAddMember, setShowAddMember] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const { community, loading, error, success } = useSelector(
     (state) => state.communities
   );
   const { user } = useSelector((state) => state.auth);
-  console.log(community);
+
   useEffect(() => {
     if (communityId) {
       dispatch(getCommunityById(communityId));
@@ -67,10 +71,22 @@ const CommunityDetails = ({ route, navigation }) => {
     }, [dispatch, communityId])
   );
 
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await dispatch(getCommunityById(communityId));
+    } catch (error) {
+      console.error("Error refreshing community:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [dispatch, communityId]);
+
   const handleBack = () => {
     navigation.goBack();
     dispatch(getCommunitiesForUser());
   };
+
   // Handler functions
   const handleCreatePost = () => {
     // Navigate to create post screen
@@ -78,8 +94,7 @@ const CommunityDetails = ({ route, navigation }) => {
   };
 
   const handleInvite = () => {
-    // Navigate to invite screen
-    console.log("Invite members");
+    setShowAddMember(true);
   };
 
   const handleJoin = () => {
@@ -110,10 +125,6 @@ const CommunityDetails = ({ route, navigation }) => {
   const handleEditCommunity = () => {
     setShowEditCommunity(true);
     setActiveDropdown(false);
-  };
-
-  const closeEditCommunity = () => {
-    setShowEditCommunity(false);
   };
 
   const toggleDropdown = () => {
@@ -206,7 +217,17 @@ const CommunityDetails = ({ route, navigation }) => {
         onMore={() => toggleDropdown()}
       />
 
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+        style={styles.scrollView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#1a73e8"]}
+            tintColor="#1a73e8"
+          />
+        }
+      >
         <CommunityCover
           communityName={community.name}
           avatar={community.avatar}
@@ -259,10 +280,17 @@ const CommunityDetails = ({ route, navigation }) => {
         </View>
       </ScrollView>
 
+      <AddMember
+        visible={showAddMember}
+        onClose={() => setShowAddMember(false)}
+        communityId={communityId}
+        isOwner={isOwner}
+      />
+
       <EditCommunity
         visible={showEditCommunity}
         community={community}
-        onClose={closeEditCommunity}
+        onClose={() => setShowEditCommunity(false)}
       />
     </SafeAreaView>
   );
