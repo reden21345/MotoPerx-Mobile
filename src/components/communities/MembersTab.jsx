@@ -7,7 +7,7 @@ import {
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
 import MemberCard from "./MemberCard";
 
-const MembersTab = ({ members, currentUserId, onRemoveMember }) => {
+const MembersTab = ({ members, currentUserId, canRemove, onRemoveMember }) => {
   if (!members || members.length === 0) {
     return (
       <View style={styles.emptyState}>
@@ -24,6 +24,7 @@ const MembersTab = ({ members, currentUserId, onRemoveMember }) => {
         <MemberCard 
           item={item}
           currentUserId={currentUserId}
+          canRemove={canRemove}
           onRemove={onRemoveMember}
         />
       )}

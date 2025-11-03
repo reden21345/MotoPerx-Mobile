@@ -26,6 +26,7 @@ import {
   getCommunityById,
   deleteCommunity,
   getCommunitiesForUser,
+  removeMember
 } from "../../redux/actions/communityAction";
 import {
   clearMessage,
@@ -118,8 +119,17 @@ const CommunityDetails = ({ route, navigation }) => {
   };
 
   const handleRemoveMember = (member) => {
-    // Remove member from community
-    console.log("Remove member", member.user?._id);
+    Alert.alert("Remove member", "Are you sure you want to remove this member?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Remove",
+        style: "destructive",
+        onPress: () => {
+          dispatch(removeMember({ communityId, userId: member.user?._id }));
+          Alert.alert("Success", "Member removed successfully");
+        },
+      },
+    ]);
   };
 
   const handleEditCommunity = () => {
@@ -207,7 +217,7 @@ const CommunityDetails = ({ route, navigation }) => {
     (m) => m.user?._id === user?._id && m.role === "Moderator"
   );
 
-  const canAddMembers = isOwner || isAdmin;
+  const canModify = isOwner || isAdmin;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -238,7 +248,7 @@ const CommunityDetails = ({ route, navigation }) => {
           approvedMembersCount={approvedMembers.length}
           isMember={isMember}
           isPendingMember={isPendingMember}
-          canAddMembers={canAddMembers}
+          canAddMembers={canModify}
           onCreatePost={handleCreatePost}
           onInvite={handleInvite}
           onJoin={handleJoin}
@@ -272,6 +282,7 @@ const CommunityDetails = ({ route, navigation }) => {
             <MembersTab
               members={approvedMembers}
               currentUserId={user?._id}
+              canRemove={canModify}
               onRemoveMember={handleRemoveMember}
             />
           )}

@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
 
-const MemberCard = ({ item, currentUserId, onRemove }) => {
+const MemberCard = ({ item, currentUserId, canRemove, onRemove }) => {
   return (
     <View style={styles.memberCard}>
       <Image
@@ -23,7 +23,7 @@ const MemberCard = ({ item, currentUserId, onRemove }) => {
           Joined {new Date(item.joinedAt).toLocaleDateString()}
         </Text>
       </View>
-      {item.role !== "Admin" && currentUserId !== item.user?._id && (
+      {(canRemove && currentUserId !== item.user?._id) && (
         <TouchableOpacity 
           style={styles.removeButton}
           onPress={() => onRemove?.(item)}
