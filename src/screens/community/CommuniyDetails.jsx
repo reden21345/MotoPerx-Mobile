@@ -192,6 +192,12 @@ const CommunityDetails = ({ route, navigation }) => {
 
   const isOwner = String(user?._id) === String(community?.creator?._id);
 
+  const isAdmin = community.members.some(
+    (m) => m.user?._id === user?._id && m.role === "Moderator"
+  );
+
+  const canAddMembers = isOwner || isAdmin;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1a73e8" />
@@ -211,6 +217,7 @@ const CommunityDetails = ({ route, navigation }) => {
           approvedMembersCount={approvedMembers.length}
           isMember={isMember}
           isPendingMember={isPendingMember}
+          canAddMembers={canAddMembers}
           onCreatePost={handleCreatePost}
           onInvite={handleInvite}
           onJoin={handleJoin}

@@ -8,12 +8,11 @@ const DropdownAction = ({
   onEdit,
   onDelete,
   onReport,
-  style,
 }) => {
   if (!visible) return null;
 
   return (
-    <View style={[styles.dropdownMenu, style]}>
+    <View style={styles.dropdownMenu}>
       {isOwner ? (
         <>
           <TouchableOpacity
@@ -24,7 +23,7 @@ const DropdownAction = ({
             }}
           >
             <Text style={styles.dropdownIcon}>✏️</Text>
-            <Text style={styles.dropdownText}>Edit Post</Text>
+            <Text style={styles.dropdownText}>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.dropdownItem, styles.deleteItem]}
@@ -35,7 +34,7 @@ const DropdownAction = ({
           >
             <Text style={styles.dropdownIcon}>🗑️</Text>
             <Text style={[styles.dropdownText, styles.deleteText]}>
-              Delete Post
+              Delete
             </Text>
           </TouchableOpacity>
         </>

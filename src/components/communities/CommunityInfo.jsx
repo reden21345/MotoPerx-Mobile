@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
 
 const CommunityInfo = ({
@@ -7,6 +8,7 @@ const CommunityInfo = ({
   approvedMembersCount,
   isMember,
   isPendingMember,
+  canAddMembers,
   onCreatePost,
   onInvite,
   onJoin,
@@ -49,9 +51,14 @@ const CommunityInfo = ({
             >
               <Text style={styles.primaryButtonText}>➕ Create Post</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.secondaryButton} onPress={onInvite}>
-              <Text style={styles.secondaryButtonText}>Invite</Text>
-            </TouchableOpacity>
+            {canAddMembers && (
+              <TouchableOpacity
+                style={styles.secondaryButton}
+                onPress={onInvite}
+              >
+                <Ionicons name="person-add" size={20} color="#98DB52" />
+              </TouchableOpacity>
+            )}
           </>
         ) : isPendingMember ? (
           <View style={styles.pendingContainer}>

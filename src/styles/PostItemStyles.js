@@ -104,7 +104,7 @@ export const postItemStyles = StyleSheet.create({
   },
   dropdownMenu: {
     position: 'absolute',
-    top: 40,
+    top: 10,
     right: 8, 
     backgroundColor: '#ffffff',
     borderRadius: 12,

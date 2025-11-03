@@ -158,11 +158,19 @@ const AppContent = () => {
 
         {/* Partner Screens */}
         <Stack.Screen name="HomePosts" component={HomePosts} />
-        <Stack.Screen name="PostDetails" component={PostDetails} />
+        <Stack.Screen
+          name="PostDetails"
+          component={PostDetails}
+          options={{ headerShown: false }}
+        />
 
         {/* Community Screens */}
         <Stack.Screen name="UsersCommunities" component={UsersCommunities} />
-        <Stack.Screen name="CommunityDetails" component={CommunityDetails} />
+        <Stack.Screen
+          name="CommunityDetails"
+          component={CommunityDetails}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="CreateCommunity" component={CreateCommunity} />
 
         {/* Game Screens */}

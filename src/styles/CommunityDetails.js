@@ -54,9 +54,9 @@ export const communityDetailStyles = StyleSheet.create({
     alignItems: "center",
   },
   communityIconContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 150,
+    height: 150,
+    borderRadius: 100,
     backgroundColor: "#ffffff",
     justifyContent: "center",
     alignItems: "center",
@@ -76,7 +76,7 @@ export const communityDetailStyles = StyleSheet.create({
   communityAvatarImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 50,
+    borderRadius: 100,
   },
 
   // Info Section
