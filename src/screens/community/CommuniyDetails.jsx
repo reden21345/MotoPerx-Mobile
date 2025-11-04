@@ -23,6 +23,9 @@ import AddMember from "../../components/communities/AddMember";
 import ChangeRole from "../../components/communities/ChangeRole";
 import EditCommunity from "../../components/communities/EditCommunity";
 import CreatePost from "../../components/posts/CreatePost";
+import EditPost from "../../components/posts/EditPost";
+import CommentModal from "../../components/posts/CommentModal";
+import { likePost } from "../../redux/actions/postAction";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getCommunityById,
@@ -48,6 +51,15 @@ const CommunityDetails = ({ route, navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [memberRoleChange, setMemberRoleChange] = useState(null);
 
+  //Post related states
+  const [postDropdown, setPostDropdown] = useState(null);
+  const [showEditPost, setShowEditPost] = useState(false);
+  const [showAddComment, setShowAddComment] = useState(false);
+  const [editPost, setEditPost] = useState(null);
+  const [postId, setPostId] = useState(null);
+  const [likedPosts, setLikedPosts] = useState(new Set());
+  const [localLikeCounts, setLocalLikeCounts] = useState({});
+
   const { community, loading, error, success } = useSelector(
     (state) => state.communities
   );
@@ -64,6 +76,22 @@ const CommunityDetails = ({ route, navigation }) => {
       dispatch(clearMessage());
     }
   }, [dispatch, success]);
+
+  useEffect(() => {
+    if (community?.posts?.length && user?._id) {
+      const likedSet = new Set();
+      const likeCounts = {};
+
+      community?.posts?.forEach((post) => {
+        const isLiked = post.likes?.some((like) => like.user === user._id);
+        if (isLiked) likedSet.add(post._id);
+        likeCounts[post._id] = post.likes?.length || 0;
+      });
+
+      setLikedPosts(likedSet);
+      setLocalLikeCounts(likeCounts);
+    }
+  }, [community?.posts, user]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -112,19 +140,59 @@ const CommunityDetails = ({ route, navigation }) => {
     console.log("Join community");
   };
 
-  const handleLike = (post) => {
-    // Handle like post
-    console.log("Like post", post._id);
+  const handleLike = (postId) => {
+    setLikedPosts((prevLiked) => {
+      const newSet = new Set(prevLiked);
+      const alreadyLiked = newSet.has(postId);
+
+      // Update local like count in parallel
+      setLocalLikeCounts((prevCounts) => {
+        const newCounts = { ...prevCounts };
+        newCounts[postId] = (newCounts[postId] || 0) + (alreadyLiked ? -1 : 1);
+        return newCounts;
+      });
+
+      if (alreadyLiked) newSet.delete(postId);
+      else newSet.add(postId);
+
+      return newSet;
+    });
+
+    dispatch(likePost(postId));
   };
 
-  const handleComment = (post) => {
-    // Navigate to post comments
-    console.log("Comment on post", post._id);
+  const handleComment = (postId) => {
+    setPostId(postId);
+    setShowAddComment(true);
   };
 
-  const handleShare = (post) => {
-    // Share post
-    console.log("Share post", post._id);
+  const handleViewPost = (postId) => {
+    navigation.navigate("PostDetails", { postId });
+  };
+
+  const togglePostDropdown = (postId) => {
+    setPostDropdown(postDropdown === postId ? null : postId);
+  };
+
+  const handleEditPost = (item) => {
+    setEditPost(item);
+    setShowEditPost(true);
+    setPostDropdown(false);
+  };
+
+  const handleDeletePost = (postId) => {
+    setPostDropdown(false);
+    Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          dispatch(deletePost(postId));
+          Alert.alert("Success", "Post deleted successfully");
+        },
+      },
+    ]);
   };
 
   const handleRemoveMember = (member) => {
@@ -285,9 +353,17 @@ const CommunityDetails = ({ route, navigation }) => {
               user={user}
               isPendingMember={isPendingMember}
               onRequestJoin={handleJoin}
+              postDropdown={postDropdown}
+              likedPosts={likedPosts}
+              localLikeCounts={localLikeCounts}
               onLike={handleLike}
               onComment={handleComment}
-              onShare={handleShare}
+              onViewPost={handleViewPost}
+              onToggleDropdown={togglePostDropdown}
+              onEdit={handleEditPost}
+              onDelete={handleDeletePost}
+              onReport={() => console.log("Report Post")}
+              onCloseDropdown={() => setActiveDropdown(false)}
             />
           )}
 
@@ -330,6 +406,19 @@ const CommunityDetails = ({ route, navigation }) => {
         visible={showEditCommunity}
         community={community}
         onClose={() => setShowEditCommunity(false)}
+      />
+
+      <EditPost
+        visible={showEditPost}
+        onClose={() => setShowEditPost(false)}
+        item={editPost}
+      />
+
+      <CommentModal
+        visible={showAddComment}
+        onClose={() => setShowAddComment(false)}
+        postId={postId}
+        editingComment={null}
       />
     </SafeAreaView>
   );

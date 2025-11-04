@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import { communityDetailStyles as styles } from "../../styles/CommunityDetails";
-import PostCard from "./PostCard";
+import PostItem from "../posts/PostItem";
 
 const PostsTab = ({
   canViewPosts,
@@ -9,9 +9,17 @@ const PostsTab = ({
   user,
   isPendingMember,
   onRequestJoin,
+  postDropdown,
+  likedPosts,
+  localLikeCounts,
   onLike,
   onComment,
-  onShare,
+  onViewPost,
+  onToggleDropdown,
+  onEdit,
+  onDelete,
+  onReport,
+  onCloseDropdown
 }) => {
   if (!canViewPosts) {
     if (isPendingMember) {
@@ -20,8 +28,8 @@ const PostsTab = ({
           <Text style={styles.restrictedIcon}>⏳</Text>
           <Text style={styles.restrictedTitle}>Pending Approval</Text>
           <Text style={styles.restrictedText}>
-            Your request to join is pending. Please wait for the community moderator
-            to approve your membership.
+            Your request to join is pending. Please wait for the community
+            moderator to approve your membership.
           </Text>
         </View>
       );
@@ -56,12 +64,20 @@ const PostsTab = ({
     <FlatList
       data={posts}
       renderItem={({ item }) => (
-        <PostCard
+        <PostItem
           item={item}
           user={user}
+          likedPosts={likedPosts}
+          localLikeCounts={localLikeCounts}
+          activeDropdown={postDropdown}
           onLike={onLike}
           onComment={onComment}
-          onShare={onShare}
+          onToggleDropdown={onToggleDropdown}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onReport={onReport}
+          onCloseDropdown={onCloseDropdown}
+          onViewPost={onViewPost}
         />
       )}
       keyExtractor={(item) => item._id}

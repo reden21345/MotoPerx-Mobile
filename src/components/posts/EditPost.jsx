@@ -81,9 +81,19 @@ const EditPost = ({ visible, onClose, item }) => {
             {/* User Info */}
             <View style={styles.modalUserInfo}>
               <View style={styles.modalAvatar}>
-                <Text style={styles.modalAvatarText}>
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
-                </Text>
+                {item?.createdBy?.avatar?.url ? (
+                  <Image
+                    source={{ uri: item?.createdBy?.avatar?.url }}
+                    style={styles.avatarImage}
+                  />
+                ) : (
+                  <Text style={styles.modalAvatarText}>
+                    {item?.createdBy?.name?.charAt(0).toUpperCase() || "U"}
+                  </Text>
+                )}
+                {/* <Text style={styles.modalAvatarText}>
+                  {item?.createdBy?.name?.charAt(0).toUpperCase() || "U"}
+                </Text> */}
               </View>
               <Text style={styles.modalUsername}>
                 {user?.name || "Anonymous"}

@@ -58,6 +58,11 @@ export const createPostStyles = StyleSheet.create({
     alignItems: "center",
     marginRight: 12,
   },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
   modalAvatarText: {
     color: "#ffffff",
     fontWeight: "bold",
