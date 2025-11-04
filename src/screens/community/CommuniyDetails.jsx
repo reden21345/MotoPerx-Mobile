@@ -22,12 +22,13 @@ import DropdownAction from "../../components/DropdownAction";
 import AddMember from "../../components/communities/AddMember";
 import ChangeRole from "../../components/communities/ChangeRole";
 import EditCommunity from "../../components/communities/EditCommunity";
+import CreatePost from "../../components/posts/CreatePost";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getCommunityById,
   deleteCommunity,
   getCommunitiesForUser,
-  removeMember
+  removeMember,
 } from "../../redux/actions/communityAction";
 import {
   clearMessage,
@@ -42,6 +43,7 @@ const CommunityDetails = ({ route, navigation }) => {
   const [showEditCommunity, setShowEditCommunity] = useState(false);
   const [showAddMember, setShowAddMember] = useState(false);
   const [showChangeRole, setChangeRole] = useState(false);
+  const [showCreatePost, setShowCreatePost] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [memberRoleChange, setMemberRoleChange] = useState(null);
@@ -91,10 +93,8 @@ const CommunityDetails = ({ route, navigation }) => {
     dispatch(getCommunitiesForUser());
   };
 
-  // Handler functions
   const handleCreatePost = () => {
-    // Navigate to create post screen
-    console.log("Create post");
+    setShowCreatePost(true);
   };
 
   const handleInvite = () => {
@@ -128,17 +128,21 @@ const CommunityDetails = ({ route, navigation }) => {
   };
 
   const handleRemoveMember = (member) => {
-    Alert.alert("Remove member", "Are you sure you want to remove this member?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Remove",
-        style: "destructive",
-        onPress: () => {
-          dispatch(removeMember({ communityId, userId: member.user?._id }));
-          Alert.alert("Success", "Member removed successfully");
+    Alert.alert(
+      "Remove member",
+      "Are you sure you want to remove this member?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Remove",
+          style: "destructive",
+          onPress: () => {
+            dispatch(removeMember({ communityId, userId: member.user?._id }));
+            Alert.alert("Success", "Member removed successfully");
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   const handleEditCommunity = () => {
@@ -301,6 +305,12 @@ const CommunityDetails = ({ route, navigation }) => {
           {activeTab === "about" && <AboutTab community={community} />}
         </View>
       </ScrollView>
+
+      <CreatePost
+        visible={showCreatePost}
+        onClose={() => setShowCreatePost(false)}
+        community={community}
+      />
 
       <AddMember
         visible={showAddMember}

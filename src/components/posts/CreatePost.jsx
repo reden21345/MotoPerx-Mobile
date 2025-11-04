@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,7 +17,7 @@ import { handlePickImages, handleRemoveImage } from "../../utils/helpers";
 import { createPosts } from "../../redux/actions/postAction";
 import CommunitySelection from "./CommunitySelection";
 
-const CreatePost = ({ visible, onClose }) => {
+const CreatePost = ({ visible, onClose, community = null }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { communities, joinedCommunities, createdCommunities } = useSelector(
@@ -30,11 +30,19 @@ const CreatePost = ({ visible, onClose }) => {
   const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [showCommunityModal, setShowCommunityModal] = useState(false);
 
+  useEffect(() => {
+    if (community) {
+      setSelectedCommunity(community);
+    }
+  }, [community]);
+
   const closeModal = () => {
     setPostTitle("");
     setPostDescription("");
     setSelectedImages([]);
-    setSelectedCommunity(null);
+    if (!community) {
+      setSelectedCommunity(null);
+    }
     onClose();
   };
 
@@ -70,6 +78,9 @@ const CreatePost = ({ visible, onClose }) => {
       closeModal();
     });
   };
+
+  // Determine if community selector should be disabled
+  const isCommunityLocked = !!community;
 
   return (
     <>
@@ -114,10 +125,14 @@ const CreatePost = ({ visible, onClose }) => {
                 </Text>
               </View>
 
-              {/* Community Selection */}
+              {/* Community Selection - Disabled if community prop exists */}
               <TouchableOpacity
-                style={styles.communitySelector}
-                onPress={() => setShowCommunityModal(true)}
+                style={[
+                  styles.communitySelector,
+                  isCommunityLocked && { opacity: 0.6 }
+                ]}
+                onPress={() => !isCommunityLocked && setShowCommunityModal(true)}
+                disabled={isCommunityLocked}
               >
                 <View style={styles.communitySelectorContent}>
                   <Ionicons name="people" size={20} color="#1DA1F2" />
@@ -127,7 +142,12 @@ const CreatePost = ({ visible, onClose }) => {
                       : "Select a community"}
                   </Text>
                 </View>
-                <Ionicons name="chevron-down" size={20} color="#657786" />
+                {!isCommunityLocked && (
+                  <Ionicons name="chevron-down" size={20} color="#657786" />
+                )}
+                {isCommunityLocked && (
+                  <Ionicons name="lock-closed" size={18} color="#657786" />
+                )}
               </TouchableOpacity>
 
               {/* Title Input */}
@@ -187,16 +207,18 @@ const CreatePost = ({ visible, onClose }) => {
         </View>
       </Modal>
 
-      {/* Community Selection Modal */}
-      <CommunitySelection
-        visible={showCommunityModal}
-        onClose={() => setShowCommunityModal(false)}
-        communities={communities}
-        joinedCommunities={joinedCommunities}
-        createdCommunities={createdCommunities}
-        selectedCommunity={selectedCommunity}
-        onSelectCommunity={setSelectedCommunity}
-      />
+      {/* Community Selection Modal - Only show if community is not locked */}
+      {!isCommunityLocked && (
+        <CommunitySelection
+          visible={showCommunityModal}
+          onClose={() => setShowCommunityModal(false)}
+          communities={communities}
+          joinedCommunities={joinedCommunities}
+          createdCommunities={createdCommunities}
+          selectedCommunity={selectedCommunity}
+          onSelectCommunity={setSelectedCommunity}
+        />
+      )}
     </>
   );
 };
