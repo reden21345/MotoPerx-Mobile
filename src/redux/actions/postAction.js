@@ -89,4 +89,23 @@ export const likePost = createAsyncThunk('posts/likePost', async (id, thunkAPI) 
 
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to like post');
     }
-}); 
+});
+
+// Report Post
+export const reportPost = createAsyncThunk('posts/reportPost', async (data, thunkAPI) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const { postId } = data;
+
+        const response = await axios.post(`${apiKey}/api/v1/post/${postId}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to report post');
+    }
+});

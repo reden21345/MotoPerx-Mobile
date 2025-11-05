@@ -21,6 +21,7 @@ import CreatePostModal from "../../components/posts/CreatePost";
 import PostItem from "../../components/posts/PostItem";
 import EditPost from "../../components/posts/EditPost";
 import CommentModal from "../../components/posts/CommentModal";
+import ReportPostModal from "../../components/posts/ReportPost";
 
 const HomePost = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const HomePost = ({ navigation }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
+  const [showReportPost, setShowReportPost] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [postId, setPostId] = useState(null);
   const [likedPosts, setLikedPosts] = useState(new Set());
@@ -131,21 +133,8 @@ const HomePost = ({ navigation }) => {
 
   const handleReport = (postId) => {
     setActiveDropdown(null);
-    Alert.alert("Report Post", "Why are you reporting this post?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Spam", onPress: () => submitReport(postId, "spam") },
-      {
-        text: "Inappropriate Content",
-        onPress: () => submitReport(postId, "inappropriate"),
-      },
-      { text: "Harassment", onPress: () => submitReport(postId, "harassment") },
-    ]);
-  };
-
-  const submitReport = (postId, reason) => {
-    // Dispatch report action
-    // dispatch(reportPost({ postId, reason }));
-    Alert.alert("Thank you", "Your report has been submitted");
+    setPostId(postId);
+    setShowReportPost(true);
   };
 
   const handleCreatePost = () => {
@@ -251,6 +240,12 @@ const HomePost = ({ navigation }) => {
         onClose={() => setShowAddComment(false)}
         postId={postId}
         editingComment={null}
+      />
+
+      <ReportPostModal
+        visible={showReportPost}
+        onClose={() => setShowReportPost(false)}
+        postId={postId}
       />
     </View>
   );

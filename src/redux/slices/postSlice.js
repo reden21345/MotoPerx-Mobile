@@ -4,7 +4,8 @@ import {
     deletePost, 
     getHomePosts, 
     updatePost,
-    likePost
+    likePost,
+    reportPost
 } from "../actions/postAction";
 
 const postSlice = createSlice({
@@ -79,6 +80,20 @@ const postSlice = createSlice({
         state.success = action.payload.success;
       })
       .addCase(updatePost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(reportPost.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(reportPost.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        state.success = action.payload.success;
+      })
+      .addCase(reportPost.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
