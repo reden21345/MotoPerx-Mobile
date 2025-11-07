@@ -423,6 +423,18 @@ export const fuelGameStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.15)",
   },
+  choiceButtonSelected: {
+    borderWidth: 2,
+    borderColor: "#F59E0B",
+  },
+  choiceButtonOptimal: {
+    backgroundColor: "rgba(16, 185, 129, 0.2)",
+    borderColor: "#10B981",
+  },
+  choiceButtonSuboptimal: {
+    backgroundColor: "rgba(239, 68, 68, 0.2)",
+    borderColor: "#EF4444",
+  },
   choiceContent: {
     flexDirection: "row",
     alignItems: "center",
@@ -442,6 +454,9 @@ export const fuelGameStyles = StyleSheet.create({
     backgroundColor: "#F59E0B",
     justifyContent: "center",
     alignItems: "center",
+  },
+  choiceCircleSelected: {
+    backgroundColor: "#FF8C00",
   },
   choiceLetter: {
     fontSize: 16,
@@ -463,10 +478,28 @@ export const fuelGameStyles = StyleSheet.create({
     borderRadius: 12,
     gap: 4,
   },
+  fuelCostBadgeGood: {
+    backgroundColor: "rgba(16, 185, 129, 0.4)",
+  },
+  fuelCostBadgeBad: {
+    backgroundColor: "rgba(239, 68, 68, 0.4)",
+  },
   fuelCostText: {
     fontSize: 12,
     fontWeight: "bold",
     color: "#FFF",
+  },
+  feedbackContainer: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.2)",
+  },
+  feedbackText: {
+    fontSize: 13,
+    color: "#D1D5DB",
+    lineHeight: 18,
+    fontStyle: "italic",
   },
 
   // Result
