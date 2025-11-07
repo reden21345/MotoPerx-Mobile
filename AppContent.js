@@ -54,6 +54,7 @@ import PostDetails from "./src/screens/post/PostDetails";
 import UsersCommunities from "./src/screens/community/Communities";
 import CommunityDetails from "./src/screens/community/CommuniyDetails";
 import CreateCommunity from "./src/screens/community/CreateCommunity";
+import CommunityReports from "./src/screens/community/CommunityReports";
 
 // Game Imports
 import GameMenu from "./src/screens/games/GameMenu";
@@ -172,6 +173,11 @@ const AppContent = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="CreateCommunity" component={CreateCommunity} />
+        <Stack.Screen
+          name="CommunityReports"
+          component={CommunityReports}
+          options={{ headerShown: false }}
+        />
 
         {/* Game Screens */}
         <Stack.Screen

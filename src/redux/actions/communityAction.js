@@ -174,3 +174,14 @@ export const joinCommunity = createAsyncThunk('community/joinCommunity', async (
         return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Something went wrong');
     }
 });
+
+// Get reported posts
+export const getReportedPosts = createAsyncThunk('posts/getReportedPosts', async (id, thunkAPI) => {
+    try {
+        const response = await axios.get(`${apiKey}/api/v1/posts/${id}/reported`);
+        return response.data;
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error.response?.data?.errMessage || 'Failed to get reported posts');
+    }
+});

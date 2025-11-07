@@ -5,10 +5,10 @@ import {
   editUser,
   getAllPartners,
   getAllUsers,
-  getAllCommunities
+  getAllCommunities,
 } from "../actions/adminAction";
 
-const amdinSlice = createSlice({
+const adminSlice = createSlice({
   name: "admins",
   initialState: {
     users: [],
@@ -114,5 +114,5 @@ const amdinSlice = createSlice({
       });
   },
 });
-export const { clearAdminState, clearSuccess } = amdinSlice.actions;
-export default amdinSlice.reducer;
+export const { clearAdminState, clearSuccess } = adminSlice.actions;
+export default adminSlice.reducer;

@@ -19,6 +19,7 @@ const PostItem = ({
   onReport,
   onCloseDropdown,
   onViewPost,
+  isCommunity = false,
 }) => {
   const isLiked = likedPosts.has(item?._id);
   const likesCount = localLikeCounts[item?._id] ?? (item?.likes?.length || 0);
@@ -48,12 +49,12 @@ const PostItem = ({
       activeOpacity={1}
       onPress={handlePostPress}
     >
-      {item?.postType === "community" && community && (
+      {(item?.postType === "community" && community && !isCommunity) && (
         <Text style={[styles.communityName, { color: "#1DA1F2" }]}>
           in {community.name}
         </Text>
       )}
-      {item?.postType === "admin" && (
+      {(item?.postType === "admin" && !isCommunity) && (
         <Text
           style={[
             styles.communityName,

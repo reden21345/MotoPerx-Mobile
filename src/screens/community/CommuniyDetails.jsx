@@ -25,6 +25,7 @@ import EditCommunity from "../../components/communities/EditCommunity";
 import CreatePost from "../../components/posts/CreatePost";
 import EditPost from "../../components/posts/EditPost";
 import CommentModal from "../../components/posts/CommentModal";
+import ReportPostModal from "../../components/posts/ReportPost";
 import { likePost } from "../../redux/actions/postAction";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -55,6 +56,7 @@ const CommunityDetails = ({ route, navigation }) => {
   const [postDropdown, setPostDropdown] = useState(null);
   const [showEditPost, setShowEditPost] = useState(false);
   const [showAddComment, setShowAddComment] = useState(false);
+  const [showReportPost, setShowReportPost] = useState(false);
   const [editPost, setEditPost] = useState(null);
   const [postId, setPostId] = useState(null);
   const [likedPosts, setLikedPosts] = useState(new Set());
@@ -177,11 +179,11 @@ const CommunityDetails = ({ route, navigation }) => {
   const handleEditPost = (item) => {
     setEditPost(item);
     setShowEditPost(true);
-    setPostDropdown(false);
+    setPostDropdown(null);
   };
 
   const handleDeletePost = (postId) => {
-    setPostDropdown(false);
+    setPostDropdown(null);
     Alert.alert("Delete Post", "Are you sure you want to delete this post?", [
       { text: "Cancel", style: "cancel" },
       {
@@ -242,6 +244,12 @@ const CommunityDetails = ({ route, navigation }) => {
         },
       ]
     );
+  };
+
+  const handleReport = (postId) => {
+    setPostDropdown(null);
+    setPostId(postId);
+    setShowReportPost(true);
   };
 
   if (error) {
@@ -333,6 +341,9 @@ const CommunityDetails = ({ route, navigation }) => {
           onCreatePost={handleCreatePost}
           onInvite={handleInvite}
           onJoin={handleJoin}
+          onViewReports={() =>
+            navigation.navigate("CommunityReports", { communityId })
+          }
         />
 
         <DropdownAction
@@ -340,7 +351,7 @@ const CommunityDetails = ({ route, navigation }) => {
           isOwner={isOwner}
           onEdit={() => handleEditCommunity()}
           onDelete={() => handleDeleteCommunity()}
-          onReport={() => console.log("Report Post")}
+          onReport={() => console.log("Report Community")}
         />
 
         <CommunityTabs activeTab={activeTab} onTabChange={setActiveTab} />
@@ -362,8 +373,9 @@ const CommunityDetails = ({ route, navigation }) => {
               onToggleDropdown={togglePostDropdown}
               onEdit={handleEditPost}
               onDelete={handleDeletePost}
-              onReport={() => console.log("Report Post")}
+              onReport={handleReport}
               onCloseDropdown={() => setActiveDropdown(false)}
+              isCommunity={true}
             />
           )}
 
@@ -419,6 +431,12 @@ const CommunityDetails = ({ route, navigation }) => {
         onClose={() => setShowAddComment(false)}
         postId={postId}
         editingComment={null}
+      />
+
+      <ReportPostModal
+        visible={showReportPost}
+        onClose={() => setShowReportPost(false)}
+        postId={postId}
       />
     </SafeAreaView>
   );

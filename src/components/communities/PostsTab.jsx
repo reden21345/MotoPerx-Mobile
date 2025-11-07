@@ -19,7 +19,8 @@ const PostsTab = ({
   onEdit,
   onDelete,
   onReport,
-  onCloseDropdown
+  onCloseDropdown,
+  isCommunity,
 }) => {
   if (!canViewPosts) {
     if (isPendingMember) {
@@ -78,6 +79,7 @@ const PostsTab = ({
           onReport={onReport}
           onCloseDropdown={onCloseDropdown}
           onViewPost={onViewPost}
+          isCommunity={isCommunity}
         />
       )}
       keyExtractor={(item) => item._id}

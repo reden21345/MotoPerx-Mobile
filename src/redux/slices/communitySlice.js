@@ -1,16 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { 
-    addMember,
-    changeMemberRole,
-    createCommunity,
-    deleteCommunity,
-    getCommunityById,
-    removeMember,
-    updateCommunity,
-    updateStatus,   
-    getCommunitiesForUser,
-    joinCommunity
- } from "../actions/communityAction";
+import {
+  addMember,
+  changeMemberRole,
+  createCommunity,
+  deleteCommunity,
+  getCommunityById,
+  removeMember,
+  updateCommunity,
+  updateStatus,
+  getCommunitiesForUser,
+  joinCommunity,
+  getReportedPosts,
+} from "../actions/communityAction";
 
 const communitySlice = createSlice({
   name: "communities",
@@ -18,6 +19,7 @@ const communitySlice = createSlice({
     communities: [],
     joinedCommunities: [],
     createdCommunities: [],
+    reportedPosts: [],
     community: null,
     message: null,
     nearby: null,
@@ -182,6 +184,20 @@ const communitySlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(deleteCommunity.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getReportedPosts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getReportedPosts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.count = action.payload.count;
+        state.reportedPosts = action.payload.reportedPosts;
+      })
+      .addCase(getReportedPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -123,6 +123,11 @@ export const communityDetailStyles = StyleSheet.create({
     fontWeight: "500",
     lineHeight: 20,
   },
+  adminButtonsRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 12,
+  },
 
   // Stats
   statsContainer: {
