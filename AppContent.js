@@ -40,6 +40,7 @@ import ProductDetails from "./src/components/ProductComponent";
 import EditUser from "./src/screens/admin/EditUser";
 import PartnerDetails from "./src/screens/admin/PartnerDetails";
 import NotifyUsers from "./src/screens/admin/NotifyUsers";
+import CreateAds from "./src/screens/admin/CreateAds";
 
 // Partner
 import CreateDeal from "./src/screens/partner/CreateDeal";
@@ -196,6 +197,7 @@ const AppContent = () => {
         <Stack.Screen name="EditUser" component={EditUser} />
         <Stack.Screen name="PartnerDetails" component={PartnerDetails} />
         <Stack.Screen name="Broadcast" component={NotifyUsers} />
+        <Stack.Screen name="CreateAds" component={CreateAds} />
 
         {/* Partner */}
         <Stack.Screen name="CreateDeal" component={CreateDeal} />

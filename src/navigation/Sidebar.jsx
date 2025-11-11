@@ -37,6 +37,7 @@ const Sidebar = ({ isOpen, onClose, navigation }) => {
 
   const admins = [
     { name: "Dashboard", icon: "grid-outline", screen: "Main" },
+    { name: "Create Ads", icon: "file-tray-outline", screen: "CreateAds" },
     { name: "Settings", icon: "settings-outline", screen: "Settings" },
     { name: "Logout", icon: "log-out-outline", screen: "Login" },
   ];
