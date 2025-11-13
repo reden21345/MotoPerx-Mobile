@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,81 +9,111 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Ionicons } from '@expo/vector-icons';
-import { 
-  handlePickSingleImage, 
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Ionicons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { createAd } from "../../redux/actions/adsAction";
+import { clearSuccess } from "../../redux/slices/adSlice";
+import {
+  handlePickSingleImage,
   handleRemoveSingleImage,
-  handlePickSingleVideo, 
+  handlePickSingleVideo,
   handleRemoveSingleVideo,
-  formatFileSize 
-} from '../../utils/helpers';
-import { createAds as styles} from '../../styles/CreateAds';
+  formatFileSize,
+} from "../../utils/helpers";
+import { createAds as styles } from "../../styles/CreateAds";
 
-const CreateAds = ({ navigation }) => {
-  const [company, setCompany] = useState('');
-  const [caption, setCaption] = useState('');
+const CreateAdScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const { loading, success, error, message } = useSelector(
+    (state) => state.ads
+  );
+
+  const [company, setCompany] = useState("");
+  const [caption, setCaption] = useState("");
   const [expiryDate, setExpiryDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  useEffect(() => {
+    if (success) {
+      Alert.alert("Success", message || "Ad created successfully", [
+        {
+          text: "OK",
+          onPress: () => {
+            dispatch(clearSuccess());
+            navigation.goBack();
+          },
+        },
+      ]);
+    }
+
+    if (error) {
+      Alert.alert("Error", error.message || "Failed to create ad");
+      dispatch(clearSuccess());
+    }
+  }, [success, error, message]);
 
   const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === "ios");
     if (selectedDate) {
       setExpiryDate(selectedDate);
     }
   };
 
+  const handleImagePick = async () => {
+    setUploadingImage(true);
+    await handlePickSingleImage(setImage);
+    setUploadingImage(false);
+  };
+
+  const handleVideoPick = async () => {
+    setUploadingVideo(true);
+    await handlePickSingleVideo(setVideo);
+    setUploadingVideo(false);
+  };
+
   const handleSubmit = async () => {
     if (!company.trim() || !caption.trim()) {
-      Alert.alert('Validation Error', 'Please fill in all required fields');
+      Alert.alert("Validation Error", "Please fill in all required fields");
       return;
     }
 
     if (!image && !video) {
-      Alert.alert('Validation Error', 'Please upload at least an image or video');
+      Alert.alert(
+        "Validation Error",
+        "Please upload at least an image or video"
+      );
       return;
     }
 
-    setLoading(true);
-
     try {
-      const formData = {
-        company: company.trim(),
-        caption: caption.trim(),
-        expiryDate: expiryDate.toISOString(),
-      };
+      const formData = new FormData();
+      formData.append("company", company.trim());
+      formData.append("caption", caption.trim());
+      formData.append("expiryDate", expiryDate.toISOString());
 
+      // Append image if exists
       if (image) {
-        formData.image = image;
+        formData.append("image", image);
       }
 
+      // Append video file if exists
       if (video) {
-        formData.video = video.base64;
+        formData.append("video", {
+          uri: video.uri,
+          type: video.mimeType || "video/mp4",
+          name: video.name,
+        });
       }
 
-      // TODO: Replace with your actual API call
-      // const response = await createAdAPI(formData);
-      
-      console.log('Form Data:', {
-        ...formData,
-        image: image ? 'Image included' : 'No image',
-        video: video ? `Video: ${video.name}` : 'No video'
-      });
-
-      Alert.alert('Success', 'Ad created successfully', [
-        {
-          text: 'OK',
-          onPress: () => navigation.goBack(),
-        },
-      ]);
+      dispatch(createAd(formData));
     } catch (error) {
-      Alert.alert('Error', error.message || 'Failed to create ad');
-    } finally {
-      setLoading(false);
+      Alert.alert("Error", error.message || "Failed to create ad");
     }
   };
 
@@ -143,10 +173,10 @@ const CreateAds = ({ navigation }) => {
           >
             <Ionicons name="calendar-outline" size={20} color="#666" />
             <Text style={styles.dateText}>
-              {expiryDate.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
+              {expiryDate.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </Text>
           </TouchableOpacity>
@@ -165,7 +195,12 @@ const CreateAds = ({ navigation }) => {
         {/* Image Upload */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Ad Image</Text>
-          {image ? (
+          {uploadingImage ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#007AFF" />
+              <Text style={styles.loadingText}>Processing image...</Text>
+            </View>
+          ) : image ? (
             <View style={styles.mediaPreview}>
               <Image source={{ uri: image }} style={styles.imagePreview} />
               <TouchableOpacity
@@ -176,9 +211,9 @@ const CreateAds = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity 
-              style={styles.uploadButton} 
-              onPress={() => handlePickSingleImage(setImage)}
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={handleImagePick}
             >
               <Ionicons name="image-outline" size={32} color="#007AFF" />
               <Text style={styles.uploadText}>Upload Image</Text>
@@ -192,7 +227,15 @@ const CreateAds = ({ navigation }) => {
         {/* Video Upload */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Ad Video (Optional)</Text>
-          {video ? (
+          {uploadingVideo ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#007AFF" />
+              <Text style={styles.loadingText}>Processing video...</Text>
+              <Text style={styles.loadingSubtext}>
+                This may take a moment for large files
+              </Text>
+            </View>
+          ) : video ? (
             <View style={styles.mediaPreview}>
               <View style={styles.videoPreview}>
                 <Ionicons name="videocam" size={48} color="#007AFF" />
@@ -211,9 +254,9 @@ const CreateAds = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity 
-              style={styles.uploadButton} 
-              onPress={() => handlePickSingleVideo(setVideo)}
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={handleVideoPick}
             >
               <Ionicons name="videocam-outline" size={32} color="#007AFF" />
               <Text style={styles.uploadText}>Upload Video</Text>
@@ -248,4 +291,4 @@ const CreateAds = ({ navigation }) => {
   );
 };
 
-export default CreateAds;
+export default CreateAdScreen;

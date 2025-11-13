@@ -14,6 +14,7 @@ import postReducer from './slices/postSlice';
 import commentReducer from './slices/commentSlice';
 import communityReducer from './slices/communitySlice';
 import gameReducer from './slices/gameSlice';
+import adsReducer from './slices/adSlice';
 
 export const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
     comments: commentReducer,
     communities: communityReducer,
     games: gameReducer,
+    ads: adsReducer,
   },
 });
 

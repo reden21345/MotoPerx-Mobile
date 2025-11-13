@@ -1,4 +1,4 @@
-import * as DocumentPicker from 'expo-document-picker';
+import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import * as Location from "expo-location";
@@ -176,7 +176,7 @@ export const handleRemoveSingleImage = (setImage) => {
   setImage(null);
 };
 
-// Pick and process single video
+// Pick Single Video
 export const handlePickSingleVideo = async (setVideo) => {
   try {
     const result = await DocumentPicker.getDocumentAsync({
@@ -184,14 +184,21 @@ export const handlePickSingleVideo = async (setVideo) => {
       copyToCacheDirectory: true,
     });
 
-    if (result.type === 'cancel') {
+    console.log('Document Picker Result:', result); // Debug log
+
+    // Handle cancellation
+    if (result.canceled) {
+      console.log('User canceled video selection');
       return;
     }
 
-    if (result.type === 'success') {
+    // DocumentPicker now returns result.assets array
+    if (result.assets && result.assets.length > 0) {
+      const asset = result.assets[0];
+      
       // Check file size (e.g., max 50MB)
       const maxSize = 50 * 1024 * 1024; // 50MB in bytes
-      if (result.size > maxSize) {
+      if (asset.size > maxSize) {
         Alert.alert(
           'Video too large',
           'Please choose a video smaller than 50MB.'
@@ -200,22 +207,26 @@ export const handlePickSingleVideo = async (setVideo) => {
       }
 
       try {
+        console.log('Processing video:', asset.name);
+        
         // Convert to base64
-        const base64 = await FileSystem.readAsStringAsync(result.uri, {
+        const base64 = await FileSystem.readAsStringAsync(asset.uri, {
           encoding: FileSystem.EncodingType.Base64,
         });
 
         // Get file extension
-        const fileExtension = result.name.split('.').pop().toLowerCase();
+        const fileExtension = asset.name.split('.').pop().toLowerCase();
         const mimeType = getMimeType(fileExtension);
 
         const dataUri = `data:${mimeType};base64,${base64}`;
 
+        console.log('Video processed successfully');
+
         // Set video with metadata
         setVideo({
-          uri: result.uri,
-          name: result.name,
-          size: result.size,
+          uri: asset.uri,
+          name: asset.name,
+          size: asset.size,
           mimeType: mimeType,
           base64: dataUri,
         });
@@ -223,6 +234,8 @@ export const handlePickSingleVideo = async (setVideo) => {
         console.error('Video processing error:', error);
         Alert.alert('Error', 'Failed to process video. Please try again.');
       }
+    } else {
+      console.log('No assets found in result');
     }
   } catch (error) {
     console.error('Video picker error:', error);
@@ -230,20 +243,39 @@ export const handlePickSingleVideo = async (setVideo) => {
   }
 };
 
+// Helper function to get MIME type
+const getMimeType = (extension) => {
+  const mimeTypes = {
+    mp4: 'video/mp4',
+    mov: 'video/quicktime',
+    avi: 'video/x-msvideo',
+    wmv: 'video/x-ms-wmv',
+    flv: 'video/x-flv',
+    mkv: 'video/x-matroska',
+    webm: 'video/webm',
+    m4v: 'video/x-m4v',
+    '3gp': 'video/3gpp',
+    mpeg: 'video/mpeg',
+    mpg: 'video/mpeg',
+  };
+
+  return mimeTypes[extension] || 'video/mp4';
+};
+
 // Pick multiple videos
 export const handlePickVideos = async (setVideos) => {
   try {
     const result = await DocumentPicker.getDocumentAsync({
-      type: 'video/*',
+      type: "video/*",
       copyToCacheDirectory: true,
       multiple: true,
     });
 
-    if (result.type === 'cancel') {
+    if (result.type === "cancel") {
       return;
     }
 
-    if (result.type === 'success') {
+    if (result.type === "success") {
       const assets = Array.isArray(result) ? result : [result];
       const maxSize = 50 * 1024 * 1024; // 50MB per video
 
@@ -253,7 +285,7 @@ export const handlePickVideos = async (setVideos) => {
             // Check file size
             if (asset.size > maxSize) {
               Alert.alert(
-                'Video too large',
+                "Video too large",
                 `${asset.name} is larger than 50MB and will be skipped.`
               );
               return null;
@@ -264,7 +296,7 @@ export const handlePickVideos = async (setVideos) => {
               encoding: FileSystem.EncodingType.Base64,
             });
 
-            const fileExtension = asset.name.split('.').pop().toLowerCase();
+            const fileExtension = asset.name.split(".").pop().toLowerCase();
             const mimeType = getMimeType(fileExtension);
             const dataUri = `data:${mimeType};base64,${base64}`;
 
@@ -287,8 +319,8 @@ export const handlePickVideos = async (setVideos) => {
       setVideos((prevVideos) => [...prevVideos, ...validVideos]);
     }
   } catch (error) {
-    console.error('Video picker error:', error);
-    Alert.alert('Error', 'Failed to pick videos. Please try again.');
+    console.error("Video picker error:", error);
+    Alert.alert("Error", "Failed to pick videos. Please try again.");
   }
 };
 
@@ -302,34 +334,15 @@ export const handleRemoveVideo = (index, setVideos) => {
   setVideos((prevVideos) => prevVideos.filter((_, i) => i !== index));
 };
 
-// Helper function to get MIME type
-const getMimeType = (extension) => {
-  const mimeTypes = {
-    mp4: 'video/mp4',
-    mov: 'video/quicktime',
-    avi: 'video/x-msvideo',
-    wmv: 'video/x-ms-wmv',
-    flv: 'video/x-flv',
-    mkv: 'video/x-matroska',
-    webm: 'video/webm',
-    m4v: 'video/x-m4v',
-    '3gp': 'video/3gpp',
-    mpeg: 'video/mpeg',
-    mpg: 'video/mpeg',
-  };
-
-  return mimeTypes[extension] || 'video/mp4';
-};
-
 // Format file size for display
 export const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
 };
 
 // Format Date
