@@ -90,56 +90,29 @@ const CreateAdScreen = ({ navigation }) => {
       );
       return;
     }
+    
+    const formData = new FormData();
+    formData.append("company", company.trim());
+    formData.append("caption", caption.trim());
+    formData.append("expiryDate", expiryDate.toISOString());
 
-    try {
-      console.log("=== PREPARING UPLOAD ===");
-
-      const formData = new FormData();
-      formData.append("company", company.trim());
-      formData.append("caption", caption.trim());
-      formData.append("expiryDate", expiryDate.toISOString());
-
-      if (image) {
-        console.log("Adding image:", {
-          uri: image.uri,
-          type: image.type,
-          name: image.name,
-          size: image.size,
-        });
-
-        formData.append("image", {
-          uri: image.uri,
-          type: image.type,
-          name: image.name,
-        });
-      }
-
-      if (video) {
-        console.log("Adding video:", {
-          uri: video.uri,
-          type: video.type,
-          name: video.name,
-          size: video.size,
-        });
-
-        formData.append("video", {
-          uri: video.uri,
-          type: video.type,
-          name: video.name,
-        });
-      }
-
-      console.log("Dispatching createAd action...");
-
-      await dispatch(createAd(formData)).unwrap();
-
-      // Success is handled in useEffect
-      console.log("Ad created successfully!");
-    } catch (error) {
-      console.error("=== SUBMIT ERROR ===");
-      console.error("Error:", error);
-      // Error is handled in useEffect, but log it here too
+    if (image) {
+      formData.append("image", {
+        uri: image.uri,
+        type: image.type,
+        name: image.name,
+      });
     }
+
+    if (video) {
+      formData.append("video", {
+        uri: video.uri,
+        type: video.type,
+        name: video.name,
+      });
+    }
+
+    await dispatch(createAd(formData)).unwrap();
   };
 
   return (

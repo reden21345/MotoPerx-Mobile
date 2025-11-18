@@ -22,7 +22,7 @@ export const getAllAds = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || { message: error.message }
+         error?.response?.data?.errMessage || "Failed to get ads"
       );
     }
   }
@@ -32,14 +32,11 @@ export const createAd = createAsyncThunk(
   "ads/createAd",
   async (formData, { rejectWithValue }) => {
     try {
-      console.log("=== USING AXIOS UPLOAD ===");
-      console.log("FormData parts:", formData._parts);
-
       const response = await axios.post(`${apiKey}/api/v1/ads`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        timeout: 60000, // 60 seconds for large files
+        timeout: 60000,
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
@@ -48,26 +45,11 @@ export const createAd = createAsyncThunk(
         },
       });
 
-      console.log("UPLOAD SUCCESS:", response.data);
       return response.data;
     } catch (error) {
-      console.error("ACTION ERROR:", error);
-
-      if (error.response) {
-        // Server responded with an error
-        console.error("Server response error:", error.response.data);
-        return rejectWithValue(error.response.data.message || "Upload failed");
-      } else if (error.request) {
-        // Request made but no response
-        console.error("No response received");
-        return rejectWithValue(
-          "No response from server. Please check your connection."
-        );
-      } else {
-        // Something else went wrong
-        console.error("Request setup error:", error.message);
-        return rejectWithValue(error.message);
-      }
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.errMessage || "Failed to add ads"
+      );
     }
   }
 );
@@ -86,7 +68,7 @@ export const deactivateAd = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
-        error.response?.data || { message: error.message }
+        error?.response?.data?.errMessage || "Failed to deactivate ads"
       );
     }
   }

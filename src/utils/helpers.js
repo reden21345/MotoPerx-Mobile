@@ -225,7 +225,6 @@ export const handlePickSingleImageFile = async (setImage) => {
       };
 
       setImage(imageFile);
-      console.log("Image selected:", imageFile);
     } catch (error) {
       console.error("Image processing error:", error);
       Alert.alert("Error", "Failed to process image. Please try again.");
