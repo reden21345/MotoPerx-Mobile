@@ -30,7 +30,7 @@ export const getAllAds = createAsyncThunk(
 
 export const createAd = createAsyncThunk(
   "ads/createAd",
-  async (formData, { rejectWithValue }) => {
+  async (formData, thunkAPI) => {
     try {
       const response = await axios.post(`${apiKey}/api/v1/ads`, formData, {
         headers: {

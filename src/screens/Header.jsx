@@ -15,6 +15,7 @@ import { getAllProducts } from "../redux/actions/productAction";
 import { getAllDeals } from "../redux/actions/dealsAction";
 import { getHomePosts } from "../redux/actions/postAction";
 import { getCommunitiesForUser } from "../redux/actions/communityAction";
+import { getAllAds } from "../redux/actions/adsAction";
 import Notifications from "./Notifications";
 
 const Header = ({ navigation }) => {
@@ -42,6 +43,7 @@ const Header = ({ navigation }) => {
       dispatch(getAllDeals());
       dispatch(getHomePosts());
       dispatch(getCommunitiesForUser());
+      dispatch(getAllAds());
 
       hasFetched.current = true;
     }

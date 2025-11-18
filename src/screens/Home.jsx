@@ -1,70 +1,103 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
   FlatList,
-  Linking,
   ScrollView,
+  RefreshControl,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { homeStyles as styles } from "../styles/HomeStyles";
-import motor1 from "../../assets/makina.jpg";
-import motor2 from "../../assets/unioil.png";
-import motor3 from "../../assets/suzuki.jpg";
-import motor4 from "../../assets/hjc.jpg";
-import motor5 from "../../assets/Honda.png";
-import motor6 from "../../assets/jabbre.png";
+import { getQRCode } from "../redux/actions/qrcodeAction";
+import { getUserPoints } from "../redux/actions/pointsAction";
+import { getAllProducts } from "../redux/actions/productAction";
+import { getAllDeals } from "../redux/actions/dealsAction";
+import { getHomePosts } from "../redux/actions/postAction";
+import { getCommunitiesForUser } from "../redux/actions/communityAction";
+import { getAllAds } from "../redux/actions/adsAction";
 
 const Home = ({ navigation }) => {
   const dispatch = useDispatch();
   const { deals } = useSelector((state) => state.deals);
   const { products } = useSelector((state) => state.products);
-  const { homePosts } = useSelector((state) => state.posts);
-  const { points, loyaltyTier } = useSelector((state) => state.points);
+  const { points } = useSelector((state) => state.points);
+  const { activeAds } = useSelector((state) => state.ads);
   const expiresAt = useSelector((state) =>
     state.points?.transactions?.length > 0
       ? state.points.transactions[0].expiresAt
       : null
   );
-  const carouselImages = [motor1, motor2, motor3, motor4, motor5, motor6];
-  const [currentIndex, setCurrentIndex] = useState(0);
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [randomizedDeals, setRandomizedDeals] = useState([]);
+  const [randomizedProducts, setRandomizedProducts] = useState([]);
+  const [randomizedStores, setRandomizedStores] = useState([]);
+
+  // Function to randomize and limit items to 3
+  const getRandomItems = (array, count = 3) => {
+    if (!array || array.length === 0) return [];
+    const shuffled = [...array].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(count, array.length));
+  };
+
+  // Initialize randomized data
+  const initializeData = useCallback(() => {
+    setRandomizedDeals(getRandomItems(deals, 3));
+    setRandomizedStores(getRandomItems(products, 3));
+
+    const allProducts = products.flatMap((store) =>
+      store.productService.map((service) => ({
+        ...service,
+      }))
+    );
+    setRandomizedProducts(getRandomItems(allProducts, 3));
+  }, [deals, products]);
+
+  // Initialize data when deals or products change
   useEffect(() => {
+    initializeData();
+  }, [initializeData]);
+
+  // Carousel auto-rotation for ads
+  useEffect(() => {
+    if (!activeAds || activeAds.length === 0) return;
+
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
-        prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
+        prevIndex === activeAds.length - 1 ? 0 : prevIndex + 1
       );
     }, 3000); // change slide every 3 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [activeAds]);
 
-  const openPost = (link) => {
-    Linking.openURL(link);
-  };
+  // Pull to refresh handler
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
 
-  // Renders each blog post item
-  const renderPostItem = ({ item }) => {
-    const title = item?.title || "No Title";
-    const link = item?.link || "#";
-    const imageUrl = item.images[0]?.url;
+    try {
+      // Dispatch all actions to refresh data
+      await Promise.all([
+        dispatch(getQRCode()),
+        dispatch(getUserPoints()),
+        dispatch(getAllProducts()),
+        dispatch(getAllDeals()),
+        dispatch(getHomePosts()),
+        dispatch(getCommunitiesForUser()),
+        dispatch(getAllAds()),
+      ]);
 
-    return (
-      <TouchableOpacity
-        style={styles.postContainer}
-        onPress={() => openPost(link)}
-      >
-        <Image
-          source={{ uri: imageUrl || "https://via.placeholder.com/350x150" }}
-          style={styles.postImage}
-        />
-        <Text style={styles.postTitle}>{title}</Text>
-      </TouchableOpacity>
-    );
-  };
+      initializeData();
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [dispatch, initializeData]);
 
   const renderStores = ({ item }) => {
     return (
@@ -101,12 +134,6 @@ const Home = ({ navigation }) => {
     );
   };
 
-  const allProducts = products.flatMap((store) =>
-    store.productService.map((service) => ({
-      ...service,
-    }))
-  );
-
   const renderProductServiceItem = ({ item }) => {
     const imageUrl = item.images?.[0]?.url || "https://via.placeholder.com/60";
 
@@ -126,10 +153,31 @@ const Home = ({ navigation }) => {
     );
   };
 
+  // Get current ad image URL or fallback
+  const getCurrentAdImage = () => {
+    if (!activeAds || activeAds.length === 0) {
+      return "https://via.placeholder.com/800x400?text=No+Active+Ads";
+    }
+    return (
+      activeAds[currentIndex]?.images?.url ||
+      "https://via.placeholder.com/800x400"
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.bodyContainer}>
-        {/* Horizontal Banners */}
+      <ScrollView
+        contentContainerStyle={styles.bodyContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#98DB52"]}
+            tintColor="#98DB52"
+          />
+        }
+      >
+        {/* Dynamic Ad Banner Carousel */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -137,7 +185,7 @@ const Home = ({ navigation }) => {
         >
           <View style={styles.carouselWrapper}>
             <Image
-              source={carouselImages[currentIndex]}
+              source={{ uri: getCurrentAdImage() }}
               style={styles.carouselImage}
             />
           </View>
@@ -175,65 +223,73 @@ const Home = ({ navigation }) => {
           </View>
         </View>
 
-        {/* DEALS */}
-        <View style={styles.productContainer}>
-          <View style={styles.storeHeader}>
-            <Text style={styles.productTitle}>DEALS</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Deals")}>
-              <Text style={styles.viewAllText}>VIEW ALL</Text>
-            </TouchableOpacity>
+        {/* DEALS - Randomized 3 items */}
+        {randomizedDeals.length > 0 && (
+          <View style={styles.productContainer}>
+            <View style={styles.storeHeader}>
+              <Text style={styles.productTitle}>DEALS</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Deals")}>
+                <Text style={styles.viewAllText}>VIEW ALL</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.productRow}>
+              <FlatList
+                data={randomizedDeals}
+                keyExtractor={(item, index) => `deal-${item._id || index}`}
+                renderItem={renderDeals}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingVertical: 10 }}
+              />
+            </View>
           </View>
-          <View style={styles.productRow}>
+        )}
+
+        {/* PARTNER MERCHANTS - Randomized 3 items */}
+        {randomizedStores.length > 0 && (
+          <View style={styles.storeContainer}>
+            <View style={styles.storeHeader}>
+              <Text style={styles.storeTitle}>PARTNER MERCHANT</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("AllStores")}
+              >
+                <Text style={styles.viewAllText}>VIEW ALL</Text>
+              </TouchableOpacity>
+            </View>
             <FlatList
-              data={deals}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderDeals}
+              data={randomizedStores}
+              keyExtractor={(item) => `store-${item._id}`}
+              renderItem={renderStores}
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingVertical: 10 }}
+              contentContainerStyle={styles.horizontalStoreRow}
             />
           </View>
-        </View>
+        )}
 
-        {/* SERVICES SECTION */}
-        <View style={styles.storeContainer}>
-          <View style={styles.storeHeader}>
-            <Text style={styles.storeTitle}>PARTNER MERCHANT</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("AllStores")}>
-              <Text style={styles.viewAllText}>VIEW ALL</Text>
-            </TouchableOpacity>
+        {/* PRODUCTS & SERVICES - Randomized 3 items */}
+        {randomizedProducts.length > 0 && (
+          <View style={styles.productContainer}>
+            <View style={styles.storeHeader}>
+              <Text style={styles.productTitle}>PRODUCTS & SERVICES</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("AllProducts")}
+              >
+                <Text style={styles.viewAllText}>VIEW ALL</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.productRow}>
+              <FlatList
+                data={randomizedProducts}
+                keyExtractor={(item, index) => `product-${item._id || index}`}
+                renderItem={renderProductServiceItem}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingVertical: 10 }}
+              />
+            </View>
           </View>
-          <FlatList
-            data={products}
-            keyExtractor={(item) => item._id}
-            renderItem={renderStores}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalStoreRow}
-          />
-        </View>
-
-        {/* PRODUCTS */}
-        <View style={styles.productContainer}>
-          <View style={styles.storeHeader}>
-            <Text style={styles.productTitle}>PRODUCTS & SERVICES</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("AllProducts")}
-            >
-              <Text style={styles.viewAllText}>VIEW ALL</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.productRow}>
-            <FlatList
-              data={allProducts.slice(0, 3)}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderProductServiceItem}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingVertical: 10 }}
-            />
-          </View>
-        </View>
+        )}
 
         {/* RIDER GAMES SECTION */}
         <View style={styles.gamesSection}>

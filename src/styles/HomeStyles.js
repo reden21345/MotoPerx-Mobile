@@ -15,14 +15,6 @@ export const homeStyles = StyleSheet.create({
   bannerScrollContainer: {
     marginTop: -20,
   },
-  bannerItem: {
-    width: width * 0.9,
-    height: width * 0.45,
-    marginHorizontal: 10,
-    overflow: "hidden",
-    backgroundColor: "#98DB52", // green
-    position: "relative",
-  },
   rewardsCard: {
     backgroundColor: "#ffffff",
     borderRadius: 12,
