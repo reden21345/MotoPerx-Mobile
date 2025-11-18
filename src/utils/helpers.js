@@ -176,7 +176,64 @@ export const handleRemoveSingleImage = (setImage) => {
   setImage(null);
 };
 
-// Pick Single Video
+export const handlePickSingleImageFile = async (setImage) => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== "granted") {
+    Alert.alert(
+      "Permission Denied",
+      "You need to grant camera roll permissions to upload an image."
+    );
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsMultipleSelection: false,
+    quality: 0.8, // Compress during selection
+  });
+
+  if (!result.canceled && result.assets?.length > 0) {
+    try {
+      const asset = result.assets[0];
+      
+      // Resize and compress the image
+      const compressed = await ImageManipulator.manipulateAsync(
+        asset.uri,
+        [{ resize: { width: 1200 } }], // Reasonable size for ads
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      );
+
+      // Get file info
+      const fileInfo = await FileSystem.getInfoAsync(compressed.uri);
+      
+      // Check file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024;
+      if (fileInfo.size > maxSize) {
+        Alert.alert("Image too large", "Please choose an image smaller than 5MB.");
+        return;
+      }
+
+      // Extract filename from URI or generate one
+      const fileName = asset.fileName || `image_${Date.now()}.jpg`;
+
+      // Prepare image object for FormData upload (similar to video structure)
+      const imageFile = {
+        uri: compressed.uri,
+        type: 'image/jpeg',
+        name: fileName,
+        size: fileInfo.size,
+      };
+
+      setImage(imageFile);
+      console.log("Image selected:", imageFile);
+    } catch (error) {
+      console.error("Image processing error:", error);
+      Alert.alert("Error", "Failed to process image. Please try again.");
+    }
+  }
+};
+
+// Pick Single Video (optimized for multipart/form-data)
 export const handlePickSingleVideo = async (setVideo) => {
   try {
     const result = await DocumentPicker.getDocumentAsync({
@@ -184,56 +241,34 @@ export const handlePickSingleVideo = async (setVideo) => {
       copyToCacheDirectory: true,
     });
 
-    console.log('Document Picker Result:', result); // Debug log
-
-    // Handle cancellation
     if (result.canceled) {
       console.log('User canceled video selection');
       return;
     }
 
-    // DocumentPicker now returns result.assets array
     if (result.assets && result.assets.length > 0) {
       const asset = result.assets[0];
-      
-      // Check file size (e.g., max 50MB)
-      const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+
+      // Check file size (max 50MB)
+      const maxSize = 50 * 1024 * 1024;
       if (asset.size > maxSize) {
-        Alert.alert(
-          'Video too large',
-          'Please choose a video smaller than 50MB.'
-        );
+        Alert.alert('Video too large', 'Please choose a video smaller than 50MB.');
         return;
       }
 
-      try {
-        console.log('Processing video:', asset.name);
-        
-        // Convert to base64
-        const base64 = await FileSystem.readAsStringAsync(asset.uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+      // Extract extension and MIME type
+      const fileExtension = asset.name.split('.').pop().toLowerCase();
+      const mimeType = getMimeType(fileExtension);
 
-        // Get file extension
-        const fileExtension = asset.name.split('.').pop().toLowerCase();
-        const mimeType = getMimeType(fileExtension);
+      // Prepare video for FormData upload
+      const videoFile = {
+        uri: asset.uri,
+        type: mimeType,
+        size: asset.size,
+        name: asset.name || `video_${Date.now()}.${fileExtension}`,
+      };
 
-        const dataUri = `data:${mimeType};base64,${base64}`;
-
-        console.log('Video processed successfully');
-
-        // Set video with metadata
-        setVideo({
-          uri: asset.uri,
-          name: asset.name,
-          size: asset.size,
-          mimeType: mimeType,
-          base64: dataUri,
-        });
-      } catch (error) {
-        console.error('Video processing error:', error);
-        Alert.alert('Error', 'Failed to process video. Please try again.');
-      }
+      setVideo(videoFile);
     } else {
       console.log('No assets found in result');
     }

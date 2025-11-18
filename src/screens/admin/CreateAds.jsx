@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createAd } from "../../redux/actions/adsAction";
 import { clearSuccess } from "../../redux/slices/adSlice";
 import {
-  handlePickSingleImage,
+  handlePickSingleImageFile,
   handleRemoveSingleImage,
   handlePickSingleVideo,
   handleRemoveSingleVideo,
@@ -67,7 +67,7 @@ const CreateAdScreen = ({ navigation }) => {
 
   const handleImagePick = async () => {
     setUploadingImage(true);
-    await handlePickSingleImage(setImage);
+    await handlePickSingleImageFile(setImage);
     setUploadingImage(false);
   };
 
@@ -92,28 +92,53 @@ const CreateAdScreen = ({ navigation }) => {
     }
 
     try {
+      console.log("=== PREPARING UPLOAD ===");
+
       const formData = new FormData();
       formData.append("company", company.trim());
       formData.append("caption", caption.trim());
       formData.append("expiryDate", expiryDate.toISOString());
 
-      // Append image if exists
       if (image) {
-        formData.append("image", image);
+        console.log("Adding image:", {
+          uri: image.uri,
+          type: image.type,
+          name: image.name,
+          size: image.size,
+        });
+
+        formData.append("image", {
+          uri: image.uri,
+          type: image.type,
+          name: image.name,
+        });
       }
 
-      // Append video file if exists
       if (video) {
+        console.log("Adding video:", {
+          uri: video.uri,
+          type: video.type,
+          name: video.name,
+          size: video.size,
+        });
+
         formData.append("video", {
           uri: video.uri,
-          type: video.mimeType || "video/mp4",
+          type: video.type,
           name: video.name,
         });
       }
 
-      dispatch(createAd(formData));
+      console.log("Dispatching createAd action...");
+
+      await dispatch(createAd(formData)).unwrap();
+
+      // Success is handled in useEffect
+      console.log("Ad created successfully!");
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to create ad");
+      console.error("=== SUBMIT ERROR ===");
+      console.error("Error:", error);
+      // Error is handled in useEffect, but log it here too
     }
   };
 
@@ -202,13 +227,21 @@ const CreateAdScreen = ({ navigation }) => {
             </View>
           ) : image ? (
             <View style={styles.mediaPreview}>
-              <Image source={{ uri: image }} style={styles.imagePreview} />
+              <Image source={{ uri: image.uri }} style={styles.imagePreview} />
               <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => handleRemoveSingleImage(setImage)}
               >
                 <Ionicons name="close-circle" size={28} color="#FF3B30" />
               </TouchableOpacity>
+              <View style={styles.imageInfo}>
+                <Text style={styles.imageName} numberOfLines={1}>
+                  {image.name}
+                </Text>
+                <Text style={styles.imageSize}>
+                  {formatFileSize(image.size)}
+                </Text>
+              </View>
             </View>
           ) : (
             <TouchableOpacity
@@ -226,7 +259,7 @@ const CreateAdScreen = ({ navigation }) => {
 
         {/* Video Upload */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Ad Video (Optional)</Text>
+          <Text style={styles.label}>Ad Video</Text>
           {uploadingVideo ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#007AFF" />
