@@ -1,53 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Sidebar from "../navigation/Sidebar";
-import { useNotification } from "../hooks/NotificationContext";
-import {
-  getUserNotifications,
-  notifChecker,
-} from "../redux/actions/notifAction";
-import { getQRCode } from "../redux/actions/qrcodeAction";
-import { getUserPoints } from "../redux/actions/pointsAction";
-import { getAllProducts } from "../redux/actions/productAction";
-import { getAllDeals } from "../redux/actions/dealsAction";
-import { getHomePosts } from "../redux/actions/postAction";
-import { getCommunitiesForUser } from "../redux/actions/communityAction";
-import { getAllAds } from "../redux/actions/adsAction";
 import Notifications from "./Notifications";
 
 const Header = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const { expoPushToken } = useNotification();
-
   const { user } = useSelector((state) => state.auth);
   const { unseen } = useSelector((state) => state.notifications);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-
-  const hasFetched = useRef(false);
-
-  useEffect(() => {
-    if (user && expoPushToken && !hasFetched.current) {
-      const data = {
-        userId: user._id,
-        expoToken: expoPushToken,
-      };
-      dispatch(notifChecker(data));
-      dispatch(getUserNotifications());
-      dispatch(getQRCode());
-      dispatch(getUserPoints());
-      dispatch(getAllProducts());
-      dispatch(getAllDeals());
-      dispatch(getHomePosts());
-      dispatch(getCommunitiesForUser());
-      dispatch(getAllAds());
-
-      hasFetched.current = true;
-    }
-  }, [user, expoPushToken, dispatch]);
 
   return (
     <SafeAreaView style={{ backgroundColor: "#000" }} edges={["top"]}>
@@ -123,13 +86,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#000", // subtle gray line
+    borderBottomColor: "#000",
   },
   logoContainer: {
     justifyContent: "center",
     alignItems: "center",
     height: 40,
-    flex: 1, // center alignment
+    flex: 1,
   },
   logo: {
     width: 250,
@@ -142,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-    flex: 1, // aligns icons to the end
+    flex: 1,
   },
   notifContainer: {
     marginRight: 16,
@@ -151,7 +114,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -4,
     right: -6,
-    backgroundColor: "red", // keeping red for visibility
+    backgroundColor: "red",
     borderRadius: 10,
     paddingHorizontal: 5,
     paddingVertical: 1,
@@ -160,7 +123,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   badgeText: {
-    color: "#FFFFFF", // white
+    color: "#FFFFFF",
     fontSize: 10,
     fontWeight: "bold",
     textAlign: "center",
@@ -175,7 +138,7 @@ const styles = StyleSheet.create({
     marginLeft: -30,
   },
   profileImage: {
-    width: 40, // slightly larger if preferred
+    width: 40,
     height: 40,
     borderRadius: 20,
     //marginBottom: 4, // space between image and text
@@ -185,7 +148,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   userName: {
-    color: "#000", // green
+    color: "#000",
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 3,

@@ -5,9 +5,22 @@ import { enableScreens } from "react-native-screens";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { profile } from "./src/redux/actions/authAction";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
 import * as Linking from "expo-linking";
 import "react-native-gesture-handler";
+
+import {
+  getUserNotifications,
+  notifChecker,
+} from "./src/redux/actions/notifAction";
+import { getQRCode } from "./src/redux/actions/qrcodeAction";
+import { getUserPoints } from "./src/redux/actions/pointsAction";
+import { getAllProducts } from "./src/redux/actions/productAction";
+import { getAllDeals } from "./src/redux/actions/dealsAction";
+import { getHomePosts } from "./src/redux/actions/postAction";
+import { getCommunitiesForUser } from "./src/redux/actions/communityAction";
+import { getAllAds } from "./src/redux/actions/adsAction";
+import { useNotification } from "./src/hooks/NotificationContext";
 
 import Login from "./src/screens/Login";
 import Register from "./src/screens/Register";
@@ -87,7 +100,43 @@ const linking = {
 
 const AppContent = () => {
   const [initialRoute, setInitialRoute] = useState(null);
+  const [isLoadingResources, setIsLoadingResources] = useState(false);
   const dispatch = useDispatch();
+  const { expoPushToken } = useNotification();
+
+  // Function to load all required resources
+  const loadAppResources = async (user, token) => {
+    try {
+      setIsLoadingResources(true);
+
+      // Prepare notification checker data
+      const notifData = {
+        userId: user._id,
+        expoToken: token,
+      };
+
+      // Load all resources in parallel for better performance
+      await Promise.all([
+        dispatch(notifChecker(notifData)),
+        dispatch(getUserNotifications()),
+        dispatch(getQRCode()),
+        dispatch(getUserPoints()),
+        dispatch(getAllProducts()),
+        dispatch(getAllDeals()),
+        dispatch(getHomePosts()),
+        dispatch(getCommunitiesForUser()),
+        dispatch(getAllAds()),
+      ]);
+
+      console.log("All resources loaded successfully");
+      setIsLoadingResources(false);
+      return true;
+    } catch (error) {
+      console.error("Error loading app resources:", error);
+      setIsLoadingResources(false);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -99,9 +148,14 @@ const AppContent = () => {
           return;
         }
 
+        // Verify token and get user profile
         const result = await dispatch(profile()).unwrap();
 
         if (result?.success) {
+          // Load all required resources before navigating
+          if (expoPushToken) {
+            await loadAppResources(result.user, expoPushToken);
+          }
           setInitialRoute("Main");
         } else {
           await AsyncStorage.removeItem("token");
@@ -115,9 +169,10 @@ const AppContent = () => {
     };
 
     checkLoginStatus();
-  }, [dispatch]);
+  }, [dispatch, expoPushToken]);
 
-  if (initialRoute === null) {
+
+  if (initialRoute === null || isLoadingResources) {
     return (
       <View
         style={{
@@ -128,6 +183,9 @@ const AppContent = () => {
         }}
       >
         <ActivityIndicator size="large" color="#000" />
+        <Text style={{ marginTop: 16, fontSize: 16, color: "#666" }}>
+          {isLoadingResources ? "Loading your data..." : "Initializing..."}
+        </Text>
       </View>
     );
   }
